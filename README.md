@@ -18,14 +18,14 @@ To deploy to vercel, there's a couple of steps:
 $ npm install -g vercel
 ```
 
-...you'll need to log in.
+...you'll need to log in the first time.
 ```zsh
 $ vercel login
 ```
 
-after logging in, run `vercel` and follow the prompts to deploy!
+To deploy to vercel & update the repo in one fell swoop:
 ```zsh
-$ vercel
+$ npm run deploy
 ```
 
 ## ---- original text from the starter repo ----
