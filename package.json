@@ -8,7 +8,8 @@
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start",
-    "deploy": "vercel && git push origin"
+    "deploy": "vercel && git push origin",
+    "update-types": "npx supabase gen types typescript --project-id \"$PROJECT_ID\" > src/utils/types/supabase.ts"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.5",
