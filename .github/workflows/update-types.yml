@@ -17,6 +17,7 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
+          node-version: 16
       - uses: actions/setup-node@v2.1.5
         with:
           node-version: 16
