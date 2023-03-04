@@ -15,13 +15,14 @@ export interface Database {
           charity: number
           created_at: string | null
           description: string
+          high_bid_value: number | null
           id: number
           increment: number | null
           interactions: number[]
           item: number | null
           minimum_bids: number | null
           name: string
-          opening_bid: number
+          opening_bid_value: number
           status: string
           type: string
         }
@@ -30,13 +31,14 @@ export interface Database {
           charity: number
           created_at?: string | null
           description: string
+          high_bid_value?: number | null
           id?: number
           increment?: number | null
           interactions: number[]
           item?: number | null
           minimum_bids?: number | null
           name: string
-          opening_bid: number
+          opening_bid_value: number
           status?: string
           type?: string
         }
@@ -45,13 +47,14 @@ export interface Database {
           charity?: number
           created_at?: string | null
           description?: string
+          high_bid_value?: number | null
           id?: number
           increment?: number | null
           interactions?: number[]
           item?: number | null
           minimum_bids?: number | null
           name?: string
-          opening_bid?: number
+          opening_bid_value?: number
           status?: string
           type?: string
         }

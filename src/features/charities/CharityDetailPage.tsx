@@ -5,17 +5,18 @@ import { getServerSideProps } from "~/pages/charities/[charityId]";
 
 type CharityDetailPageProps = InferGetServerSidePropsType<typeof getServerSideProps>
 
-export const CharityDetailPage = ({charity}: CharityDetailPageProps) => {
-  if (charity){
-    
-    const memberSinceDate  = new Date(charity.created_at??'')
+export const CharityDetailPage = ({ charity }: CharityDetailPageProps) => {
+  if (charity) {
+    const totalRaised = charity.auctions.reduce((prior, current) => prior += current.opening_bid, 0)
+    const memberSinceDate = new Date(charity.created_at ?? '')
     const formattedMemberSinceDate = `${memberSinceDate.getMonth}/ ${memberSinceDate.getFullYear()}`
     return <>
-    <h1>Hi, {charity.name}!</h1>
-    <p>{bidder.bids.length} lifetime bids</p>
-    <p>member since {formattedMemberSinceDate}</p>
-    <h2>Recent Activity</h2>
-    <ol>{activity.map(item=>(<li><h4>{item.id}</h4></li>))}</ol>
+      <h1>{charity.name}</h1>
+      <p>{charity.auctions.length} auctions run</p>
+      <p>${totalRaised} raised</p>
+      <p>active since {formattedMemberSinceDate}</p>
+      <h2>Auction history</h2>
+      <ol>{charity.auctions.map(auction => (<li key={auction.id}><h4>{auction.name}</h4><p>{auction.created_at}</p></li>))}</ol>
 
     </>
   }
