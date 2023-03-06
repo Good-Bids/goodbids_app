@@ -87,6 +87,7 @@ export interface Database {
       }
       bidder: {
         Row: {
+          auth_id: string
           bids: number[]
           created_at: string | null
           email: string
@@ -95,6 +96,7 @@ export interface Database {
           name: string | null
         }
         Insert: {
+          auth_id: string
           bids: number[]
           created_at?: string | null
           email?: string
@@ -103,6 +105,7 @@ export interface Database {
           name?: string | null
         }
         Update: {
+          auth_id?: string
           bids?: number[]
           created_at?: string | null
           email?: string
@@ -208,6 +211,23 @@ export interface Database {
           id?: number
           items?: number[]
           name?: string
+        }
+      }
+      charity_auction: {
+        Row: {
+          auction: number
+          charity: number
+          id: number
+        }
+        Insert: {
+          auction: number
+          charity: number
+          id?: number
+        }
+        Update: {
+          auction?: number
+          charity?: number
+          id?: number
         }
       }
       charity_interaction: {

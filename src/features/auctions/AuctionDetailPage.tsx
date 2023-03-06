@@ -1,4 +1,5 @@
 import { InferGetServerSidePropsType } from "next";
+import Link from "next/link";
 
 import { getServerSideProps } from "~/pages/auctions/[auctionId]";
 import { AppLayoutWrapper } from "~/shared/components/layout/AppLayoutWrapper";
@@ -11,9 +12,12 @@ export const AuctionDetailPage = ({ auction }: AuctionDetailPageProps) => {
     return <>
       <h1>{auction.name}</h1>
       <p>status: {auction.status}</p>
-      <p>{auction.bids.length} bids</p>
+      <p>{auction?.bids?.length} bids</p>
       <p>current High Bid:{auction.high_bid_value}</p>
       <p>{auction.description}</p>
+      <Link href={`/charities/${auction.charity?.id}`}>
+        <p>supports {auction.charity?.name}</p>
+      </Link>
     </>
   }
 }

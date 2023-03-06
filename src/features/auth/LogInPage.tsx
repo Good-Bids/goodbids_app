@@ -1,8 +1,8 @@
-import { Auth, ThemeSupa } from '@supabase/auth-ui-react'
+import { Auth } from '@supabase/auth-ui-react'
 import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react'
 import { useEffect, useState } from 'react'
 import { Database } from '~/utils/types/supabase'
-import { Router, useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 
 export const LogInPage = () => {
   const supabaseClient = useSupabaseClient<Database>()
@@ -25,9 +25,8 @@ export const LogInPage = () => {
     return (
       <Auth
         redirectTo="http://localhost:3000/"
-        appearance={{ theme: ThemeSupa }}
         supabaseClient={supabaseClient}
-        providers={['google', 'github']}
+        providers={['google', 'apple', 'facebook', 'twitter']}
         socialLayout="horizontal"
       />
     )
