@@ -1,13 +1,14 @@
 import { InferGetServerSidePropsType } from "next";
 
 import { getServerSideProps } from "~/pages/charities/[charityId]";
+import { AppLayoutWrapper } from "~/shared/components/layout/AppLayoutWrapper";
 
 
 type CharityDetailPageProps = InferGetServerSidePropsType<typeof getServerSideProps>
 
 export const CharityDetailPage = ({ charity }: CharityDetailPageProps) => {
   if (charity) {
-    const totalRaised = charity.auctions.reduce((prior, current) => prior += current.opening_bid, 0)
+    const totalRaised = charity.auctions.reduce((prior, current) => prior += current.high_bid_value ?? 0, 0)
     const memberSinceDate = new Date(charity.created_at ?? '')
     const formattedMemberSinceDate = `${memberSinceDate.getMonth}/ ${memberSinceDate.getFullYear()}`
     return <>

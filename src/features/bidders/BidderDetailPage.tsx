@@ -1,6 +1,7 @@
 import { InferGetServerSidePropsType } from "next";
 
 import { getServerSideProps } from "~/pages/bidders/[bidderId]";
+import { AppLayoutWrapper } from "~/shared/components/layout/AppLayoutWrapper";
 
 
 type BidderDetailPageProps = InferGetServerSidePropsType<typeof getServerSideProps>

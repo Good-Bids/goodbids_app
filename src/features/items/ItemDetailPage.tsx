@@ -1,6 +1,7 @@
 import { InferGetServerSidePropsType } from "next";
 
 import { getServerSideProps } from "~/pages/items/[itemId]";
+import { AppLayoutWrapper } from "~/shared/components/layout/AppLayoutWrapper";
 
 
 type ItemDetailPageProps = InferGetServerSidePropsType<typeof getServerSideProps>
