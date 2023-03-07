@@ -11,15 +11,14 @@ export interface Database {
     Tables: {
       auction: {
         Row: {
-          bids: number[]
-          charity: number
+          auction_id: string
+          bids: string[]
+          charity_id: string
           created_at: string | null
           description: string
           high_bid_value: number | null
-          id: number
           increment: number | null
-          interactions: number[]
-          item: number | null
+          item_id: string
           minimum_bids: number | null
           name: string
           opening_bid_value: number
@@ -27,15 +26,14 @@ export interface Database {
           type: string
         }
         Insert: {
-          bids: number[]
-          charity: number
+          auction_id: string
+          bids?: string[]
+          charity_id: string
           created_at?: string | null
           description: string
           high_bid_value?: number | null
-          id?: number
           increment?: number | null
-          interactions: number[]
-          item?: number | null
+          item_id: string
           minimum_bids?: number | null
           name: string
           opening_bid_value: number
@@ -43,15 +41,14 @@ export interface Database {
           type?: string
         }
         Update: {
-          bids?: number[]
-          charity?: number
+          auction_id?: string
+          bids?: string[]
+          charity_id?: string
           created_at?: string | null
           description?: string
           high_bid_value?: number | null
-          id?: number
           increment?: number | null
-          interactions?: number[]
-          item?: number | null
+          item_id?: string
           minimum_bids?: number | null
           name?: string
           opening_bid_value?: number
@@ -62,234 +59,147 @@ export interface Database {
       bid: {
         Row: {
           amount: number
-          auction: number
-          bidder: number
+          auction_id: string
+          bid_id: string
+          bidder_id: string
+          charity_id: string
           created_at: string
-          id: number
-          item: number
         }
         Insert: {
           amount: number
-          auction: number
-          bidder: number
+          auction_id: string
+          bid_id: string
+          bidder_id: string
+          charity_id: string
           created_at?: string
-          id?: number
-          item: number
         }
         Update: {
           amount?: number
-          auction?: number
-          bidder?: number
+          auction_id?: string
+          bid_id?: string
+          bidder_id?: string
+          charity_id?: string
           created_at?: string
-          id?: number
-          item?: number
         }
       }
       bidder: {
         Row: {
           auth_id: string
+          bidder_id: string
           bids: number[]
           created_at: string | null
           email: string
-          id: number
           interactions: number[]
           name: string | null
         }
         Insert: {
           auth_id: string
+          bidder_id: string
           bids: number[]
           created_at?: string | null
           email?: string
-          id?: number
           interactions: number[]
           name?: string | null
         }
         Update: {
           auth_id?: string
+          bidder_id?: string
           bids?: number[]
           created_at?: string | null
           email?: string
-          id?: number
           interactions?: number[]
           name?: string | null
         }
       }
       bidder_auction_status: {
         Row: {
-          auction: number
-          bidder: number
+          auction_id: string
+          bidder_id: string
           created_at: string
           early_free_bid: boolean
           high_bid: boolean
-          id: number
           many_free_bid: boolean
           partner_free_bid: boolean
+          status_id: string
         }
         Insert: {
-          auction: number
-          bidder: number
+          auction_id: string
+          bidder_id: string
           created_at?: string
           early_free_bid?: boolean
           high_bid?: boolean
-          id?: number
           many_free_bid?: boolean
           partner_free_bid?: boolean
+          status_id: string
         }
         Update: {
-          auction?: number
-          bidder?: number
+          auction_id?: string
+          bidder_id?: string
           created_at?: string
           early_free_bid?: boolean
           high_bid?: boolean
-          id?: number
           many_free_bid?: boolean
           partner_free_bid?: boolean
-        }
-      }
-      bidder_interaction: {
-        Row: {
-          auction: number | null
-          bidder: number | null
-          charity: number | null
-          created_at: string | null
-          id: number
-          interaction_detail: string | null
-          interaction_type: string
-          interactor: number
-          item: number | null
-        }
-        Insert: {
-          auction?: number | null
-          bidder?: number | null
-          charity?: number | null
-          created_at?: string | null
-          id?: number
-          interaction_detail?: string | null
-          interaction_type?: string
-          interactor: number
-          item?: number | null
-        }
-        Update: {
-          auction?: number | null
-          bidder?: number | null
-          charity?: number | null
-          created_at?: string | null
-          id?: number
-          interaction_detail?: string | null
-          interaction_type?: string
-          interactor?: number
-          item?: number | null
+          status_id?: string
         }
       }
       charity: {
         Row: {
-          bidders: number[]
+          auctions: string[]
+          bidders: string[]
+          charity_id: string
           created_at: string | null
           ein: string
           email: string
-          events: number[]
-          id: number
-          items: number[]
+          items: string[]
           name: string
         }
         Insert: {
-          bidders: number[]
+          auctions?: string[]
+          bidders?: string[]
+          charity_id: string
           created_at?: string | null
           ein: string
           email: string
-          events: number[]
-          id?: number
-          items: number[]
+          items?: string[]
           name: string
         }
         Update: {
-          bidders?: number[]
+          auctions?: string[]
+          bidders?: string[]
+          charity_id?: string
           created_at?: string | null
           ein?: string
           email?: string
-          events?: number[]
-          id?: number
-          items?: number[]
+          items?: string[]
           name?: string
-        }
-      }
-      charity_auction: {
-        Row: {
-          auction: number
-          charity: number
-          id: number
-        }
-        Insert: {
-          auction: number
-          charity: number
-          id?: number
-        }
-        Update: {
-          auction?: number
-          charity?: number
-          id?: number
-        }
-      }
-      charity_interaction: {
-        Row: {
-          auction: number | null
-          bidder: number | null
-          charity: number | null
-          created_at: string | null
-          id: number
-          interaction_detail: string | null
-          interaction_type: string
-          interactor: number
-          item: number | null
-        }
-        Insert: {
-          auction?: number | null
-          bidder?: number | null
-          charity?: number | null
-          created_at?: string | null
-          id?: number
-          interaction_detail?: string | null
-          interaction_type?: string
-          interactor: number
-          item?: number | null
-        }
-        Update: {
-          auction?: number | null
-          bidder?: number | null
-          charity?: number | null
-          created_at?: string | null
-          id?: number
-          interaction_detail?: string | null
-          interaction_type?: string
-          interactor?: number
-          item?: number | null
         }
       }
       item: {
         Row: {
-          charity: number
+          auction_id: string | null
+          charity_id: string
           created_at: string | null
           description: string
-          event: number | null
-          id: number
+          item_id: string
           name: string
           value: number | null
         }
         Insert: {
-          charity: number
+          auction_id?: string | null
+          charity_id: string
           created_at?: string | null
           description: string
-          event?: number | null
-          id?: number
+          item_id: string
           name: string
           value?: number | null
         }
         Update: {
-          charity?: number
+          auction_id?: string | null
+          charity_id?: string
           created_at?: string | null
           description?: string
-          event?: number | null
-          id?: number
+          item_id?: string
           name?: string
           value?: number | null
         }
