@@ -18,7 +18,7 @@ export const CharityDetailPage = ({ charity }: CharityDetailPageProps) => {
       <p>${totalRaised} raised</p>
       <p>active since {charity.created_at}</p>
       <h2>Auction history</h2>
-      <ol>{charity.auctions.map(auction => (<li key={auction.id}><h4>{auction.name}</h4><p>{auction.created_at}</p></li>))}</ol>
+      <ol>{charity.auctions.map(auction => (<li key={auction.auction_id}><h4>{auction.name}</h4><p>{auction.created_at}</p></li>))}</ol>
 
     </>
   }

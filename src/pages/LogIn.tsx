@@ -1,4 +1,5 @@
-import { LogInPage } from "~/features/auth/LogInPage";
+import { AuthPage } from "~/features/auth/AuthPage";
 
+//TODO replace with the more custom LoginPage when time allows
 
-export default LogInPage;
+export default AuthPage;

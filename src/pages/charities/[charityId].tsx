@@ -5,7 +5,7 @@ export async function getServerSideProps({ charityId }: { charityId: string }) {
 
   const { data: charityData } = await supabase.from('charity').select().eq('id', 1)
 
-  const auctionIds = (charityData?.[0]?.events ?? []).map(item => Number(item))
+  const auctionIds = (charityData?.[0]?.auctions ?? []).map(item => Number(item))
   const bidderIds = (charityData?.[0]?.bidders ?? []).map(item => Number(item))
   const itemIds = charityData?.[0]?.items ?? []
 
