@@ -12,7 +12,6 @@ export interface Database {
       auction: {
         Row: {
           auction_id: string
-          bids: string[]
           charity_id: string
           created_at: string | null
           description: string
@@ -27,7 +26,6 @@ export interface Database {
         }
         Insert: {
           auction_id: string
-          bids?: string[]
           charity_id: string
           created_at?: string | null
           description: string
@@ -42,7 +40,6 @@ export interface Database {
         }
         Update: {
           auction_id?: string
-          bids?: string[]
           charity_id?: string
           created_at?: string | null
           description?: string
@@ -82,35 +79,6 @@ export interface Database {
           created_at?: string
         }
       }
-      bidder: {
-        Row: {
-          auth_id: string
-          bidder_id: string
-          bids: number[]
-          created_at: string | null
-          email: string
-          interactions: number[]
-          name: string | null
-        }
-        Insert: {
-          auth_id: string
-          bidder_id: string
-          bids: number[]
-          created_at?: string | null
-          email?: string
-          interactions: number[]
-          name?: string | null
-        }
-        Update: {
-          auth_id?: string
-          bidder_id?: string
-          bids?: number[]
-          created_at?: string | null
-          email?: string
-          interactions?: number[]
-          name?: string | null
-        }
-      }
       bidder_auction_status: {
         Row: {
           auction_id: string
@@ -145,34 +113,54 @@ export interface Database {
       }
       charity: {
         Row: {
-          auctions: string[]
-          bidders: string[]
+          charity_admin: string
           charity_id: string
           created_at: string | null
           ein: string
           email: string
-          items: string[]
           name: string
+          status: string
         }
         Insert: {
-          auctions?: string[]
-          bidders?: string[]
+          charity_admin: string
           charity_id: string
           created_at?: string | null
           ein: string
           email: string
-          items?: string[]
           name: string
+          status?: string
         }
         Update: {
-          auctions?: string[]
-          bidders?: string[]
+          charity_admin?: string
           charity_id?: string
           created_at?: string | null
           ein?: string
           email?: string
-          items?: string[]
           name?: string
+          status?: string
+        }
+      }
+      charity_admin: {
+        Row: {
+          charity_admin_id: string
+          charity_id: string | null
+          created_at: string | null
+          is_charity_admin: boolean | null
+          user_id: string | null
+        }
+        Insert: {
+          charity_admin_id: string
+          charity_id?: string | null
+          created_at?: string | null
+          is_charity_admin?: boolean | null
+          user_id?: string | null
+        }
+        Update: {
+          charity_admin_id?: string
+          charity_id?: string | null
+          created_at?: string | null
+          is_charity_admin?: boolean | null
+          user_id?: string | null
         }
       }
       item: {
@@ -202,6 +190,32 @@ export interface Database {
           item_id?: string
           name?: string
           value?: number | null
+        }
+      }
+      user: {
+        Row: {
+          auth_id: string
+          bidder_id: string
+          created_at: string | null
+          email: string
+          is_charity_admin: boolean
+          name: string | null
+        }
+        Insert: {
+          auth_id: string
+          bidder_id: string
+          created_at?: string | null
+          email?: string
+          is_charity_admin?: boolean
+          name?: string | null
+        }
+        Update: {
+          auth_id?: string
+          bidder_id?: string
+          created_at?: string | null
+          email?: string
+          is_charity_admin?: boolean
+          name?: string | null
         }
       }
     }
