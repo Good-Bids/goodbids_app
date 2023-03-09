@@ -6,7 +6,6 @@ import "~/styles/globals.css";
 import { AppLayoutWrapper } from "~/shared/components/layout/AppLayoutWrapper";
 import { supabase } from "~/server/api/supabase";
 import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
-import { env } from "~/env.mjs";
 
 const MyApp = ({
   Component,

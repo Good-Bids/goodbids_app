@@ -113,7 +113,7 @@ export interface Database {
       }
       charity: {
         Row: {
-          charity_admin: string
+          charity_admin_id: string
           charity_id: string
           created_at: string | null
           ein: string
@@ -122,8 +122,8 @@ export interface Database {
           status: string
         }
         Insert: {
-          charity_admin: string
-          charity_id: string
+          charity_admin_id: string
+          charity_id?: string
           created_at?: string | null
           ein: string
           email: string
@@ -131,7 +131,7 @@ export interface Database {
           status?: string
         }
         Update: {
-          charity_admin?: string
+          charity_admin_id?: string
           charity_id?: string
           created_at?: string | null
           ein?: string
@@ -146,21 +146,21 @@ export interface Database {
           charity_id: string | null
           created_at: string | null
           is_charity_admin: boolean | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
-          charity_admin_id: string
+          charity_admin_id?: string
           charity_id?: string | null
           created_at?: string | null
           is_charity_admin?: boolean | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           charity_admin_id?: string
           charity_id?: string | null
           created_at?: string | null
           is_charity_admin?: boolean | null
-          user_id?: string | null
+          user_id?: string
         }
       }
       item: {
@@ -203,7 +203,7 @@ export interface Database {
         }
         Insert: {
           auth_id: string
-          bidder_id: string
+          bidder_id?: string
           created_at?: string | null
           email?: string
           is_charity_admin?: boolean
