@@ -1,29 +1,39 @@
 import { AppProps } from "next/app";
-import { SessionContextProvider, Session } from '@supabase/auth-helpers-react'
-import { useState } from 'react'
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+// import { ReactQueryDevtools } from 'react-query/devtools'
 
 import "~/styles/globals.css";
 import { AppLayoutWrapper } from "~/shared/components/layout/AppLayoutWrapper";
-import { supabase } from "~/server/api/supabase";
-import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { UserContextProvider } from "~/contexts/UserContextProvider";
+import React from "react";
 
 const MyApp = ({
   Component,
   pageProps,
-}: AppProps<{
-  initialSession: Session
-}>) => {
+}: AppProps) => {
 
-  const [supabaseClient] = useState(() => createBrowserSupabaseClient({ supabaseUrl: "https://imjsqwufoypzctthvxmr.supabase.co", supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltanNxd3Vmb3lwemN0dGh2eG1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Nzc3ODI2NzAsImV4cCI6MTk5MzM1ODY3MH0.ucm5n-RtU1gmOvk6J5oRWRej5fOVeJFgXLknE6vxpJ4" }))
+  const queryClient = React.useRef(
+    new QueryClient({
+      defaultOptions: {
+        queries: {
+          refetchOnMount: false,
+          refetchOnWindowFocus: false,
+          retry: false,
+          staleTime: 5 * 60 * 1000, // 5 minutes in milliseconds
+        },
+      },
+    })
+  );
 
   return (
-    <SessionContextProvider
-      supabaseClient={supabaseClient}
-      initialSession={pageProps.initialSession}>
-      <AppLayoutWrapper>
-        <Component {...pageProps} />
-      </AppLayoutWrapper>
-    </SessionContextProvider>
+    <QueryClientProvider client={queryClient.current}>
+      <UserContextProvider>
+        <AppLayoutWrapper>
+          <Component {...pageProps} />
+        </AppLayoutWrapper>
+      </UserContextProvider>
+    </QueryClientProvider>
   );
 };
 

@@ -1,16 +1,12 @@
 // once a user has the 'charityAdmin' role,
 // they can create their charity in the system.
 
-import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react"
-import { randomUUID } from "crypto"
-import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { Database } from "~/utils/types/supabase"
+import { useUserQuery } from "~/hooks/useUser";
 
 export const CreateNewCharityPage = () => {
 
-  const supabaseClient = useSupabaseClient<Database>()
-  const user = useUser()
+  const user = useUserQuery()
 
   const { register, handleSubmit } = useForm();
 
@@ -23,10 +19,7 @@ export const CreateNewCharityPage = () => {
       <form onSubmit={handleSubmit(async (data) => {
         try {
           if (user) {
-            const charity_new_id = crypto.randomUUID()
-            console.log(charity_new_id)
-            await supabaseClient.from('charity').insert({ ...data, charity_admin_id: user.id, charity_id: charity_new_id })
-            await supabaseClient.from('charity_admin').update({ charity_id: charity_new_id },).eq('user_id', user.id)
+
           }
         } catch (error) {
           window.alert(error)

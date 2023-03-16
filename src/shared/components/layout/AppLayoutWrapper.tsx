@@ -1,9 +1,10 @@
-import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import Link from "next/link";
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react";
-import { checkForAdmin } from "~/features/queries/checkForAdmin";
-import { Database } from "~/utils/types/supabase";
+
+import { useAdminCheckQuery } from "~/hooks/useCharityAdmin";
+import useSupabase from "~/hooks/useSupabase";
+import { useUserQuery } from "~/hooks/useUser";
 
 interface WrapperProps {
   readonly children: React.ReactNode;
@@ -11,20 +12,18 @@ interface WrapperProps {
 
 export const AppLayoutWrapper = ({ children }: WrapperProps) => {
 
-  const user = useUser()
-  const supabaseClient = useSupabaseClient<Database>()
+  const { data: user } = useUserQuery()
   const router = useRouter()
   const [isAdmin, setIsAdmin] = useState(false)
-
+  const { data: adminData } = useAdminCheckQuery(user?.id)
+  const supabaseClient = useSupabase()
 
   useEffect(() => {
-    checkForAdmin(supabaseClient).then(response =>
-      setIsAdmin(() =>
-        response.isCharityAdmin
-      )
-    )
+    if (adminData) {
+      setIsAdmin(() => adminData.isCharityAdmin)
+    }
   }, [
-    user
+    adminData
   ])
 
   const handleLogoutClick = () => {

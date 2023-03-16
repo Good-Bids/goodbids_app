@@ -1,16 +1,16 @@
-import { Auth } from '@supabase/auth-ui-react'
-import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react'
-import { ChangeEvent, useEffect, useState } from 'react'
-import { Database } from '~/utils/types/supabase'
+import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { SignInWithPasswordCredentials } from '@supabase/supabase-js'
+import { useUserQuery } from '~/hooks/useUser'
+import useSupabase from '~/hooks/useSupabase'
 
 export const LogInPage = () => {
-  const supabaseClient = useSupabaseClient<Database>()
-  const user = useUser()
+  const user = useUserQuery()
   const router = useRouter()
   const [loginMethod, setLoginMethod] = useState<'OAuth' | 'email'>('email')
   const [loginData, setLoginData] = useState<SignInWithPasswordCredentials>({ email: '', password: '' })
+
+  const supabaseClient = useSupabase();
 
   const handleLogin = (data: unknown) => {
     supabaseClient.auth.signInWithPassword(loginData).then((data) => { window.alert(data) }).catch((err) => {
@@ -23,8 +23,6 @@ export const LogInPage = () => {
     const newValue = e.target.value
     setLoginData(prior => ({ ...prior, [target]: newValue }))
   }
-
-
 
   if (!user) {
 

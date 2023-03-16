@@ -113,7 +113,6 @@ export interface Database {
       }
       charity: {
         Row: {
-          charity_admin_id: string
           charity_id: string
           created_at: string | null
           ein: string
@@ -122,7 +121,6 @@ export interface Database {
           status: string
         }
         Insert: {
-          charity_admin_id: string
           charity_id?: string
           created_at?: string | null
           ein: string
@@ -131,7 +129,6 @@ export interface Database {
           status?: string
         }
         Update: {
-          charity_admin_id?: string
           charity_id?: string
           created_at?: string | null
           ein?: string
