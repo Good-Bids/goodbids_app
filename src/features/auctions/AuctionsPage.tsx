@@ -1,10 +1,6 @@
-import { InferGetServerSidePropsType } from "next";
 import Link from "next/link";
 
-import { getServerSideProps } from "~/pages/auctions";
 
-
-type AuctionPageProps = InferGetServerSidePropsType<typeof getServerSideProps>
 
 export const AuctionsPage = ({ auctions }: AuctionPageProps) => {
   if (auctions) {

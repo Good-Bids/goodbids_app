@@ -1,7 +1,7 @@
 import { AppProps } from "next/app";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-// import { ReactQueryDevtools } from 'react-query/devtools'
+import { ReactQueryDevtools } from 'react-query/devtools'
 
 import "~/styles/globals.css";
 import { AppLayoutWrapper } from "~/shared/components/layout/AppLayoutWrapper";
@@ -12,6 +12,7 @@ const MyApp = ({
   Component,
   pageProps,
 }: AppProps) => {
+
 
   const queryClient = React.useRef(
     new QueryClient({
@@ -33,6 +34,7 @@ const MyApp = ({
           <Component {...pageProps} />
         </AppLayoutWrapper>
       </UserContextProvider>
+      {/* <ReactQueryDevtools /> */}
     </QueryClientProvider>
   );
 };

@@ -1,3 +1,4 @@
+import { useUser } from "@supabase/auth-helpers-react";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -8,35 +9,42 @@ import { useUserQuery } from "~/hooks/useUser";
 
 const Home: NextPage = () => {
 
-  const user = useUserQuery()
+  const { data: user } = useUserQuery()
   const router = useRouter()
   const [showCharityCreationLink, setShowCharityCreationLink] = useState(false)
   const { data: adminCheck } = useAdminCheckQuery()
-  const isCharityAdmin = adminCheck?.isCharityAdmin
+  const isLoggedIn = Boolean(user)
+  const isCharityAdmin = Boolean(adminCheck?.isCharityAdmin)
   const charityId = adminCheck?.charityId
 
-  const isLoggedInCharity = user && Boolean(charityId)
-  const isLoggedInBidder = user && !isCharityAdmin
-  const charityIsCreated = charityId && charityId.length > 0
+  const isLoggedInCharity = isLoggedIn && isCharityAdmin
+  const isLoggedInBidder = isLoggedIn && !isCharityAdmin
+  const charityIsCreated = charityId !== null
   const isPublic = !user
 
   const getGreeting = (isPublic: boolean, isLoggedInBidder: boolean, isLoggedInCharity: boolean) => {
     if (isPublic) return (
-      <span className="text-black text-7xl font-black">
-        Hey! <Link href="/SignUp" className="hover:underline text-fuschia-600">Sign up. </Link>
-      </span>)
+      <>
+        <span className="text-bottleGreen text-7xl font-black">
+          We're better with you here.
+        </span>
+        <span className="text-bottleGreen text-4xl font-black">
+          <Link href="/SignUp" className="hover:underline decoration-screaminGreen">Sign up today. </Link>
+        </span>
+      </>
+    )
     if (isLoggedInBidder) return (
       <>
-        <span className="text-black text-7xl font-black">
-          Welcome back
+        <span className="text-bottleGreen text-7xl font-black">
+          Welcome back, {user?.user_metadata.name.split(' ')[0]}
         </span>
-        <span className="text-black text-2xl font-medium">
-          we're glad you're here
+        <span className="text-bottleGreen text-2xl font-medium">
+          we're glad you're here.
         </span>
       </>
     )
     if (isLoggedInCharity) return (
-      <span className="text-black text-7xl font-black">
+      <span className="text-bottleGreen text-7xl font-black">
         Welcome charity admin, we're glad you're here
       </span>
     )
@@ -46,11 +54,11 @@ const Home: NextPage = () => {
     if (adminCheck?.isCharityAdmin && !charityIsCreated) {
       setShowCharityCreationLink(true)
     }
-    if (charityIsCreated) {
-      router.push(`/charities/${charityId}`)
-    }
+    // if (charityIsCreated) {
+    //   router.push(`/charities/${charityId}`)
+    // }
   }, [
-    user
+    user, charityIsCreated
   ])
 
 
@@ -67,12 +75,16 @@ const Home: NextPage = () => {
         {(showCharityCreationLink) && (
           <>
             <Link href={"/charities/create"}>
-              <span className="text-[#EB65CF] font-bold">
+              <span className="text-cornflowerLilac font-bold">
                 Register your Charity
               </span>
+
             </Link>
           </>
         )}
+        {isLoggedInBidder && (<Link href={'/auctions'}><span className="text-cornflowerLilac font-bold">
+          View active Auctions
+        </span></Link>)}
       </div>
 
     </>

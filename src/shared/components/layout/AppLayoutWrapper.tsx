@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react";
@@ -12,11 +13,13 @@ interface WrapperProps {
 
 export const AppLayoutWrapper = ({ children }: WrapperProps) => {
 
+  const supabaseClient = useSupabase()
   const { data: user } = useUserQuery()
   const router = useRouter()
   const [isAdmin, setIsAdmin] = useState(false)
   const { data: adminData } = useAdminCheckQuery(user?.id)
-  const supabaseClient = useSupabase()
+
+
 
   useEffect(() => {
     if (adminData) {
@@ -26,31 +29,32 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
     adminData
   ])
 
-  const handleLogoutClick = () => {
-    supabaseClient.auth.signOut()
-    router.push('/')
+  const handleLogoutClick = async () => {
+    await supabaseClient.auth.signOut().then(() => {
+      router.push('/')
+    })
   }
 
   return (<>
-    <div className="flex flex-row p-2 top-0 left-0 right-0 fixed justify-between max-w-screen h-fit-content items-center bg-white  bg-gradient-to-r to-[#00B86B] from-[#EB65CF]">
+    <div className="flex flex-row p-2 top-0 left-0 right-0 fixed justify-between max-w-screen h-fit-content items-center bg-outerSpace-100">
       <Link href="/">
-        <h1 className="text-4xl text-left text-white font-black">GoodBids</h1>
+        <Image src={"/logo-bottleGreen.png"} alt={"GoodBids Logo"} width={211} height={48} />
       </Link>
       {!user ? (
         <Link href="/LogIn">
-          <p className="text-right text-white font-bold">Sign in</p>
+          <p className="text-right text-bottleGreen font-bold">Sign in</p>
         </Link>
       ) :
         <div className="flex flex-row gap-4">
           <p>{user.email}</p>
           {isAdmin && (
             <Link href="/auctions/create">
-              <span className="text-right text-white font-bold">
+              <span className="text-right text-bottleGreen font-bold">
                 Create a New Auction
               </span>
             </Link>
           )}
-          <button onClick={handleLogoutClick}><span className="text-right text-white font-bold">Sign out</span></button>
+          <button onClick={handleLogoutClick}><span className="text-right text-bottleGreen font-bold">Sign out</span></button>
         </div>
       }
     </div>
