@@ -15,9 +15,16 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
 
   const supabaseClient = useSupabase()
   const { data: user } = useUserQuery()
-  const router = useRouter()
   const [isAdmin, setIsAdmin] = useState(false)
   const { data: adminData } = useAdminCheckQuery(user?.id)
+  const router = useRouter()
+
+  const imageProps = {
+    src: '/logo-bottleGreen.png',
+    width: 48,
+    height: 48,
+    alt: 'goodBids Logo'
+  }
 
 
 
@@ -38,7 +45,9 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
   return (<>
     <div className="flex flex-row p-2 top-0 left-0 right-0 fixed justify-between max-w-screen h-fit-content items-center bg-outerSpace-100">
       <Link href="/">
-        <Image src={"/logo-bottleGreen.png"} alt={"GoodBids Logo"} width={211} height={48} />
+        <Image
+          {...imageProps}
+        />
       </Link>
       {!user ? (
         <Link href="/LogIn">

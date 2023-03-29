@@ -17,7 +17,8 @@ const server = z.object({
  */
 const client = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z.string().min(1),
-  NEXT_PUBLIC_SUPABASE_KEY: z.string().min(1)
+  NEXT_PUBLIC_SUPABASE_KEY: z.string().min(1),
+  NEXT_PUBLIC_CHARITY_API_KEY: z.string().min(1)
 })
 
 /**
@@ -32,7 +33,8 @@ const processEnv = {
   SUPABASE_URL: process.env.SUPABASE_URL,
   SUPABASE_KEY: process.env.SUPABASE_KEY,
   NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-  NEXT_PUBLIC_SUPABASE_KEY: process.env.NEXT_PUBLIC_SUPABASE_KEY
+  NEXT_PUBLIC_SUPABASE_KEY: process.env.NEXT_PUBLIC_SUPABASE_KEY,
+  NEXT_PUBLIC_CHARITY_API_KEY: process.env.NEXT_PUBLIC_CHARITY_API_KEY
 }
 
 // Don't touch the part below

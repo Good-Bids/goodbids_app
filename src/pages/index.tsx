@@ -11,7 +11,6 @@ const Home: NextPage = () => {
 
   const { data: user } = useUserQuery()
   const router = useRouter()
-  const [showCharityCreationLink, setShowCharityCreationLink] = useState(false)
   const { data: adminCheck } = useAdminCheckQuery()
   const isLoggedIn = Boolean(user)
   const isCharityAdmin = Boolean(adminCheck?.isCharityAdmin)
@@ -19,8 +18,9 @@ const Home: NextPage = () => {
 
   const isLoggedInCharity = isLoggedIn && isCharityAdmin
   const isLoggedInBidder = isLoggedIn && !isCharityAdmin
-  const charityIsCreated = charityId !== null
+  const charityIsCreated = Boolean(charityId)
   const isPublic = !user
+  const userFirstName = user?.user_metadata.name.split(' ')[0] ?? 'friend'
 
   const getGreeting = (isPublic: boolean, isLoggedInBidder: boolean, isLoggedInCharity: boolean) => {
     if (isPublic) return (
@@ -36,7 +36,7 @@ const Home: NextPage = () => {
     if (isLoggedInBidder) return (
       <>
         <span className="text-bottleGreen text-7xl font-black">
-          Welcome back, {user?.user_metadata.name.split(' ')[0]}
+          Welcome back, {userFirstName}
         </span>
         <span className="text-bottleGreen text-2xl font-medium">
           we're glad you're here.
@@ -44,19 +44,23 @@ const Home: NextPage = () => {
       </>
     )
     if (isLoggedInCharity) return (
-      <span className="text-bottleGreen text-7xl font-black">
-        Welcome charity admin, we're glad you're here
-      </span>
+      <>
+        <span className="text-bottleGreen text-7xl font-black">
+          Welcome charity admin, we're glad you're here
+        </span>
+        {!charityIsCreated && (
+          <span className="text-bottleGreen text-4xl font-black">
+            <Link href="/charities/create" className="hover:underline decoration-screaminGreen">Register your goodCharity today</Link>
+          </span>
+        )}
+      </>
     )
   }
 
   useEffect(() => {
-    if (adminCheck?.isCharityAdmin && !charityIsCreated) {
-      setShowCharityCreationLink(true)
+    if (charityIsCreated) {
+      router.push(`/charities/${charityId}`)
     }
-    // if (charityIsCreated) {
-    //   router.push(`/charities/${charityId}`)
-    // }
   }, [
     user, charityIsCreated
   ])
@@ -71,22 +75,10 @@ const Home: NextPage = () => {
       </Head>
       <div className="flex flex-col items-center gap-2">
         {getGreeting(isPublic, isLoggedInBidder, isLoggedInCharity)}
-
-        {(showCharityCreationLink) && (
-          <>
-            <Link href={"/charities/create"}>
-              <span className="text-cornflowerLilac font-bold">
-                Register your Charity
-              </span>
-
-            </Link>
-          </>
-        )}
         {isLoggedInBidder && (<Link href={'/auctions'}><span className="text-cornflowerLilac font-bold">
           View active Auctions
         </span></Link>)}
       </div>
-
     </>
   );
 };

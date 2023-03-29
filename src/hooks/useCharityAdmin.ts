@@ -18,10 +18,14 @@ export const checkForAdmin = async () => {
 };
 
 export const useAdminCheckQuery = (userId?: string) => {
-  const result = useQuery(["adminCheck"], () => checkForAdmin(), {
+  const result = useQuery<
+    { is_charity_admin: boolean | null; charity_id: string | null },
+    unknown,
+    { isCharityAdmin: boolean; charityId?: string }
+  >(["adminCheck"], () => checkForAdmin(), {
     select: (data) => ({
       isCharityAdmin: data.is_charity_admin ?? false,
-      charityId: data.charity_id ?? "",
+      charityId: data.charity_id ?? undefined,
     }),
     enabled: Boolean(userId),
   });

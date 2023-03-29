@@ -7,7 +7,7 @@ export default function Document() {
       <Head>
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
       </Head>
-      <body>
+      <body className='padding-32px'>
         <Main />
         <NextScript />
       </body>
