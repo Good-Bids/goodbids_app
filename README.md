@@ -28,6 +28,27 @@ To deploy to vercel & update the repo in one fell swoop:
 $ npm run deploy
 ```
 
+## Updating types locally
+[from the supabaase docs](https://supabase.com/docs/guides/database/api/generating-types)
+
+to update db types locally, first you need to install the supabase cli
+```zsh
+npx install supabase
+```
+
+next, log in. this may require generating a personal secret key on the supabase site
+```zsh
+npx supabase login
+```
+
+after this, run the command below.
+```zsh
+npm run update-types
+```
+
+at the end of this, you should see updates to the file `src/utils/types/supabase.ts`
+
+
 ## ---- original text from the starter repo ----
 ### What's next? How do I make an app with this?
 
