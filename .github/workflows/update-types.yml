@@ -20,8 +20,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: npm install supabase
-      - run: npx supabase login
+      - run: npm install openapi-typescript --save-dev
       - run: npm run update-types
       - name: check for file changes
         id: git_status
