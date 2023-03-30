@@ -21,6 +21,7 @@ jobs:
         with:
           node-version: 16
       - run: npm install supabase
+      - run: supabase login
       - run: npm run update-types
       - name: check for file changes
         id: git_status
