@@ -8,12 +8,12 @@ interface CharityDetailPageProps {
 
 export const CharityDetailPage = () => {
   const router = useRouter()
-  const [charityId, setCharityID] = useState('')
+  const [charityId, setCharityId] = useState<string>()
 
   useEffect(() => {
     if (router.query.charityId) {
       if (!Array.isArray(router.query.charityId))
-        setCharityID(router.query.charityId)
+        setCharityId(router.query.charityId)
     }
 
   }, [router])

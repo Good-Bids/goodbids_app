@@ -18,7 +18,7 @@ export interface Database {
           created_at: string | null
           description: string
           high_bid_value: number | null
-          increment: number | null
+          increment: number
           item_id: string
           minimum_bids: number | null
           name: string
@@ -40,7 +40,7 @@ export interface Database {
           created_at?: string | null
           description: string
           high_bid_value?: number | null
-          increment?: number | null
+          increment?: number
           item_id: string
           minimum_bids?: number | null
           name: string
@@ -62,7 +62,7 @@ export interface Database {
           created_at?: string | null
           description?: string
           high_bid_value?: number | null
-          increment?: number | null
+          increment?: number
           item_id?: string
           minimum_bids?: number | null
           name?: string

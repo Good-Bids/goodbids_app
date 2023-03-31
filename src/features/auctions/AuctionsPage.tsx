@@ -1,8 +1,12 @@
 import Link from "next/link";
+import { useAuctionsQuery } from "~/hooks/useAuction";
 
 
 
-export const AuctionsPage = ({ auctions }: AuctionPageProps) => {
+export const AuctionsPage = () => {
+
+  const { data: auctions } = useAuctionsQuery()
+
   if (auctions) {
     return <ul>
       {auctions.map((auction) =>
