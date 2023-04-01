@@ -4,12 +4,8 @@ This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3
 
 We're using the following under the hood:
 - [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Auth0](https://auth0.com/)
-- [Prisma](https://prisma.io)
 - [supabase](https://supabase.com/)
 - [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
 
 ## Deploying
 
