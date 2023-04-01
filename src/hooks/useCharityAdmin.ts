@@ -3,10 +3,11 @@ import useSupabase from "./useSupabase";
 
 const supabaseClient = useSupabase();
 
-export const checkForAdmin = async () => {
+export const checkForAdmin = async (userId?: string) => {
   const { data, error } = await supabaseClient
     .from("charity_admin")
     .select("is_charity_admin,charity_id")
+    .eq("user_id", userId)
     .limit(1)
     .single();
 
@@ -22,7 +23,7 @@ export const useAdminCheckQuery = (userId?: string) => {
     { is_charity_admin: boolean | null; charity_id: string | null },
     unknown,
     { isCharityAdmin: boolean; charityId?: string }
-  >(["adminCheck"], () => checkForAdmin(), {
+  >(["adminCheck"], () => checkForAdmin(userId), {
     select: (data) => ({
       isCharityAdmin: data.is_charity_admin ?? false,
       charityId: data.charity_id ?? undefined,

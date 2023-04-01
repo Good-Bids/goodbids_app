@@ -7,7 +7,7 @@ type EinCheckResponse = {
   ein: Ein;
 };
 
-export const checkEin: (ein: Ein) => Promise<EinCheckResponse> = async (
+export const checkEin: (ein?: Ein) => Promise<EinCheckResponse> = async (
   ein
 ) => {
   const url = `https://api.charityapi.org/api/public_charity_check/${ein}`;

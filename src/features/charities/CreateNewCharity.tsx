@@ -2,7 +2,6 @@
 // they can create their charity in the system.
 
 import { useForm } from "react-hook-form"
-import { useCheckCharity } from "~/hooks/useCheckCharity";
 import { useUserQuery } from "~/hooks/useUser";
 import { checkEin } from "~/queries/charityApi";
 
@@ -20,11 +19,12 @@ export const CreateNewCharityPage = () => {
       <span className="text-l text-black font-normal">We'll be in touch with next steps within the next business day.</span>
       <form onSubmit={handleSubmit(async (data) => {
         try {
-          console.log(data)
           if (user) {
             if (data.ein) {
-              const isLegit = checkEin(data.ein)
-              console.log(isLegit)
+              const isLegitimateCharity = await checkEin(data.ein)
+              if (isLegitimateCharity) {
+                window.alert('created! (not really)')
+              } else window.alert('nope! try a valid EIN')
             }
           }
         } catch (error) {

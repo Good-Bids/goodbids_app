@@ -41,7 +41,9 @@ const createCharity = async (data: NewCharity) => {
 };
 
 export const useCharityQuery = (charityId: string) => {
-  const result = useQuery(["charity", charityId], () => getCharity(charityId));
+  const result = useQuery(["charity", charityId], () => getCharity(charityId), {
+    enabled: Boolean(charityId),
+  });
   return result;
 };
 

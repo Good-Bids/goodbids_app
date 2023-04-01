@@ -38,7 +38,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
 
   const handleLogoutClick = async () => {
     await supabaseClient.auth.signOut().then(() => {
-      router.push('/')
+      router.reload()
     })
   }
 
