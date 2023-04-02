@@ -1,7 +1,8 @@
-import Image from "next/image";
+import Image, { ImageProps } from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react";
+import { LogoWithText } from "~/components/LogoWithText";
 
 import { useAdminCheckQuery } from "~/hooks/useCharityAdmin";
 import useSupabase from "~/hooks/useSupabase";
@@ -19,7 +20,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
   const { data: adminData } = useAdminCheckQuery(user?.id)
   const router = useRouter()
 
-  const imageProps = {
+  const imageProps: ImageProps = {
     src: '/logo-bottleGreen.png',
     width: 48,
     height: 48,
@@ -45,9 +46,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
   return (<>
     <div className="flex flex-row p-2 top-0 left-0 right-0 fixed justify-between max-w-screen h-fit-content items-center bg-outerSpace-100">
       <Link href="/">
-        <Image
-          {...imageProps}
-        />
+        <LogoWithText color='#0a3624' />
       </Link>
       {!user ? (
         <Link href="/LogIn">
@@ -55,14 +54,6 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
         </Link>
       ) :
         <div className="flex flex-row gap-4">
-          <p>{user.email}</p>
-          {isAdmin && (
-            <Link href="/auctions/create">
-              <span className="text-right text-bottleGreen font-bold">
-                Create a New Auction
-              </span>
-            </Link>
-          )}
           <button onClick={handleLogoutClick}><span className="text-right text-bottleGreen font-bold">Sign out</span></button>
         </div>
       }

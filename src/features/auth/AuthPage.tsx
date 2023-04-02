@@ -20,7 +20,6 @@ export const AuthPage = () => {
           appearance={{ theme: ThemeSupa }}
           supabaseClient={supabaseClient}
           providers={['google']}
-          onlyThirdPartyProviders
           socialLayout="vertical"
         />
       </>
