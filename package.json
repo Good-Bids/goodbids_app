@@ -24,6 +24,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.5",
     "superjson": "1.9.1",
+    "vercel": "^28.18.3",
     "zod": "^3.20.6"
   },
   "devDependencies": {
