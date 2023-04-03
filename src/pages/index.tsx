@@ -1,9 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
-// import { useAuctionsQuery } from "~/hooks/useAuction";
+import { useAuctionsQuery } from "~/hooks/useAuction";
 import { useAdminCheckQuery } from "~/hooks/useCharityAdmin";
 import { useUserQuery } from "~/hooks/useUser";
 

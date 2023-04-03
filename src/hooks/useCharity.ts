@@ -4,7 +4,7 @@ import useSupabase from "./useSupabase";
 
 const supabaseClient = useSupabase();
 
-const getCharity = async (charityId: string) => {
+const getCharity = async (charityId?: string) => {
   const { data, error } = await supabaseClient
     .from("charity")
     .select()
@@ -40,7 +40,7 @@ const createCharity = async (data: NewCharity) => {
   }
 };
 
-export const useCharityQuery = (charityId: string) => {
+export const useCharityQuery = (charityId?: string) => {
   const result = useQuery(["charity", charityId], () => getCharity(charityId), {
     enabled: Boolean(charityId),
   });

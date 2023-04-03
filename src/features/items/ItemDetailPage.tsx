@@ -1,20 +1,30 @@
-import { InferGetServerSidePropsType } from "next";
+import { useRouter } from "next/router"
+import { useEffect, useState } from "react"
+import { useItemQuery } from "~/hooks/useItem"
 
-import { getServerSideProps } from "~/pages/items/[itemId]";
-import { AppLayoutWrapper } from "~/shared/components/layout/AppLayoutWrapper";
+export const ItemDetailPage = () => {
+  const router = useRouter()
+  const [itemId, setItemId] = useState<string>()
+
+  useEffect(() => {
+    if (router.query.itemId) {
+      if (!Array.isArray(router.query.itemId))
+        setItemId(router.query.itemId)
+    }
+
+  }, [router])
+
+  const { data: item } = useItemQuery(itemId)
 
 
-type ItemDetailPageProps = InferGetServerSidePropsType<typeof getServerSideProps>
 
-export const ItemDetailPage = ({ item }: ItemDetailPageProps) => {
   if (item) {
     return (<>
       <h1>{item.name}</h1>
-      <h3>{item.id}</h3>
       <p>value: {item.value}</p>
       <p>description: {item.description}</p>
-      {item.auction && (
-        <p>assigned to  {item.auction.name}</p>
+      {item.auction_id && (
+        <p>assigned to auction {item.auction_id}</p>
       )}
     </>)
   }

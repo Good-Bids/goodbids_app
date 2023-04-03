@@ -16,26 +16,8 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
 
   const supabaseClient = useSupabase()
   const { data: user } = useUserQuery()
-  const [isAdmin, setIsAdmin] = useState(false)
-  const { data: adminData } = useAdminCheckQuery(user?.id)
   const router = useRouter()
 
-  const imageProps: ImageProps = {
-    src: '/logo-bottleGreen.png',
-    width: 48,
-    height: 48,
-    alt: 'goodBids Logo'
-  }
-
-
-
-  useEffect(() => {
-    if (adminData) {
-      setIsAdmin(() => adminData.isCharityAdmin)
-    }
-  }, [
-    adminData
-  ])
 
   const handleLogoutClick = async () => {
     await supabaseClient.auth.signOut().then(() => {
@@ -46,7 +28,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
   return (<>
     <div className="flex flex-row p-2 top-0 left-0 right-0 fixed justify-between max-w-screen h-fit-content items-center bg-outerSpace-100">
       <Link href="/">
-        <LogoWithText color='#0a3624' />
+        <LogoWithText color='#0a3624' showText />
       </Link>
       {!user ? (
         <Link href="/LogIn">
