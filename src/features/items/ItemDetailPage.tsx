@@ -1,6 +1,6 @@
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import { useItemQuery } from "~/hooks/useitem"
+import { useItemQuery } from "~/hooks/useItem"
 
 export const ItemDetailPage = () => {
   const router = useRouter()
