@@ -1,7 +1,6 @@
 import React from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import useSupabase from "./useSupabase";
-
 const supabaseClient = useSupabase();
 
 const getAuction = async (auctionId?: string) => {
@@ -41,7 +40,7 @@ export const useAuctionQuery = (auctionId?: string) => {
  * Using temporary mapped error code for inside app errors
  * 5000 - getAuctions undefined error ( no code given by supabase )
  * 
- * @returns Object
+ * Types are inferred from supabase DB <database>
  */
 const getAuctions = async (windowStart = 0, windowLength = 25) => {
 
@@ -91,7 +90,7 @@ const getAuctions = async (windowStart = 0, windowLength = 25) => {
  * 
  * @returns Object
  */
-export const useAuctionsQuery = (): any => {
+export const useAuctionsQuery = () => {
 
   const [dataWindow, setDataWindow] = React.useState({
     windowStart: 0,
@@ -105,35 +104,17 @@ export const useAuctionsQuery = (): any => {
     }
   });
 
-  // Normalize return Data depending on request level
-  let returnObj = {};
-  
-  if(data?.hasError || isError) {
-    returnObj = {
-      queryStatus: {
-        isLoading,
-        isError
-      },
-      auctions: [],
-      hasError: true,
-      errorMessage: data?.statusMessage ?? "React Query encountered an error",
-      errorObj: data?.errorObj ?? error
-    };
-  } else {
-    returnObj = {
+  return [
+    {
       queryStatus: {
         isLoading,
         isError
       },
       auctions: data?.auctions ?? [],
-      hasError: false,
-      errorMessage: "",
-      errorObj: null
-    };
-  }
-
-  return [
-    returnObj,
+      hasError: (data?.hasError || isError) ? true : false,
+      errorMessage: (data?.hasError || isError) ? data?.statusMessage ?? "React Query encountered an error" : "",
+      errorObj: (data?.hasError || isError) ? data?.errorObj ?? error : null
+    },
     setDataWindow
-  ]
+  ] as const
 };
