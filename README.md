@@ -9,6 +9,12 @@ We're using the following under the hood:
 
 ## Deploying
 
+Our app auto-deploys on pushes to main. To see the latest version, go to 
+[goodbids-app.vercel.app](goodbids-app.vercel.app).
+
+
+### Manual Deploys
+
 To deploy to vercel, there's a couple of steps:
 ```zsh
 $ npm install -g vercel
@@ -23,6 +29,7 @@ To deploy to vercel & update the repo in one fell swoop:
 ```zsh
 $ npm run deploy
 ```
+
 
 ## Updating types locally
 [from the supabaase docs](https://supabase.com/docs/guides/database/api/generating-types)

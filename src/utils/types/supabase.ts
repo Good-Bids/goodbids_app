@@ -19,7 +19,7 @@ export interface Database {
           description: string
           high_bid_value: number | null
           increment: number
-          item_id: string
+          item_id: string | null
           minimum_bids: number | null
           name: string
           opening_bid_value: number
@@ -34,14 +34,14 @@ export interface Database {
         }
         Insert: {
           allowed_free_bids?: string[] | null
-          auction_id: string
+          auction_id?: string
           bid_currency?: string | null
           charity_id: string
           created_at?: string | null
           description: string
           high_bid_value?: number | null
           increment?: number
-          item_id: string
+          item_id?: string | null
           minimum_bids?: number | null
           name: string
           opening_bid_value: number
@@ -63,7 +63,7 @@ export interface Database {
           description?: string
           high_bid_value?: number | null
           increment?: number
-          item_id?: string
+          item_id?: string | null
           minimum_bids?: number | null
           name?: string
           opening_bid_value?: number
@@ -194,6 +194,7 @@ export interface Database {
           created_at: string | null
           description: string
           item_id: string
+          item_image_id: string | null
           name: string
           value: number | null
         }
@@ -202,7 +203,8 @@ export interface Database {
           charity_id: string
           created_at?: string | null
           description: string
-          item_id: string
+          item_id?: string
+          item_image_id?: string | null
           name: string
           value?: number | null
         }
@@ -212,6 +214,7 @@ export interface Database {
           created_at?: string | null
           description?: string
           item_id?: string
+          item_image_id?: string | null
           name?: string
           value?: number | null
         }
