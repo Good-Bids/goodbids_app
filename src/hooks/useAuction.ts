@@ -39,7 +39,7 @@ const getAuction = async (auctionId: string) => {
     return {
       status: err?.code ?? "5000",
       statusMessage: err?.message ?? "unknown error type",
-      auction: [],
+      auction: undefined,
       hasError: true,
       errorObj: err,
     }
