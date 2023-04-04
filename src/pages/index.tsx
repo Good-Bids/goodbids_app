@@ -1,6 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import Script from 'next/script'
 import { useAuctionsQuery } from "~/hooks/useAuction";
 import { useAdminCheckQuery } from "~/hooks/useCharityAdmin";
 import { useUserQuery } from "~/hooks/useUser";
@@ -68,6 +69,20 @@ const Home: NextPage = () => {
         <meta name="description" content="Donate & Win" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <div>
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-CXJ4181QHF"
+        strategy="afterInteractive"
+      />
+      <Script>
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-CXJ4181QHF');
+        `}
+      </Script>
+      </div>
       <div className="flex flex-col items-center gap-2">
         {getGreeting(isPublic, isLoggedInBidder, isLoggedInCharity)}
         {isLoggedInBidder && (<Link href={'/auctions'}><span className="text-cornflowerLilac font-bold">
