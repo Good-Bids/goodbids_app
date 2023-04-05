@@ -8,7 +8,7 @@ import Link from "next/link";
 import { Button } from "~/components/Button";
 
 /** TS for the paypal project is here importing only Types */
-import type { CreateOrderActions, OnApproveData, OnApproveActions } from "@paypal/paypal-js";
+import type { CreateOrderActions, CreateOrderData, OnApproveData, OnApproveActions } from "@paypal/paypal-js";
 
 // can also use the react-libs types
 // import { OrderResponseBody } from "@paypal/paypal-js/types/apis/orders";
@@ -60,12 +60,12 @@ const AuctionDetails = ({ auction }: I_AuctionRowModel) => {
   const nextBidValue = currentHighBid + auction.increment
   const imageUrl = `${fileStoragePath}/${auction?.auction_id}/sample-item-1298792.jpg`
 
-  const handleCreateOrder = (data: any, actions: CreateOrderActions) => {
+  const handleCreateOrder = (data: CreateOrderData, actions: CreateOrderActions) => {
     return actions.order?.create({
       purchase_units: [
         {
           amount: {
-            value: nextBidValue,
+            value: nextBidValue.toString(10),
           },
         },
       ],
