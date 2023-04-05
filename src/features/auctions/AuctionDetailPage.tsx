@@ -65,7 +65,7 @@ const AuctionDetails = ({ auction }: I_AuctionRowModel) => {
       purchase_units: [
         {
           amount: {
-            value: "" + nextBidValue, // Amount needs to be a string ( foreign currencies )
+            value: nextBidValue,
           },
         },
       ],
