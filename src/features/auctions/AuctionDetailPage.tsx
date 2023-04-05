@@ -2,7 +2,8 @@ import Image from 'next/image'
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { PayPalScriptProvider, PayPalButtons, } from "@paypal/react-paypal-js";
+import { OnApproveData, OnApproveActions } from "@paypal/paypal-js"
 import { env } from "~/env.mjs";
 import { Button } from "~/components/Button";
 import { useAuctionQuery } from "~/hooks/useAuction";
@@ -33,7 +34,7 @@ export const AuctionDetailPage = () => {
   if (auction) {
     const currentHighBid = auction.high_bid_value ?? 0
     const nextBidValue = currentHighBid + auction.increment
-    
+
     const handleCreateOrder = (data: any, actions: any) => {
       return actions.order.create({
         purchase_units: [
@@ -46,9 +47,9 @@ export const AuctionDetailPage = () => {
       });
     }
 
-    const handleApprove = async (data: any, actions: { order: { capture: () => Promise<any>; }; }) => {
-      const details = await actions.order.capture()
-      const name = details.payer.name.given_name
+    const handleApprove = async (data: OnApproveData, actions: OnApproveActions) => {
+      const details = await actions?.order?.capture()
+      const name = details?.payer?.name?.given_name ?? 'an unknown GoodBidder'
       alert(`Transaction completed by ${name}`)
     }
 
