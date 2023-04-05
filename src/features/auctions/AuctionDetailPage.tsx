@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { PayPalScriptProvider, PayPalButtons, } from "@paypal/react-paypal-js";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { OnApproveData, OnApproveActions } from "@paypal/paypal-js"
 import { env } from "~/env.mjs";
 import { Button } from "~/components/Button";
