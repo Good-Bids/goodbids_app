@@ -44,6 +44,7 @@ const config = {
       }
     }
   },
+  // @ts-ignore
   plugins: [require('tailwindcss-animate')]
 }
 
