@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import { useAuctionQuery } from "~/hooks/useAuction";
 import { I_AuctionRowModel } from "~/utils/types/auctions";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import { OnApproveData, OnApproveActions } from "@paypal/paypal-js"
 import { env } from "~/env.mjs";
 import Image from 'next/image'
 import Link from "next/link";
@@ -75,7 +74,7 @@ const AuctionDetails = ({ auction }: I_AuctionRowModel) => {
 
   const handleApprove = async (data: OnApproveData, actions: OnApproveActions) => {
     const details = await actions.order?.capture()
-    const name = details?.payer?.name?.given_name // because capture() can be promise | undefined
+    const name = details?.payer?.name?.given_name ?? 'an unknown GoodBidder' // because capture() can be promise | undefined
     alert(`Transaction completed by ${name}`)
   }
 
