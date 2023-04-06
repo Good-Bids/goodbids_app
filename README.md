@@ -6,6 +6,7 @@ We're using the following under the hood:
 - [Next.js](https://nextjs.org)
 - [supabase](https://supabase.com/)
 - [Tailwind CSS](https://tailwindcss.com)
+- [Radix UI](radix-ui.com)
 
 ## Deploying
 
