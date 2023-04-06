@@ -1,10 +1,28 @@
+/**
+ * CharityDetailPage.tsx
+ * 
+ * Next JS page/route
+ * Displays the charity publicly available data
+ * from the Supabase postgres DB
+ * 
+ * If the user has Authenticated and is this charities admin 
+ * the edit charity or edit/new auction buttons may be available as
+ * [next] Links to the pages needed 
+ * 
+ * note: sub components should not be in this file - they are temp for testing the
+ * backend integrations
+ * 
+ * note: this page uses useAuctions temporarily will be moved to a useCharityAuctions
+ * hook in a later PR ( bids will be hydrated into that PR )
+ * 
+ */
+
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useCharityQuery } from "../../hooks/useCharity"
 import { useAuctionsQuery } from "~/hooks/useAuction";
 import { I_AuctionRowModel, I_AuctionRowCollection } from "~/utils/types/auctions";
 import { I_CharityModel } from "~/utils/types/charities";
-import Link from "next/link";
 
 /**
  * QueryLoadingDisplay
@@ -33,17 +51,15 @@ const QueryErrorDisplay = () => {
  * the future ( if a row gets expensive can memo it ) 
  */
 const AuctionListRowView = ({ auction }: I_AuctionRowModel) => {
-
-  const setSelectedAuction = (auctionId: string) => {
-    console.log("Clicked on Auction", auctionId);
-  }
-
   return (
     <li className="bg-neutral-50 p-2 text-neutral-800 border-b">
       <p className="text-base font-medium">{auction.name}</p>
       <p className="text-xs font-regular text-neutral-500">auction is currently in: {auction.status} mode</p>
       <p className="text-sm pt-2 pb-2">{auction.description}</p>
-      <div className="inline-block p2 border cursor-pointer" onClick={(e) => setSelectedAuction(auction.auction_id)}>
+      <div 
+        id={"view-bids-" + auction.auction_id} 
+        data-auction-id={auction.auction_id} 
+        className="inline-block p2 border cursor-pointer">
         <p className="text-sm p-2 select-none">view bids</p>
       </div>
     </li>
@@ -67,6 +83,10 @@ const AuctionsMiniListView = ({ auctions }: I_AuctionRowCollection) => {
   )
 }
 
+const registerClickableEvents = () => {
+
+}
+
 /**
  * CharityDetails
  * TODO: defaults for all values
@@ -83,6 +103,7 @@ const AuctionsMiniListView = ({ auctions }: I_AuctionRowCollection) => {
 const CharityDetails = ({ charity }: I_CharityModel) => {
 
   const [auctionQuery, updateAuctionPagination] = useAuctionsQuery();
+  const [selectedAuction, setSelectedAuction] = useState<string>("");
 
   const memberSinceDate = new Date(charity.created_at ?? '')
   const formattedMemberSinceDate = `${memberSinceDate.getMonth() + 1}/${memberSinceDate.getFullYear()}`
@@ -100,6 +121,38 @@ const CharityDetails = ({ charity }: I_CharityModel) => {
     totalAuctions = auctionQuery.auctions.length;
   }
 
+  // If we have auctions or a change in auctions
+  // and we do not use Jotai or a something we 
+  // avoid prop drilling here. Kept it all together
+  // her for easy ripping out.
+  // TODO remove this for proper registrations
+  useEffect(() => {
+    if (totalAuctions > 0) {
+      const viewBidsEls = document.querySelectorAll('[id^="view-bids-"]');
+      if (viewBidsEls.length > 0) {
+        viewBidsEls.forEach((el, i) => {
+          el.addEventListener('click', (e: Event) => {
+            let target = e.currentTarget as HTMLElement;
+            let attribute: string = target.getAttribute("data-auction-id") as string;
+            setSelectedAuction(attribute);
+          })
+        })
+      }
+    }
+    return () => {
+      const viewBidsEls = document.querySelectorAll('[id^="view-bids-"]');
+      if (viewBidsEls.length > 0) {
+        viewBidsEls.forEach((el, i) => {
+          el.removeEventListener('click', (e: Event) => {
+            let target = e.currentTarget as HTMLElement;
+            let attribute: string = target.getAttribute("data-auction-id") as string;
+            setSelectedAuction(attribute);
+          })
+        })
+      }
+    }
+  }, [totalAuctions])
+
   // Total Raised Math
   // const totalRaised = charity.auctions.reduce((prior, current) => prior += current.high_bid_value ?? 0, 0)
 
@@ -107,7 +160,7 @@ const CharityDetails = ({ charity }: I_CharityModel) => {
     <div className="flex flex-col flex-grow bg-slate-50">
       <div className="flex flex-col w-full p-2 border-b">
         <p className="text-3xl text-bottleGreen font-bold leading-none">{charity.name}</p>
-        <p className="text-xs text-neutral-800 pt-1">status: {charity.status} since:{formattedMemberSinceDate}</p>
+        <p className="text-xs text-neutral-800 pt-1">Charity status: {charity.status} since: {formattedMemberSinceDate}</p>
       </div>
       <div className="flex flex-row flex-grow flex-wrap w-full">
         {/* Left col */}
@@ -115,13 +168,14 @@ const CharityDetails = ({ charity }: I_CharityModel) => {
           <div className="p-2 border-b">
             <p className="text-xs text-neutral-800 pt-1">Registered Charity Number (USA): {charity.ein}</p>
             <p className="text-xs text-neutral-800 pt-1">contact: {charity.email}</p>
-            <p className="text-xs text-neutral-800 pt-1">Auctions [{totalAuctions}] Raised [${totalRaised}]</p>
+            <p className="text-xs text-neutral-800 pt-1">Auctions [{totalAuctions}] Raised by all auctions [${totalRaised}] - fake value </p>
           </div>
           <AuctionsMiniListView auctions={auctionQuery.auctions} />
         </div>
         {/* Right col */}
         <div className="flex flex-col flex-shrink-0 flex-grow w-full md:w-1/2 p-2">
           {/* AUCTION BID HISTORY GOES HERE ( possibly )*/}
+          <p className="text-xs text-neutral-800 pt-1">Auction Id selected: {selectedAuction || "none"}</p>
         </div>
       </div>
     </div>
