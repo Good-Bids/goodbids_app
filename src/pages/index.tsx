@@ -19,7 +19,8 @@ const Home: NextPage = () => {
   const charityIsCreated = Boolean(charityId)
   const isPublic = (!user && !isUserQueryLoading)
   const userFirstName = user?.user_metadata.name.split(' ')[0] ?? 'friend'
-  const { data: auctions } = useAuctionsQuery()
+  /* AD. tmp commenting out for retyping response returned from ReactQuery ( needs to support UI ) */
+  // const { data: auctions } = useAuctionsQuery()
 
   const getGreeting = (isPublic: boolean, isLoggedInBidder: boolean, isLoggedInCharity: boolean) => {
     if (isPublic) return (
