@@ -7,12 +7,15 @@ import "~/styles/globals.css";
 import { AppLayoutWrapper } from "~/shared/components/layout/AppLayoutWrapper";
 import { UserContextProvider } from "~/contexts/UserContextProvider";
 import React from "react";
+import { useRouter } from "next/router";
+import * as ga from '../lib/ga'
 
 const MyApp = ({
   Component,
   pageProps,
 }: AppProps) => {
 
+  const router = useRouter();
 
   const queryClient = React.useRef(
     new QueryClient({
@@ -26,6 +29,17 @@ const MyApp = ({
       },
     })
   );
+
+  React.useEffect(() => {
+    const handleRouteChange = (url: string) => {
+      ga.pageview(url)
+    }
+    router.events.on('routeChangeComplete', handleRouteChange)
+
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange)
+    }
+  }, [router.events])
 
   return (
     <QueryClientProvider client={queryClient.current}>

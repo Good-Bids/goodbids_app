@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useAuctionQuery } from "~/hooks/useAuction";
 import { I_AuctionRowModel } from "~/utils/types/auctions";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { OnApproveData, OnApproveActions } from "@paypal/paypal-js"
 import { env } from "~/env.mjs";
 import Image from 'next/image'
 import Link from "next/link";
