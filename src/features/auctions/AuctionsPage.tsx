@@ -81,10 +81,7 @@ const DisabledBidButton = () => {
  * AuctionListRowView
  * Component container for the AuctionModel display
  * separated for rendering/windowing and isolated updates in
- * the future ( if a row gets expensive can memo it ) 
- * 
- * Note: I am showing the bid now button regardless of 
- * the bid time window
+ * the future ( if a row gets expensive can memo it )
  * 
  */
 const AuctionListRowView = ({ auction }: I_AuctionModel) => {
@@ -105,7 +102,6 @@ const AuctionListRowView = ({ auction }: I_AuctionModel) => {
     let lastBidDateTime = DateTime.fromISO(lastBid.created_at);
     let timeDiff = currentWallClock.diff(lastBidDateTime, 'seconds');
     timeDiffAsSeconds = timeDiff.toObject().seconds ?? 0;
-    console.log("time diff", timeDiffAsSeconds);
 
     if (topBidDuration > timeDiffAsSeconds) {
       isBiddingAvailable = true;
