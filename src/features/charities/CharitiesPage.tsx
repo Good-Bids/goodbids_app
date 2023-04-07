@@ -14,7 +14,7 @@
  * 
  */
 import { useCharitiesQuery } from "~/hooks/useCharity";
-import { I_CharityCollection, I_CharityModel } from "~/utils/types/charity";
+import { I_CharityCollection, I_CharityModel } from "~/utils/types/charities";
 import Link from "next/link";
 
 /**
