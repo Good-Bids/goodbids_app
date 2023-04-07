@@ -104,10 +104,10 @@ const AuctionListRowView = ({ auction }: I_AuctionModel) => {
     let currentWallClock = DateTime.local();
     let lastBidDateTime = DateTime.fromISO(lastBid.created_at);
     let timeDiff = currentWallClock.diff(lastBidDateTime, 'seconds');
-    timeDiffAsSeconds = timeDiff.toObject().seconds ?? 0; 
-    console.log("time diff",timeDiffAsSeconds);
+    timeDiffAsSeconds = timeDiff.toObject().seconds ?? 0;
+    console.log("time diff", timeDiffAsSeconds);
 
-    if(topBidDuration > timeDiffAsSeconds) {
+    if (topBidDuration > timeDiffAsSeconds) {
       isBiddingAvailable = true;
     }
   }
@@ -150,7 +150,11 @@ const AuctionsListView = ({ auctions }: I_AuctionCollection) => {
  */
 export const AuctionsPage = () => {
 
-  const [query, updatePagination] = useAuctionsQuery();
+  const [query, setQueryParameters] = useAuctionsQuery(
+    "ACTIVE",
+    0,
+    25,
+  );
 
   return (
     <div className="flex flex-col flex-grow w-full p-24">
