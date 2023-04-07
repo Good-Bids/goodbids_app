@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { I_AuctionModel } from "~/utils/types/auctions";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import useSupabase from "./useSupabase";
 const supabaseClient = useSupabase();
@@ -133,7 +134,13 @@ const getAuctions = async (windowStart = 0, windowLength = 25) => {
   try {
 
     const result = await supabaseClient.from("auction")
-      .select()
+      .select(`
+        *,
+        bids: bid(created_at, amount)
+      `)
+      // .returns<I_AuctionModel>()
+      .eq('status', 'ACTIVE')
+      .order('created_at', { ascending: false }) // Gets latest on top by creation date
       .range(windowStart, windowLength)
       .throwOnError();
 
