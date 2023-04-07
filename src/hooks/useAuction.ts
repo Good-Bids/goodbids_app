@@ -140,30 +140,30 @@ const getAuctions = async (auctionStatus = "ACTIVE", windowStart = 0, windowLeng
 
     let result;
 
-    if(auctionStatus === "*") {
-      
+    if (auctionStatus === "*") {
+
       result = await supabaseClient.from("auction")
-      .select(`
+        .select(`
         *,
         bids: bid(*)
       `)
-      // .returns<I_AuctionModel>()
-      .order('created_at', { ascending: false }) // Gets latest on top by creation date
-      .range(windowStart, windowLength)
-      .throwOnError();
+        // .returns<I_AuctionModel>()
+        .order('created_at', { ascending: false }) // Gets latest on top by creation date
+        .range(windowStart, windowLength)
+        .throwOnError();
 
     } else {
-      
+
       result = await supabaseClient.from("auction")
-      .select(`
+        .select(`
         *,
         bids: bid(*)
       `)
-      // .returns<I_AuctionModel>()
-      .eq('status', auctionStatus)
-      .order('created_at', { ascending: false }) // Gets latest on top by creation date
-      .range(windowStart, windowLength)
-      .throwOnError();
+        // .returns<I_AuctionModel>()
+        .eq('status', auctionStatus)
+        .order('created_at', { ascending: false }) // Gets latest on top by creation date
+        .range(windowStart, windowLength)
+        .throwOnError();
 
     }
 
