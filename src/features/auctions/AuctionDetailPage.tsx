@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useAuctionQuery } from "~/hooks/useAuction";
-import { I_AuctionRowModel } from "~/utils/types/auctions";
+import { I_AuctionModel } from "~/utils/types/auctions";
 import Image from 'next/image'
 import Link from "next/link";
 
@@ -42,7 +42,7 @@ const QueryErrorDisplay = () => {
  * AuctionDetails
  * TODO: defaults for all values
  */
-const AuctionDetails = ({ auction }: I_AuctionRowModel) => {
+const AuctionDetails = ({ auction }: I_AuctionModel) => {
 
   const currentHighBid = auction.high_bid_value ?? 0
   const nextBidValue = currentHighBid + auction.increment

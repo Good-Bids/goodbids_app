@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { I_AuctionModel } from "~/utils/types/auctions";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import useSupabase from "./useSupabase";
 const supabaseClient = useSupabase();
@@ -71,7 +72,7 @@ const getAuction = async (auctionId: string) => {
 export const useAuctionQuery = (auctionId?: string | undefined) => {
 
   // below in temporary - short circuit 
-  if(auctionId === undefined) {
+  if (auctionId === undefined) {
     return (
       {
         queryStatus: {
@@ -115,27 +116,56 @@ export const useAuctionQuery = (auctionId?: string | undefined) => {
  * 
  * ServerSide - false
  * 
+ * Get a collection of Auctions hydrated with bid objects. Use Limit and range
+ * for pagination and also allow calling based on auctionStatus
+ * 
  * Supabase call that fetches Via createBrowserSupabaseClient
  * helper client from @supabase/auth-helpers-nextjs
  * 
  * #note: https://github.com/supabase/postgrest-js/commit/9df1e84750a2d83552d540e711c345b00f3ec1b3
  * from above link - pulling out the returned value and allowing all errors to be surfaced
- *  
- * default supabase limit of 1000 rows so we add defaults
  * 
  * Using temporary mapped error code for inside app errors
  * 5000 - getAuctions undefined error ( no code given by supabase )
  * 
  * Types are inferred from supabase DB <database>
+ * 
+ * Note: react query does not have classic query building so you can not build a 
+ * query and run it so we have to use an if
+ * 
  */
-const getAuctions = async (windowStart = 0, windowLength = 25) => {
+const getAuctions = async (auctionStatus = "ACTIVE", windowStart = 0, windowLength = 25) => {
 
   try {
 
-    const result = await supabaseClient.from("auction")
-      .select()
-      .range(windowStart, windowLength)
-      .throwOnError();
+    let result;
+
+    if (auctionStatus === "*") {
+
+      result = await supabaseClient.from("auction")
+        .select(`
+        *,
+        bids: bid(*)
+      `)
+        // .returns<I_AuctionModel>()
+        .order('created_at', { ascending: false }) // Gets latest on top by creation date
+        .range(windowStart, windowLength)
+        .throwOnError();
+
+    } else {
+
+      result = await supabaseClient.from("auction")
+        .select(`
+        *,
+        bids: bid(*)
+      `)
+        // .returns<I_AuctionModel>()
+        .eq('status', auctionStatus)
+        .order('created_at', { ascending: false }) // Gets latest on top by creation date
+        .range(windowStart, windowLength)
+        .throwOnError();
+
+    }
 
     return {
       status: result.status,
@@ -176,17 +206,24 @@ const getAuctions = async (windowStart = 0, windowLength = 25) => {
  * 
  * return types are inferred
  */
-export const useAuctionsQuery = () => {
+export const useAuctionsQuery = (auctionStatus?: string | undefined, windowStart = 0, windowLength = 0) => {
 
-  const [dataWindow, setDataWindow] = useState({
+  const [queryParameters, setQueryParameters] = useState({
+    auctionStatus: auctionStatus ?? "*",
     windowStart: 0,
     windowLength: 25,
   });
 
   const { isLoading, isError, data, error } = useQuery({
-    queryKey: ['auctionCollectionQueryResults', dataWindow.windowStart, dataWindow.windowLength],
+    queryKey: ['auctionCollectionQueryResults',
+      queryParameters.auctionStatus,
+      queryParameters.windowStart,
+      queryParameters.windowLength],
     queryFn: async () => {
-      return await getAuctions(dataWindow.windowStart, dataWindow.windowLength);
+      return await getAuctions(
+        queryParameters.auctionStatus,
+        queryParameters.windowStart,
+        queryParameters.windowLength);
     }
   });
 
@@ -201,6 +238,6 @@ export const useAuctionsQuery = () => {
       errorMessage: (data?.hasError || isError) ? data?.statusMessage ?? "React Query encountered an error" : "",
       errorObj: (data?.hasError || isError) ? data?.errorObj ?? error : null
     },
-    setDataWindow
+    setQueryParameters
   ] as const
 };
