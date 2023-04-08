@@ -21,7 +21,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useCharityQuery } from "../../hooks/useCharity"
 import { useAuctionsQuery } from "~/hooks/useAuction";
-import { I_AuctionRowModel, I_AuctionRowCollection } from "~/utils/types/auctions";
+import { I_AuctionModel, I_AuctionCollection } from "~/utils/types/auctions";
 import { I_CharityModel } from "~/utils/types/charities";
 
 /**
@@ -50,7 +50,7 @@ const QueryErrorDisplay = () => {
  * separated for rendering/windowing and isolated updates in
  * the future ( if a row gets expensive can memo it ) 
  */
-const AuctionListRowView = ({ auction }: I_AuctionRowModel) => {
+const AuctionListRowView = ({ auction }: I_AuctionModel) => {
   return (
     <li className="bg-neutral-50 p-2 text-neutral-800 border-b">
       <p className="text-base font-medium">{auction.name}</p>
@@ -71,7 +71,7 @@ const AuctionListRowView = ({ auction }: I_AuctionRowModel) => {
  * Auctions Stubbed in with the full Auctions call
  * TODO: will 
  */
-const AuctionsMiniListView = ({ auctions }: I_AuctionRowCollection) => {
+const AuctionsMiniListView = ({ auctions }: I_AuctionCollection) => {
   return (
     <div className="flex flex-col w-full pt-2">
       <ul className="flex flex-col flex-grow bg-slate-100">
@@ -81,10 +81,6 @@ const AuctionsMiniListView = ({ auctions }: I_AuctionRowCollection) => {
       </ul>
     </div>
   )
-}
-
-const registerClickableEvents = () => {
-
 }
 
 /**
