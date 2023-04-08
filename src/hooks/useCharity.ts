@@ -1,8 +1,9 @@
 import { useState } from "react";
+import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { updateCharityAdmin } from "./useCharityAdmin";
 import useSupabase from "./useSupabase";
-import { I_CreateCharityFormValues } from "~/utils/types/charities";
+import { T_NewCharityModel } from "~/utils/types/charities";
 
 const supabaseClient = useSupabase();
 
@@ -112,7 +113,7 @@ export const useCharityQuery = (charityId?: string | undefined) => {
   */
 };
 
-const createCharity = async (data: I_CreateCharityFormValues) => {
+const createCharity = async (data: T_NewCharityModel) => {
   const { data: charityData, error } = await supabaseClient
     .from("charity")
     .insert({ email: data.email, ein: data.ein, name: data.name })
@@ -127,7 +128,9 @@ const createCharity = async (data: I_CreateCharityFormValues) => {
   }
 };
 
-export const useCreateCharity = (data: I_CreateCharityFormValues) => {
+export const useCreateCharity = (
+  data: T_NewCharityModel & { adminId: string }
+) => {
   return useMutation(() => createCharity(data), {
     onSuccess: async (charityData) => {
       const updateData = updateCharityAdmin(
