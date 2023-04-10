@@ -54,7 +54,7 @@ const AuctionDetails = ({ auction }: I_AuctionModel) => {
 
   // the nextBidValue depends on if its the initial bid or not
   if(auction.bids !== undefined) {
-    isInitialBid = auction.bids.length > 0 ? true : false;
+    isInitialBid = auction.bids.length > 0 ? false : true;
   }
 
   if(isInitialBid) {
@@ -113,7 +113,7 @@ const AuctionDetails = ({ auction }: I_AuctionModel) => {
             }}
           >
             <p className="text-sm select-none text-neutral-400">
-              bidding is n/a
+              temp bid button
             </p>
           </div>
           <PayPalDialog bidValue={nextBidValue} />
