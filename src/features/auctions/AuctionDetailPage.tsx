@@ -1,6 +1,6 @@
 import { MouseEvent, useRef } from 'react';
 import { useRouter } from "next/router";
-import { useAuctionQuery } from "~/hooks/useAuction";
+import { useAuctionQuery, updateAuctionWithBid } from "~/hooks/useAuction";
 import { I_AuctionModel } from "~/utils/types/auctions";
 import Image from "next/image";
 import Link from "next/link";
@@ -42,9 +42,10 @@ const QueryErrorDisplay = () => {
   return <p>ERROR</p>;
 };
 
-const handleBid = (e: MouseEvent, nextBidValue: number) => {
+const handleBid = async (e: MouseEvent, auctionId: string, nextBidValue: number) => {
   e.preventDefault();
-  console.log("bid for auction", nextBidValue);
+  const res = await updateAuctionWithBid( auctionId, nextBidValue);
+  console.log("UPDATED", res);
 };
 
 const getRenderedAtInLocalTime = () => {
@@ -130,8 +131,8 @@ const AuctionDetails = ({ auction, lastUpdate }: T_AuctionDetails ) => {
           </p>
           <div
             className="inline-block p-2 mt-4 mb-4 border opacity-50 cursor-pointer"
-            onClick={(e) => {
-              handleBid(e, nextBidValue);
+            onClick={ async (e) => {
+              handleBid(e,auction.auction_id, nextBidValue);
             }}
           >
             <p className="text-sm select-none text-neutral-400">

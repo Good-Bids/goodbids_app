@@ -251,7 +251,7 @@ export const useAuctionsQuery = (
   ] as const;
 };
 
-const updateAuctionWithBid = async (
+export const updateAuctionWithBid = async (
   auctionId: string,
   newHighBidValue: number
 ) => {
@@ -262,7 +262,15 @@ const updateAuctionWithBid = async (
       .from("auction")
       .update({ high_bid_value: newHighBidValue })
       .eq("auction_id", auctionId)
-      .throwOnError();
+      .select(
+        `
+          *,
+          bids: bid(*)
+        `
+      )
+      .throwOnError()
+
+    console.log("DATA", result);
 
     return {
       status: result.status,
@@ -272,6 +280,7 @@ const updateAuctionWithBid = async (
       rawError: null,
     };
   } catch (err: any) {
+    console.log("DATA ERR", err);
     return {
       status: err?.code ?? "5000",
       statusMessage: err?.message ?? "unknown error type",
