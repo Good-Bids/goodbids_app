@@ -6,22 +6,23 @@ const supabaseClient = useSupabase();
 
 /**
  * getAuction
- * 
+ *
  * ServerSide - false
- * 
- * Supabase call that fetches a single auction Via 
- * createBrowserSupabaseClient helper client from 
+ *
+ * Supabase call that fetches a single auction Via
+ * createBrowserSupabaseClient helper client from
  * @supabase/auth-helpers-nextjs
- * 
+ *
  * @param auctionId
  */
 const getAuction = async (auctionId: string) => {
-
   try {
-
     const result = await supabaseClient
       .from("auction")
-      .select()
+      .select(`
+      *,
+      bids: bid(*)
+      `)
       .eq("auction_id", auctionId)
       .limit(1)
       .single()
@@ -33,138 +34,136 @@ const getAuction = async (auctionId: string) => {
       auction: result.data,
       hasError: false,
       rawError: null,
-    }
-
+    };
   } catch (err: any) {
-
     return {
       status: err?.code ?? "5000",
       statusMessage: err?.message ?? "unknown error type",
       auction: undefined,
       hasError: true,
       errorObj: err,
-    }
-
+    };
   }
-
 };
 
 /**
  * useAuctionQuery
- * 
+ *
  * ServerSide - false
- * 
- * React hook that fetches a single Auction Via 
+ *
+ * React hook that fetches a single Auction Via
  * createBrowserSupabaseClient wrapped in ReactQuery.
- * 
+ *
  * React query returns required UI data on top of errors that can
- * be surfaced. Since this is also wrapping the Supabase query and its 
+ * be surfaced. Since this is also wrapping the Supabase query and its
  * errors ( can be network or db related etc )
- * 
+ *
  * Error from ReactQuery is in error
  * Error from SubQuery with Supabase is in data
- * 
+ *
  * TODO: validate auctionId and strip it from possible misuse
- * its passed directly from the address bar into this query 
- * 
+ * its passed directly from the address bar into this query
+ *
  * return types are inferred
  */
 export const useAuctionQuery = (auctionId?: string | undefined) => {
-
-  // below in temporary - short circuit 
+  // below in temporary - short circuit
   if (auctionId === undefined) {
-    return (
-      {
-        queryStatus: {
-          isLoading: false,
-          isError: false
-        },
-        auction: undefined,
-        hasError: true,
-        errorMessage: "Invalid auction ID",
-        errorObj: {
-          code: "5000",
-          message: "Invalid auction ID"
-        }
-      }
-    ) as const
+    return {
+      queryStatus: {
+        isLoading: false,
+        isError: false,
+      },
+      auction: undefined,
+      hasError: true,
+      errorMessage: "Invalid auction ID",
+      errorObj: {
+        code: "5000",
+        message: "Invalid auction ID",
+      },
+    } as const;
   }
 
   const { isLoading, isError, data, error } = useQuery({
-    queryKey: ['auctionQueryResults', auctionId],
+    queryKey: ["auctionQueryResults", auctionId],
     queryFn: async () => {
       return await getAuction(auctionId);
-    }
+    },
   });
 
-  return (
-    {
-      queryStatus: {
-        isLoading,
-        isError
-      },
-      auction: data?.auction ?? undefined,
-      hasError: (data?.hasError || isError) ? true : false,
-      errorMessage: (data?.hasError || isError) ? data?.statusMessage ?? "React Query encountered an error" : "",
-      errorObj: (data?.hasError || isError) ? data?.errorObj ?? error : null
-    }
-  ) as const
+  return {
+    queryStatus: {
+      isLoading,
+      isError,
+    },
+    auction: data?.auction ?? undefined,
+    hasError: data?.hasError || isError ? true : false,
+    errorMessage:
+      data?.hasError || isError
+        ? data?.statusMessage ?? "React Query encountered an error"
+        : "",
+    errorObj: data?.hasError || isError ? data?.errorObj ?? error : null,
+  } as const;
 };
 
 /**
  * getAuctions
- * 
+ *
  * ServerSide - false
- * 
+ *
  * Get a collection of Auctions hydrated with bid objects. Use Limit and range
  * for pagination and also allow calling based on auctionStatus
- * 
+ *
  * Supabase call that fetches Via createBrowserSupabaseClient
  * helper client from @supabase/auth-helpers-nextjs
- * 
+ *
  * #note: https://github.com/supabase/postgrest-js/commit/9df1e84750a2d83552d540e711c345b00f3ec1b3
  * from above link - pulling out the returned value and allowing all errors to be surfaced
- * 
+ *
  * Using temporary mapped error code for inside app errors
  * 5000 - getAuctions undefined error ( no code given by supabase )
- * 
+ *
  * Types are inferred from supabase DB <database>
- * 
- * Note: react query does not have classic query building so you can not build a 
+ *
+ * Note: react query does not have classic query building so you can not build a
  * query and run it so we have to use an if
- * 
+ *
  */
-const getAuctions = async (auctionStatus = "ACTIVE", windowStart = 0, windowLength = 25) => {
-
+const getAuctions = async (
+  auctionStatus = "ACTIVE",
+  windowStart = 0,
+  windowLength = 25
+) => {
   try {
-
     let result;
 
     if (auctionStatus === "*") {
-
-      result = await supabaseClient.from("auction")
-        .select(`
+      result = await supabaseClient
+        .from("auction")
+        .select(
+          `
         *,
         bids: bid(*)
-      `)
+      `
+        )
         // .returns<I_AuctionModel>()
-        .order('created_at', { ascending: false }) // Gets latest on top by creation date
+        .order("created_at", { ascending: false }) // Gets latest on top by creation date
         .range(windowStart, windowLength)
         .throwOnError();
-
     } else {
-
-      result = await supabaseClient.from("auction")
-        .select(`
+      result = await supabaseClient
+        .from("auction")
+        .select(
+          `
         *,
         bids: bid(*)
-      `)
+      `
+        )
         // .returns<I_AuctionModel>()
-        .eq('status', auctionStatus)
-        .order('created_at', { ascending: false }) // Gets latest on top by creation date
+        .eq("status", auctionStatus)
+        .order("created_at", { ascending: false }) // Gets latest on top by creation date
         .range(windowStart, windowLength)
         .throwOnError();
-
     }
 
     return {
@@ -173,41 +172,40 @@ const getAuctions = async (auctionStatus = "ACTIVE", windowStart = 0, windowLeng
       auctions: result.data,
       hasError: false,
       rawError: null,
-    }
-
+    };
   } catch (err: any) {
-
     return {
       status: err?.code ?? "5000",
       statusMessage: err?.message ?? "unknown error type",
       auctions: [],
       hasError: true,
       errorObj: err,
-    }
-
+    };
   }
-
 };
 
 /**
  * useAuctionsQuery
- * 
+ *
  * ServerSide - false
- * 
- * React hook that fetches Via createBrowserSupabaseClient 
+ *
+ * React hook that fetches Via createBrowserSupabaseClient
  * wrapped in ReactQuery.
- * 
+ *
  * React query returns required UI data on top of errors that can
- * be surfaced. Since this is also wrapping the Supabase query and its 
+ * be surfaced. Since this is also wrapping the Supabase query and its
  * errors ( can be network or db related etc )
- * 
+ *
  * Error from ReactQuery is in error
  * Error from SubQuery with Supabase is in data
- * 
+ *
  * return types are inferred
  */
-export const useAuctionsQuery = (auctionStatus?: string | undefined, windowStart = 0, windowLength = 0) => {
-
+export const useAuctionsQuery = (
+  auctionStatus?: string | undefined,
+  windowStart = 0,
+  windowLength = 0
+) => {
   const [queryParameters, setQueryParameters] = useState({
     auctionStatus: auctionStatus ?? "*",
     windowStart: 0,
@@ -215,29 +213,66 @@ export const useAuctionsQuery = (auctionStatus?: string | undefined, windowStart
   });
 
   const { isLoading, isError, data, error } = useQuery({
-    queryKey: ['auctionCollectionQueryResults',
+    queryKey: [
+      "auctionCollectionQueryResults",
       queryParameters.auctionStatus,
       queryParameters.windowStart,
-      queryParameters.windowLength],
+      queryParameters.windowLength,
+    ],
     queryFn: async () => {
       return await getAuctions(
         queryParameters.auctionStatus,
         queryParameters.windowStart,
-        queryParameters.windowLength);
-    }
+        queryParameters.windowLength
+      );
+    },
   });
 
   return [
     {
       queryStatus: {
         isLoading,
-        isError
+        isError,
       },
       auctions: data?.auctions ?? [],
-      hasError: (data?.hasError || isError) ? true : false,
-      errorMessage: (data?.hasError || isError) ? data?.statusMessage ?? "React Query encountered an error" : "",
-      errorObj: (data?.hasError || isError) ? data?.errorObj ?? error : null
+      hasError: data?.hasError || isError ? true : false,
+      errorMessage:
+        data?.hasError || isError
+          ? data?.statusMessage ?? "React Query encountered an error"
+          : "",
+      errorObj: data?.hasError || isError ? data?.errorObj ?? error : null,
     },
-    setQueryParameters
-  ] as const
+    setQueryParameters,
+  ] as const;
+};
+
+const updateAuctionWithBid = async (
+  auctionId: string,
+  newHighBidValue: number
+) => {
+  try {
+    let result;
+
+    result = await supabaseClient
+      .from("auction")
+      .update({ high_bid_value: newHighBidValue })
+      .eq("auction_id", auctionId)
+      .throwOnError();
+
+    return {
+      status: result.status,
+      statusMessage: result.statusText,
+      auctions: result.data,
+      hasError: false,
+      rawError: null,
+    };
+  } catch (err: any) {
+    return {
+      status: err?.code ?? "5000",
+      statusMessage: err?.message ?? "unknown error type",
+      auctions: [],
+      hasError: true,
+      errorObj: err,
+    };
+  }
 };
