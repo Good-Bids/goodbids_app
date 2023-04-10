@@ -36,9 +36,9 @@ const QueryErrorDisplay = () => {
   return <p>ERROR</p>;
 };
 
-const handleBid = (e: MouseEvent, currentHighBid: number) => {
+const handleBid = (e: MouseEvent, nextBidValue: number) => {
   e.preventDefault();
-  console.log("bid for auction", currentHighBid);
+  console.log("bid for auction", nextBidValue);
 };
 
 /**
@@ -51,10 +51,12 @@ const AuctionDetails = ({ auction }: I_AuctionModel) => {
   let isInitialBid = false;
   let currentHighBid = 0;
   let nextBidValue = 0;
+  let totalBids = 0;
 
   // the nextBidValue depends on if its the initial bid or not
   if(auction.bids !== undefined) {
     isInitialBid = auction.bids.length > 0 ? false : true;
+    totalBids = auction.bids.length;
   }
 
   if(isInitialBid) {
@@ -107,15 +109,23 @@ const AuctionDetails = ({ auction }: I_AuctionModel) => {
             {auction.description}
           </p>
           <div
-            className="inline-block p-2 border opacity-50"
+            className="inline-block p-2 mt-8 mb-4 border opacity-50 cursor-pointer"
             onClick={(e) => {
-              handleBid(e, currentHighBid);
+              handleBid(e, nextBidValue);
             }}
           >
             <p className="text-sm select-none text-neutral-400">
               temp bid button
             </p>
           </div>
+          <p className="text-xs text-center text-neutral-400">
+            opening bid { auction.opening_bid_value } ·
+            increment by { auction.increment } ·
+            current bid { currentHighBid } ·
+            next bid { currentHighBid + auction.increment } ·
+            total bids { totalBids }
+          </p>
+
           <PayPalDialog bidValue={nextBidValue} />
         </div>
       </div>
