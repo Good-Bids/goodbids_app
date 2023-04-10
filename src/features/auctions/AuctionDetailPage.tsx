@@ -1,9 +1,10 @@
-import { MouseEvent } from 'react';
+import { MouseEvent, useRef } from 'react';
 import { useRouter } from "next/router";
 import { useAuctionQuery } from "~/hooks/useAuction";
 import { I_AuctionModel } from "~/utils/types/auctions";
 import Image from "next/image";
 import Link from "next/link";
+import { DateTime } from 'luxon';
 
 /** TS for the paypal project is here importing only Types */
 import { PayPalDialog } from "./PayPalDialog";
@@ -11,6 +12,11 @@ import { PayPalDialog } from "./PayPalDialog";
 // can also use the react-libs types
 // import { OrderResponseBody } from "@paypal/paypal-js/types/apis/orders";
 // import { CreateOrderActions } from "@paypal/paypal-js/types/components/buttons";
+
+type T_AuctionDetails = {
+  auction: I_AuctionModel,
+  lastUpdate: Date | null
+}
 
 /**
  * TODO: move links to backend server into:
@@ -41,11 +47,21 @@ const handleBid = (e: MouseEvent, nextBidValue: number) => {
   console.log("bid for auction", nextBidValue);
 };
 
+const getRenderedAtInLocalTime = () => {
+  return DateTime.now().toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS);
+}
+
 /**
  * AuctionDetails
+ * 
+ * Note: lastUpdate comes from ReactQuery and is a JS Date obj not
+ * luxon. It is already localized
+ * 
  * TODO: defaults for all values
  */
-const AuctionDetails = ({ auction }: I_AuctionModel) => {
+const AuctionDetails = ({ auction, lastUpdate }: T_AuctionDetails ) => {
+
+  const auctionDetailsRef = useRef(getRenderedAtInLocalTime())
 
   // set defaults
   let isInitialBid = false;
@@ -108,8 +124,12 @@ const AuctionDetails = ({ auction }: I_AuctionModel) => {
           <p className="text-base text-center text-neutral-800">
             {auction.description}
           </p>
+          <p className="mt-8 text-xs text-center text-neutral-400">
+          rendered at: { auctionDetailsRef.current } ·
+          fetched at: { DateTime.fromJSDate(lastUpdate).toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS) }
+          </p>
           <div
-            className="inline-block p-2 mt-8 mb-4 border opacity-50 cursor-pointer"
+            className="inline-block p-2 mt-4 mb-4 border opacity-50 cursor-pointer"
             onClick={(e) => {
               handleBid(e, nextBidValue);
             }}
@@ -118,7 +138,7 @@ const AuctionDetails = ({ auction }: I_AuctionModel) => {
               temp bid button
             </p>
           </div>
-          <p className="text-xs text-center text-neutral-400">
+          <p className="mb-8 text-xs text-center text-neutral-400">
             opening bid { auction.opening_bid_value } ·
             increment by { auction.increment } ·
             current bid { currentHighBid } ·
@@ -164,7 +184,7 @@ export const AuctionDetailPage = () => {
 
       {/* temp container for Auction Detail View module */}
       <div className="flex flex-col flex-grow w-full">
-        <AuctionDetails auction={query.auction} />
+        <AuctionDetails auction={query.auction} lastUpdate={query.queryStatus.updatedAt}/>
       </div>
     </div>
   );

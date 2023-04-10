@@ -84,7 +84,7 @@ export const useAuctionQuery = (auctionId?: string | undefined) => {
     } as const;
   }
 
-  const { isLoading, isError, data, error } = useQuery({
+  const { isLoading, isError, isSuccess, data, error, dataUpdatedAt, errorUpdatedAt } = useQuery({
     queryKey: ["auctionQueryResults", auctionId],
     queryFn: async () => {
       return await getAuction(auctionId);
@@ -95,6 +95,11 @@ export const useAuctionQuery = (auctionId?: string | undefined) => {
     queryStatus: {
       isLoading,
       isError,
+      updatedAt: isError
+      ? new Date(errorUpdatedAt)
+      : isSuccess
+      ? new Date(dataUpdatedAt)
+      : null,
     },
     auction: data?.auction ?? undefined,
     hasError: data?.hasError || isError ? true : false,
