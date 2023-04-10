@@ -26,7 +26,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
   }
 
   return (<>
-    <div className="flex flex-row p-2 top-0 left-0 right-0 fixed justify-between max-w-screen h-fit-content items-center bg-outerSpace-100">
+    <div id="appLayoutWrapperHead" className="flex flex-row p-2 top-0 left-0 right-0 fixed justify-between max-w-screen h-20 items-center bg-outerSpace-100 z-10">
       <Link href="/">
         <LogoWithText color='#0a3624' showText />
       </Link>
@@ -40,7 +40,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
         </div>
       }
     </div>
-    <main className="flex min-h-screen overflow-auto flex-col items-center justify-center">
+    <main id='appLayoutWrapperMain' className="fixed top-20 flex min-h-screen overflow-auto flex-col items-center justify-start m-2 lg:mt-20 lg:ml-24 z-0 min-w-screen">
       {children}
     </main>
   </>)

@@ -9,6 +9,8 @@ import { UserContextProvider } from "~/contexts/UserContextProvider";
 import React from "react";
 import { useRouter } from "next/router";
 import * as ga from '../lib/ga'
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { initialOptions } from "~/utils/constants";
 
 const MyApp = ({
   Component,
@@ -44,9 +46,11 @@ const MyApp = ({
   return (
     <QueryClientProvider client={queryClient.current}>
       <UserContextProvider>
-        <AppLayoutWrapper>
-          <Component {...pageProps} />
-        </AppLayoutWrapper>
+        <PayPalScriptProvider options={initialOptions}>
+          <AppLayoutWrapper>
+            <Component {...pageProps} />
+          </AppLayoutWrapper>
+        </PayPalScriptProvider>
       </UserContextProvider>
       <ReactQueryDevtools />
     </QueryClientProvider>
