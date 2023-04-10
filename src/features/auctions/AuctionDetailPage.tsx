@@ -1,10 +1,14 @@
-import { MouseEvent, useRef } from 'react';
+import { MouseEvent, useRef } from "react";
 import { useRouter } from "next/router";
-import { useAuctionQuery, updateAuctionWithBid } from "~/hooks/useAuction";
+import {
+  useAuctionQuery,
+  updateAuctionWithBid,
+  preflightValidateBidAmount,
+} from "~/hooks/useAuction";
 import { I_AuctionModel } from "~/utils/types/auctions";
 import Image from "next/image";
 import Link from "next/link";
-import { DateTime } from 'luxon';
+import { DateTime } from "luxon";
 
 /** TS for the paypal project is here importing only Types */
 import { PayPalDialog } from "./PayPalDialog";
@@ -14,9 +18,9 @@ import { PayPalDialog } from "./PayPalDialog";
 // import { CreateOrderActions } from "@paypal/paypal-js/types/components/buttons";
 
 type T_AuctionDetails = {
-  auction: I_AuctionModel,
-  lastUpdate: Date | null
-}
+  auction: I_AuctionModel;
+  lastUpdate: Date | null;
+};
 
 /**
  * TODO: move links to backend server into:
@@ -42,27 +46,44 @@ const QueryErrorDisplay = () => {
   return <p>ERROR</p>;
 };
 
-const handleBid = async (e: MouseEvent, auctionId: string, nextBidValue: number) => {
+const handleBid = async (
+  e: MouseEvent,
+  auctionId: string,
+  bidIncrement: number,
+  nextBidValue: number
+) => {
   e.preventDefault();
-  const res = await updateAuctionWithBid( auctionId, nextBidValue);
-  console.log("UPDATED", res);
+  const preFlightCheckResult = await preflightValidateBidAmount(
+    auctionId,
+    bidIncrement,
+    nextBidValue
+  );
+
+  if (preFlightCheckResult.bidAmountValid === true) {
+    console.log("[Handle Bid] PREFLIGHT isValidAmount: ", preFlightCheckResult.bidAmountValid);
+    console.log("[Handle Bid] UPDATE Bid Table: ");
+    console.log("[Handle Bid] UPDATE Auction Table: ");
+    // const res = await updateAuctionWithBid(auctionId, nextBidValue);
+  } else {
+    // Race condition met: the current Bid is less than whats expected
+    console.log("[Handle Bid] PREFLIGHT isValidAmount: ", preFlightCheckResult.bidAmountValid);
+  }
 };
 
 const getRenderedAtInLocalTime = () => {
   return DateTime.now().toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS);
-}
+};
 
 /**
  * AuctionDetails
- * 
+ *
  * Note: lastUpdate comes from ReactQuery and is a JS Date obj not
  * luxon. It is already localized
- * 
+ *
  * TODO: defaults for all values
  */
-const AuctionDetails = ({ auction, lastUpdate }: T_AuctionDetails ) => {
-
-  const auctionDetailsRef = useRef(getRenderedAtInLocalTime())
+const AuctionDetails = ({ auction, lastUpdate }: T_AuctionDetails) => {
+  const auctionDetailsRef = useRef(getRenderedAtInLocalTime());
 
   // set defaults
   let isInitialBid = false;
@@ -71,12 +92,12 @@ const AuctionDetails = ({ auction, lastUpdate }: T_AuctionDetails ) => {
   let totalBids = 0;
 
   // the nextBidValue depends on if its the initial bid or not
-  if(auction.bids !== undefined) {
+  if (auction.bids !== undefined) {
     isInitialBid = auction.bids.length > 0 ? false : true;
     totalBids = auction.bids.length;
   }
 
-  if(isInitialBid) {
+  if (isInitialBid) {
     // its the initial bid set nextBidValue to opening
     nextBidValue = auction.opening_bid_value ?? nextBidValue;
   } else {
@@ -126,13 +147,15 @@ const AuctionDetails = ({ auction, lastUpdate }: T_AuctionDetails ) => {
             {auction.description}
           </p>
           <p className="mt-8 text-xs text-center text-neutral-400">
-          rendered at: { auctionDetailsRef.current } ·
-          fetched at: { DateTime.fromJSDate(lastUpdate).toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS) }
+            rendered at: {auctionDetailsRef.current} · fetched at:{" "}
+            {DateTime.fromJSDate(lastUpdate).toLocaleString(
+              DateTime.DATETIME_SHORT_WITH_SECONDS
+            )}
           </p>
           <div
             className="inline-block p-2 mt-4 mb-4 border opacity-50 cursor-pointer"
-            onClick={ async (e) => {
-              handleBid(e,auction.auction_id, nextBidValue);
+            onClick={async (e) => {
+              handleBid(e, auction.auction_id, auction.increment, nextBidValue);
             }}
           >
             <p className="text-sm select-none text-neutral-400">
@@ -140,11 +163,9 @@ const AuctionDetails = ({ auction, lastUpdate }: T_AuctionDetails ) => {
             </p>
           </div>
           <p className="mb-8 text-xs text-center text-neutral-400">
-            opening bid { auction.opening_bid_value } ·
-            increment by { auction.increment } ·
-            current bid { currentHighBid } ·
-            next bid { currentHighBid + auction.increment } ·
-            total bids { totalBids }
+            opening bid {auction.opening_bid_value} · increment by{" "}
+            {auction.increment} · current bid {currentHighBid} · next bid{" "}
+            {currentHighBid + auction.increment} · total bids {totalBids}
           </p>
 
           <PayPalDialog bidValue={nextBidValue} />
@@ -185,7 +206,10 @@ export const AuctionDetailPage = () => {
 
       {/* temp container for Auction Detail View module */}
       <div className="flex flex-col flex-grow w-full">
-        <AuctionDetails auction={query.auction} lastUpdate={query.queryStatus.updatedAt}/>
+        <AuctionDetails
+          auction={query.auction}
+          lastUpdate={query.queryStatus.updatedAt}
+        />
       </div>
     </div>
   );

@@ -251,6 +251,67 @@ export const useAuctionsQuery = (
   ] as const;
 };
 
+export const preflightValidateBidAmount = async (
+  auctionId: string,
+  bidIncrement: number,
+  newBidValue: number
+) => {
+  try {
+    let result;
+    let isValidBidAmount = false;
+
+    result = await supabaseClient
+      .from("auction")
+      .select("high_bid_value")
+      .eq("auction_id", auctionId)
+      .limit(1)
+      .throwOnError()
+
+    if(result.data !== null) { // ts
+      if(result.data[0] !== undefined) { // ts
+        let currentBidValue = result.data[0].high_bid_value ?? 0; // ts
+        
+        // check to see if the DB currentBidValue + increment value
+        // will be larger than the newBidValue. If it is then something
+        // is wrong and a race condition was hit
+        // Also: would be better to validate against the next increment
+        // to ensure amount is matched correctly
+        if( ( currentBidValue + bidIncrement ) < newBidValue ) {
+          isValidBidAmount = true;
+        }
+      }
+    }
+
+    return {
+      status: result.status,
+      statusMessage: result.statusText,
+      bidAmountValid: isValidBidAmount,
+      hasError: false,
+      rawError: null,
+    };
+  } catch (err: any) {
+    return {
+      status: err?.code ?? "5000",
+      statusMessage: err?.message ?? "unknown error type",
+      bidAmountValid: false,
+      hasError: true,
+      errorObj: err,
+    };
+  }
+}
+
+/**
+ * updateAuctionWithBid
+ * 
+ * Note: Supabase v2 api calls do not hydrate a new model
+ * they return a 204 after the patch is called. This is opposite
+ * from v1. So v2 supports getting the return updated object
+ * via a second select.
+ * 
+ * @param auctionId string
+ * @param newHighBidValue number
+ * @returns object
+ */
 export const updateAuctionWithBid = async (
   auctionId: string,
   newHighBidValue: number
@@ -270,8 +331,6 @@ export const updateAuctionWithBid = async (
       )
       .throwOnError()
 
-    console.log("DATA", result);
-
     return {
       status: result.status,
       statusMessage: result.statusText,
@@ -280,7 +339,6 @@ export const updateAuctionWithBid = async (
       rawError: null,
     };
   } catch (err: any) {
-    console.log("DATA ERR", err);
     return {
       status: err?.code ?? "5000",
       statusMessage: err?.message ?? "unknown error type",
