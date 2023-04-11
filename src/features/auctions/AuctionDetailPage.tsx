@@ -51,7 +51,11 @@ const QueryErrorDisplay = () => {
  *
  * TODO: defaults for all values
  */
-const AuctionDetails = ({ auction }: I_AuctionModel) => {
+interface AuctionDetailsProps {
+  auction: T_AuctionModelExtended;
+}
+
+const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   // trigger component level state for processing a bid
   // can extend this to { isProcessingBid, bidStatus } for
   // showing error messages or success
@@ -76,8 +80,9 @@ const AuctionDetails = ({ auction }: I_AuctionModel) => {
 
   // Derived state
   // Required to setup bid amount
-  const isInitialBid: boolean = auction?.bids?.length > 0 ? false : true;
-  const totalBids: number = auction?.bids?.length || 0;
+  const numberOfBids = Array.isArray(auction.bids) ? auction.bids.length : 1;
+  const isInitialBid: boolean = numberOfBids > 0 ? false : true;
+  const totalBids: number = numberOfBids || 0;
 
   // set defaults
   let currentHighBid = 0;
@@ -248,19 +253,19 @@ export const AuctionDetailPage = () => {
   // https://nextjs.org/docs/api-reference/next/router always an object or empty object
   // but they have typed it as string | string[] | undefined
   const auctionId = router.query?.auctionId as string;
-  const query = useAuctionQuery(auctionId);
+  const { queryStatus, auction, hasError } = useAuctionQuery(auctionId);
 
   // ReactQuery Status -> loading
-  if (query.queryStatus.isLoading && query.queryStatus.isError === false) {
+  if (queryStatus.isLoading && queryStatus.isError === false) {
     return <QueryLoadingDisplay />;
   }
 
   // ReactQuery SubQuery or auctionId Validation -> error
-  if (query.queryStatus.isLoading === false && query.hasError) {
+  if (queryStatus.isLoading === false && hasError) {
     return <QueryErrorDisplay />;
   }
 
-  if (query.auction === undefined) {
+  if (auction === undefined) {
     return <QueryErrorDisplay />;
   }
 
@@ -268,15 +273,12 @@ export const AuctionDetailPage = () => {
     <div className="flex w-full flex-grow flex-col p-24">
       {/* temp container for testing hook query status and errors */}
       <p className="mb-2 bg-slate-50 pb-2 pl-2 pt-2 text-xs text-neutral-800">
-        query: status: {query.queryStatus.isLoading ? "loading" : "done"}
+        query: status: {queryStatus.isLoading ? "loading" : "done"}
       </p>
 
       {/* temp container for Auction Detail View module */}
       <div className="flex w-full flex-grow flex-col">
-        <AuctionDetails
-          auction={query.auction}
-          lastUpdate={query.queryStatus.updatedAt}
-        />
+        <AuctionDetails auction={auction} />
       </div>
     </div>
   );
