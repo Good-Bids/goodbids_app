@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useSupabase from "./useSupabase";
+import { T_AuctionModel } from "~/utils/types/auctions";
 
 const supabaseClient = useSupabase();
 

@@ -5,15 +5,11 @@
  * of the data layer <==> display layer
  *
  */
-import { Database, Json } from "./supabase";
+import { Database } from "./supabase";
 
 /** Convenience wrapper - from supabase.ts */
 export type T_AuctionModel = Database["public"]["Tables"]["auction"]["Row"];
 export type T_AuctionBid = Database["public"]["Tables"]["bid"]["Row"];
-
-export interface I_BidsCollection {
-  bids: T_AuctionBid[] | undefined;
-}
 
 /**
  * Nested Types from Supabase require over rides in the return ( a cast )
@@ -22,7 +18,7 @@ export interface I_BidsCollection {
  */
 
 export interface T_AuctionModelExtended extends T_AuctionModel {
-  bids?: I_BidsCollection;
+  bids: T_AuctionBid[] | T_AuctionBid | null;
 }
 
 /**
@@ -38,10 +34,6 @@ interface T_AuctionModelExtended extends T_AuctionModel {
 }
 */
 
-export interface I_AuctionModel {
-  auction: T_AuctionModelExtended;
-}
-
 export interface I_AuctionCollection {
-  auctions: T_AuctionModel[];
+  auctions: T_AuctionModelExtended[];
 }

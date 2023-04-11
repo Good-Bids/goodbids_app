@@ -8,12 +8,12 @@ import {
   useBidStatus,
 } from "~/hooks/useAuction";
 import { useUserQuery } from "~/hooks/useUser";
-import { I_AuctionModel } from "~/utils/types/auctions";
 import Image from "next/image";
 import Link from "next/link";
 
 /** TS for the paypal project is here importing only Types */
 import { PayPalDialog } from "./PayPalDialog";
+import { T_AuctionModelExtended } from "~/utils/types/auctions";
 
 // can also use the react-libs types
 // import { OrderResponseBody } from "@paypal/paypal-js/types/apis/orders";
@@ -189,8 +189,8 @@ const AuctionDetails = ({ auction }: I_AuctionModel) => {
   };
 
   return (
-    <div className="flex flex-col flex-grow bg-slate-50">
-      <div className="flex flex-col w-full p-2 border-b">
+    <div className="flex flex-grow flex-col bg-slate-50">
+      <div className="flex w-full flex-col border-b p-2">
         <p className="text-3xl font-bold text-black">{auction.name}</p>
         <p className="text-xs text-neutral-800">
           charity name and link {"-> "}
@@ -202,12 +202,12 @@ const AuctionDetails = ({ auction }: I_AuctionModel) => {
           </Link>
         </p>
       </div>
-      <div className="flex flex-row flex-grow">
-        <div className="flex flex-col w-96">
-          <p className="pt-2 pb-1 pl-2 text-sm text-neutral-800">
+      <div className="flex flex-grow flex-row">
+        <div className="flex w-96 flex-col">
+          <p className="pb-1 pl-2 pt-2 text-sm text-neutral-800">
             status: {auction.status}
           </p>
-          <div className="p-2 overflow-hidden">
+          <div className="overflow-hidden p-2">
             <Image
               className="w-full"
               src={imageUrl}
@@ -218,20 +218,20 @@ const AuctionDetails = ({ auction }: I_AuctionModel) => {
             />
           </div>
         </div>
-        <div className="flex flex-col items-center justify-center w-3/4 p-2">
+        <div className="flex w-3/4 flex-col items-center justify-center p-2">
           <p className="text-3xl font-bold text-black">
             Current High Bid: ${currentHighBid}
           </p>
-          <p className="text-base text-center text-neutral-800">
+          <p className="text-center text-base text-neutral-800">
             {auction.description}
           </p>
           <div
-            className="inline-block p-2 mt-8 mb-4 border opacity-50 cursor-pointer"
+            className="mb-4 mt-8 inline-block cursor-pointer border p-2 opacity-50"
             onClick={(e) => {
               handleProcessBidClick(e);
             }}
           >
-            <p className="text-sm select-none text-neutral-400">
+            <p className="select-none text-sm text-neutral-400">
               temp bid button
             </p>
           </div>
@@ -265,14 +265,14 @@ export const AuctionDetailPage = () => {
   }
 
   return (
-    <div className="flex flex-col flex-grow w-full p-24">
+    <div className="flex w-full flex-grow flex-col p-24">
       {/* temp container for testing hook query status and errors */}
-      <p className="pt-2 pb-2 pl-2 mb-2 text-xs bg-slate-50 text-neutral-800">
+      <p className="mb-2 bg-slate-50 pb-2 pl-2 pt-2 text-xs text-neutral-800">
         query: status: {query.queryStatus.isLoading ? "loading" : "done"}
       </p>
 
       {/* temp container for Auction Detail View module */}
-      <div className="flex flex-col flex-grow w-full">
+      <div className="flex w-full flex-grow flex-col">
         <AuctionDetails
           auction={query.auction}
           lastUpdate={query.queryStatus.updatedAt}
