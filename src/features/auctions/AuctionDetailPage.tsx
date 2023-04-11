@@ -116,13 +116,21 @@ const getRenderedAtInLocalTime = () => {
  * TODO: defaults for all values
  */
 const AuctionDetails = ({ auction, lastUpdate }: I_AuctionDetails) => {
+
+  // TODO: Remove this - for testing
   const auctionDetailsRef = useRef(getRenderedAtInLocalTime());
 
   // gets the auth id from the jwt
   const userJWT = useUserQuery();
 
+  // Hooks for adding a bid to Good bids
+  // -----------------------------------
+  // 1. insert on bid table
   const [bidUpdateStatus, updateBidTable] = useAddBidToBidTable();
+  // 2. update auction table with current values
   const [auctionUpdateStatus, updateAuctionTable] = useAddBidToAuctionTable();
+  // 3. update bid table to "COMPLETED"
+
 
   // set defaults
   let isInitialBid = false;
@@ -196,14 +204,21 @@ const AuctionDetails = ({ auction, lastUpdate }: I_AuctionDetails) => {
           <div
             className="inline-block p-2 mt-4 mb-4 border opacity-50 cursor-pointer"
             onClick={async (e) => {
-              handleBid(
-                e,
-                auction,
-                userJWT.data?.id,
-                nextBidValue,
-                updateBidTable,
-                updateAuctionTable
-              );
+              if (isAuthenticated === true) {
+                handleBid(
+                  e,
+                  auction,
+                  userJWT.data?.id,
+                  nextBidValue,
+                  updateBidTable,
+                  updateAuctionTable
+                );
+              } else {
+                // Do redirect
+                // Requires to also pass along the auctionId so that 
+                // on Login the redirect can happen to where the user left 
+                // off
+              }
             }}
           >
             <p className="text-sm select-none text-neutral-400">
