@@ -33,6 +33,10 @@ interface I_SupabaseAuctionBidVariables {
   newBidValue: number;
 }
 
+interface I_SupabaseUpdateBidVariables {
+  bidId: string;
+}
+
 /**
  * getAuction
  *
@@ -425,9 +429,6 @@ export const useAddBidToAuctionTable = () => {
     mutationFn: async (data: I_SupabaseAuctionBidVariables) => {
       return await updateAuctionWithBid(data.auctionId, data.newBidValue);
     },
-    onSettled(data, error, variables, context) {
-      queryClient.invalidateQueries({ queryKey: ['auctionQueryResults'] })
-    },
   });
 
   return [
@@ -533,21 +534,7 @@ export const useAddBidToBidTable = () => {
       );
     },
   });
-  /*
-  data,
-  error,
-  isError,
-  isIdle,
-  isLoading,
-  isPaused,
-  isSuccess,
-  failureCount,
-  failureReason,
-  mutate,
-  mutateAsync,
-  reset,
-  status,
-  */
+
   return [
     {
       queryStatus: {
@@ -597,13 +584,14 @@ export const getBidsByAuctionId = async (auctionId: string) => {
   }
 };
 
-const updateBidCompleteStatus = async (bidId: string) => {
+const updateBidCompleteStatus = async (bidId: string): Promise<T_SupabaseBidReturnObject> => {
+
   try {
     let result;
 
     result = await supabaseClient
       .from("bid")
-      .update({ bid_status: "COMPLETED" })
+      .update({ bid_status: "COMPLETE" })
       .eq("bid_id", bidId)
       .select()
       .throwOnError();
@@ -621,7 +609,39 @@ const updateBidCompleteStatus = async (bidId: string) => {
       statusMessage: err?.message ?? "unknown error type",
       bid: [],
       hasError: true,
-      errorObj: err,
+      rawError: err,
     };
   }
+};
+
+export const useBidStatus = () => {
+  const queryClient = useQueryClient();
+  const { isError, isLoading, error, data, mutateAsync } = useMutation({
+    mutationFn: async (data: I_SupabaseUpdateBidVariables) => {
+      return await updateBidCompleteStatus(data.bidId);
+    },
+    onSettled() {
+      // note: on settled is same as "final in try catch" probably need
+      // to triple check the result for errors that have been thrown and 
+      // not caught because of mutateAsync
+      queryClient.invalidateQueries({ queryKey: ['auctionQueryResults'] })
+    },
+  });
+
+  return [
+    {
+      queryStatus: {
+        isLoading,
+        isError,
+      },
+      bid: data?.bid ?? undefined,
+      hasError: data?.hasError || isError ? true : false,
+      errorMessage:
+        data?.hasError || isError
+          ? data?.statusMessage ?? "React Query encountered an error"
+          : "",
+      errorObj: data?.hasError || isError ? data?.rawError ?? error : null,
+    },
+    mutateAsync,
+  ] as const;
 };

@@ -1,10 +1,11 @@
-import { MouseEvent, useRef } from "react";
+import { MouseEvent, useState } from "react";
 import { useRouter } from "next/router";
 import {
   useAuctionQuery,
   preflightValidateBidAmount,
   useAddBidToAuctionTable,
   useAddBidToBidTable,
+  useBidStatus
 } from "~/hooks/useAuction";
 import { useUserQuery } from "~/hooks/useUser";
 import { I_AuctionModel } from "~/utils/types/auctions";
@@ -18,13 +19,6 @@ import { PayPalDialog } from "./PayPalDialog";
 // can also use the react-libs types
 // import { OrderResponseBody } from "@paypal/paypal-js/types/apis/orders";
 // import { CreateOrderActions } from "@paypal/paypal-js/types/components/buttons";
-
-/*
-type T_AuctionDetails = {
-  auction: I_AuctionModel;
-  lastUpdate: Date | null;
-};
-*/
 
 interface I_AuctionDetails extends I_AuctionModel {
   lastUpdate: Date | null;
@@ -60,7 +54,8 @@ const handleBid = async (
   userId: string,
   nextBidValue: number,
   updateBidTable: Function,
-  updateAuctionTable: Function
+  updateAuctionTable: Function,
+  updateBidStatus: Function
 ) => {
   e.preventDefault();
 
@@ -94,6 +89,10 @@ const handleBid = async (
     console.log("[Handle Bid] UPDATE Auction Table: ", updateAuctionResults);
 
     // 4. Update bid table with COMPLETED state
+    const bidCompletedResults = await updateBidStatus({
+      bidId: updateBidTableResults.bid[0].bid_id
+    })
+    console.log("[Handle Bid] UPDATE Bid Table Status: ", updateBidTableResults.bid, updateBidTableResults.bid[0].bid_id, bidCompletedResults);
   } else {
     // Race condition met: the current Bid is less than whats expected
     console.log(
@@ -101,10 +100,6 @@ const handleBid = async (
       preFlightCheckResult.bidAmountValid
     );
   }
-};
-
-const getRenderedAtInLocalTime = () => {
-  return DateTime.now().toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS);
 };
 
 /**
@@ -117,34 +112,33 @@ const getRenderedAtInLocalTime = () => {
  */
 const AuctionDetails = ({ auction, lastUpdate }: I_AuctionDetails) => {
 
-  // TODO: Remove this - for testing
-  const auctionDetailsRef = useRef(getRenderedAtInLocalTime());
+  // trigger component level state for processing a bid
+  const [isProcessingBid, setProcessingState] = useState(false);
 
   // gets the auth id from the jwt
   const userJWT = useUserQuery();
+  // assuming that the hook will cause re-render and logout automatically
+  const isAuthenticated: boolean = userJWT.data?.role === "authenticated" ?? false;
 
   // Hooks for adding a bid to Good bids
   // -----------------------------------
+
   // 1. insert on bid table
   const [bidUpdateStatus, updateBidTable] = useAddBidToBidTable();
   // 2. update auction table with current values
   const [auctionUpdateStatus, updateAuctionTable] = useAddBidToAuctionTable();
   // 3. update bid table to "COMPLETED"
+  const [bidStatusComplete, updateBidStatus] = useBidStatus();
+  // END Bid hooks
 
+  // Derived state
+  // Required to setup bid amount
+  const isInitialBid: boolean = ( auction?.bids?.length > 0 ) ? false : true;
+  const totalBids: number = auction?.bids?.length || 0;
 
   // set defaults
-  let isInitialBid = false;
   let currentHighBid = 0;
   let nextBidValue = 0;
-  let totalBids = 0;
-
-  let isAuthenticated = userJWT.data?.role === "authenticated" ?? false;
-
-  // the nextBidValue depends on if its the initial bid or not
-  if (auction.bids !== undefined) {
-    isInitialBid = auction.bids.length > 0 ? false : true;
-    totalBids = auction.bids.length;
-  }
 
   if (isInitialBid) {
     // its the initial bid set nextBidValue to opening
@@ -195,14 +189,8 @@ const AuctionDetails = ({ auction, lastUpdate }: I_AuctionDetails) => {
           <p className="text-base text-center text-neutral-800">
             {auction.description}
           </p>
-          <p className="mt-8 text-xs text-center text-neutral-400">
-            rendered at: {auctionDetailsRef.current} · fetched at:{" "}
-            {DateTime.fromJSDate(lastUpdate).toLocaleString(
-              DateTime.DATETIME_SHORT_WITH_SECONDS
-            )}
-          </p>
           <div
-            className="inline-block p-2 mt-4 mb-4 border opacity-50 cursor-pointer"
+            className="inline-block p-2 mt-8 mb-4 border opacity-50 cursor-pointer"
             onClick={async (e) => {
               if (isAuthenticated === true) {
                 handleBid(
@@ -211,7 +199,8 @@ const AuctionDetails = ({ auction, lastUpdate }: I_AuctionDetails) => {
                   userJWT.data?.id,
                   nextBidValue,
                   updateBidTable,
-                  updateAuctionTable
+                  updateAuctionTable,
+                  updateBidStatus
                 );
               } else {
                 // Do redirect
