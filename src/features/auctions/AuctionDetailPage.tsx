@@ -16,6 +16,7 @@ import { useUserQuery } from "~/hooks/useUser";
 import { PayPalDialog } from "./PayPalDialog";
 import { ImageCarousel } from "~/components/ImageCarousel";
 import useInterval from "~/hooks/useInterval";
+import { useStorageItemsQuery } from "~/hooks/useStorage";
 
 // Types
 import { T_AuctionModelExtended } from "~/utils/types/auctions";
@@ -88,7 +89,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   // TODO: Refactor this. This is a temp useEffect
   useEffect(() => {
     if (!subscription.mbus.isInitialized) return;
-    
+
     // Listen for bid lock messages
     if (subscription.mbus.lastBidLockMessage) {
       if (
@@ -148,14 +149,14 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   const auctionIsActive = auction.status === "ACTIVE" ? true : false;
 
   return (
-    <div className="flex flex-col gap-8 overflow-y-auto h-2/4 lg:flex-row">
+    <div className="flex h-2/4 flex-col gap-8 overflow-y-auto lg:flex-row">
       <ImageCarousel sources={[imageUrl, imageUrl]} />
       <div
-        className="flex flex-col items-start justify-start w-full gap-4 p-2 lg:w-1/3"
+        className="flex w-full flex-col items-start justify-start gap-4 p-2 lg:w-1/3"
         id="auction-info-container"
       >
         <p className="text-3xl font-black text-black">{auction.name}</p>
-        <p className="text-base text-left text-neutral-800">
+        <p className="text-left text-base text-neutral-800">
           {auction.description}
         </p>
         <p className="text-xs text-neutral-800">
@@ -178,7 +179,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
             there is a bid in process currently "time left component here"
           </p>
         )}
-        <p className="text-base text-left text-neutral-800">{numberOfBids}</p>
+        <p className="text-left text-base text-neutral-800">{numberOfBids}</p>
 
         {auctionIsActive ? (
           <>
@@ -190,7 +191,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
             <PayPalDialog bidValue={nextBidValue} auction={auction} />
           </>
         ) : (
-          <p className="font-black text-left text-md text-neutral-800">
+          <p className="text-md text-left font-black text-neutral-800">
             Auction has ended. Thanks for playing!
           </p>
         )}
@@ -222,7 +223,7 @@ export const AuctionDetailPage = () => {
   }
 
   return (
-    <div className="flex flex-col flex-grow w-full p-24">
+    <div className="flex w-full flex-grow flex-col p-24">
       <AuctionDetails auction={auction} />
     </div>
   );
