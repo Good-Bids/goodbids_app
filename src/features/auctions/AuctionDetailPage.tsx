@@ -53,6 +53,8 @@ const QueryErrorDisplay = () => {
  */
 const AuctionDetails = ({ auction }: I_AuctionModel) => {
   // trigger component level state for processing a bid
+  // can extend this to { isProcessingBid, bidStatus } for
+  // showing error messages or success
   const [isProcessingBid, setProcessingState] = useState(false);
 
   // gets the auth id from the jwt
@@ -107,49 +109,62 @@ const AuctionDetails = ({ auction }: I_AuctionModel) => {
       // check error
       // If not valid then there was a race condition and the bid needs to refresh
       // the bid value - this will be hit a lot on active auctions
+      // Show Sorry -> Missed your window, would you like to update your bid
 
       // Start the process
       const updateBidTableResults = await updateBidTable({
         auctionId: auction.auction_id,
         charityId: auction.charity_id,
         userId: userJWT.data?.id ?? "", // <- should not ever be undefined after auth
-        amount: nextBidValue
+        amount: nextBidValue,
       });
-      console.log("[Process BID] - Add bid to bid table as PENDING ", updateBidTableResults);
+      console.log(
+        "[Process BID] - Add bid to bid table as PENDING ",
+        updateBidTableResults
+      );
 
       // check error
       // If there was a insert to bid table in DB the error it will manifest here
       // stop processing bid and reset component state
+      // Show Sorry -> Network / System error
 
       // Update new bid value in auction table
       const updateAuctionResults = await updateAuctionTable({
         auctionId: auction.auction_id,
         newBidValue: nextBidValue,
       });
-      console.log("[Process BID] - Update the auction table ", updateAuctionResults);
-      
+      console.log(
+        "[Process BID] - Update the auction table ",
+        updateAuctionResults
+      );
+
       // check error
       // If there was a update to auction table in DB the error it will manifest here
       // stop processing bid and reset component state - can not RollBack in the db
       // there will be orphaned "PENDING" bids in the DB
+      // Show Sorry -> Network / System error
 
       // Update bid table to Complete status
       const bidCompletedResults = await updateBidStatus({
-        bidId: updateBidTableResults.bid[0].bid_id
+        bidId: updateBidTableResults.bid[0].bid_id,
       });
-      console.log("[Process BID] - Update the auction table ", bidCompletedResults);
+      console.log(
+        "[Process BID] - Update the auction table ",
+        bidCompletedResults
+      );
 
       // check error
       // If there was a update to bid table in DB error it will manifest here
       // this call is at the end of the bid, it changes the bid table status to
       // COMPLETE instead of PENDING - What to do in this situation -
       // the bid is added and the auction table has a new current bid value
-      // already reflected in the component and for everyone. 
+      // already reflected in the component and for everyone.
       // It could be the result of a network error. Perhaps there is way to
       // signal the site admin of failure and re-connect the bid status manually
 
       // Finally re-enable the component state
       setProcessingState(false);
+      // Show Happy face -> Bid was completed
     };
 
     if (isProcessingBid) {
