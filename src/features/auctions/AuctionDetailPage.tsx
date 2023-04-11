@@ -1,17 +1,16 @@
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import {
+  preflightValidateBidAmount, // note: not a hook Supabase call no RQ
   useAuctionQuery,
-  preflightValidateBidAmount,
   useAddBidToAuctionTable,
   useAddBidToBidTable,
-  useBidStatus
+  useBidStatus,
 } from "~/hooks/useAuction";
 import { useUserQuery } from "~/hooks/useUser";
 import { I_AuctionModel } from "~/utils/types/auctions";
 import Image from "next/image";
 import Link from "next/link";
-import { DateTime } from "luxon";
 
 /** TS for the paypal project is here importing only Types */
 import { PayPalDialog } from "./PayPalDialog";
@@ -19,10 +18,6 @@ import { PayPalDialog } from "./PayPalDialog";
 // can also use the react-libs types
 // import { OrderResponseBody } from "@paypal/paypal-js/types/apis/orders";
 // import { CreateOrderActions } from "@paypal/paypal-js/types/components/buttons";
-
-interface I_AuctionDetails extends I_AuctionModel {
-  lastUpdate: Date | null;
-}
 
 /**
  * TODO: move links to backend server into:
@@ -48,60 +43,6 @@ const QueryErrorDisplay = () => {
   return <p>ERROR</p>;
 };
 
-const handleBid = async (
-  e: MouseEvent,
-  auction: I_AuctionModel,
-  userId: string,
-  nextBidValue: number,
-  updateBidTable: Function,
-  updateAuctionTable: Function,
-  updateBidStatus: Function
-) => {
-  e.preventDefault();
-
-  // 1. preflight check
-  const preFlightCheckResult = await preflightValidateBidAmount(
-    auction.auction_id,
-    auction.increment,
-    nextBidValue
-  );
-  console.log(
-    "[Handle Bid] PREFLIGHT isValidAmount: ",
-    preFlightCheckResult.bidAmountValid
-  );
-
-  if (preFlightCheckResult.bidAmountValid === true) {
-    // 2. update Bid table with data and set
-    //    to "PENDING"
-    const updateBidTableResults = await updateBidTable({
-      auctionId: auction.auction_id,
-      charityId: auction.charity_id,
-      userId: userId,
-      amount: nextBidValue,
-    });
-    console.log("[Handle Bid] UPDATE Bid Table: ", updateBidTableResults);
-
-    // 3. update the Auction table with correct current bid
-    const updateAuctionResults = await updateAuctionTable({
-      auctionId: auction.auction_id,
-      newBidValue: nextBidValue,
-    });
-    console.log("[Handle Bid] UPDATE Auction Table: ", updateAuctionResults);
-
-    // 4. Update bid table with COMPLETED state
-    const bidCompletedResults = await updateBidStatus({
-      bidId: updateBidTableResults.bid[0].bid_id
-    })
-    console.log("[Handle Bid] UPDATE Bid Table Status: ", updateBidTableResults.bid, updateBidTableResults.bid[0].bid_id, bidCompletedResults);
-  } else {
-    // Race condition met: the current Bid is less than whats expected
-    console.log(
-      "[Handle Bid] PREFLIGHT isValidAmount: ",
-      preFlightCheckResult.bidAmountValid
-    );
-  }
-};
-
 /**
  * AuctionDetails
  *
@@ -110,15 +51,15 @@ const handleBid = async (
  *
  * TODO: defaults for all values
  */
-const AuctionDetails = ({ auction, lastUpdate }: I_AuctionDetails) => {
-
+const AuctionDetails = ({ auction }: I_AuctionModel) => {
   // trigger component level state for processing a bid
   const [isProcessingBid, setProcessingState] = useState(false);
 
   // gets the auth id from the jwt
   const userJWT = useUserQuery();
   // assuming that the hook will cause re-render and logout automatically
-  const isAuthenticated: boolean = userJWT.data?.role === "authenticated" ?? false;
+  const isAuthenticated: boolean =
+    userJWT.data?.role === "authenticated" ?? false;
 
   // Hooks for adding a bid to Good bids
   // -----------------------------------
@@ -133,7 +74,7 @@ const AuctionDetails = ({ auction, lastUpdate }: I_AuctionDetails) => {
 
   // Derived state
   // Required to setup bid amount
-  const isInitialBid: boolean = ( auction?.bids?.length > 0 ) ? false : true;
+  const isInitialBid: boolean = auction?.bids?.length > 0 ? false : true;
   const totalBids: number = auction?.bids?.length || 0;
 
   // set defaults
@@ -149,8 +90,88 @@ const AuctionDetails = ({ auction, lastUpdate }: I_AuctionDetails) => {
     nextBidValue = currentHighBid + auction.increment;
   }
 
+  // Note for now I wrapped these in a useEffect
+  // Its just as easy to remove the guts of it
+  // keeping the skeleton in the useEffect so its a single call
+  // moving the faux state machine outside the component
+  useEffect(() => {
+    const processBid = async () => {
+      // Check preflight
+      const preFlightCheckResult = await preflightValidateBidAmount(
+        auction.auction_id,
+        auction.increment,
+        nextBidValue
+      );
+      console.log("[Process BID] - PreFlight Bid Check ", preFlightCheckResult);
+
+      // check error
+      // If not valid then there was a race condition and the bid needs to refresh
+      // the bid value - this will be hit a lot on active auctions
+
+      // Start the process
+      const updateBidTableResults = await updateBidTable({
+        auctionId: auction.auction_id,
+        charityId: auction.charity_id,
+        userId: userJWT.data?.id ?? "", // <- should not ever be undefined after auth
+        amount: nextBidValue
+      });
+      console.log("[Process BID] - Add bid to bid table as PENDING ", updateBidTableResults);
+
+      // check error
+      // If there was a insert to bid table in DB the error it will manifest here
+      // stop processing bid and reset component state
+
+      // Update new bid value in auction table
+      const updateAuctionResults = await updateAuctionTable({
+        auctionId: auction.auction_id,
+        newBidValue: nextBidValue,
+      });
+      console.log("[Process BID] - Update the auction table ", updateAuctionResults);
+      
+      // check error
+      // If there was a update to auction table in DB the error it will manifest here
+      // stop processing bid and reset component state - can not RollBack in the db
+      // there will be orphaned "PENDING" bids in the DB
+
+      // Update bid table to Complete status
+      const bidCompletedResults = await updateBidStatus({
+        bidId: updateBidTableResults.bid[0].bid_id
+      });
+      console.log("[Process BID] - Update the auction table ", bidCompletedResults);
+
+      // check error
+      // If there was a update to bid table in DB error it will manifest here
+      // this call is at the end of the bid, it changes the bid table status to
+      // COMPLETE instead of PENDING - What to do in this situation -
+      // the bid is added and the auction table has a new current bid value
+      // already reflected in the component and for everyone. 
+      // It could be the result of a network error. Perhaps there is way to
+      // signal the site admin of failure and re-connect the bid status manually
+
+      // Finally re-enable the component state
+      setProcessingState(false);
+    };
+
+    if (isProcessingBid) {
+      processBid();
+    }
+
+    return () => {
+      // See if Supabase support cancel request so we can clean up
+    };
+  }, [isProcessingBid]);
+
   // the auctioned item has a slot for only 1 image
   const imageUrl = `${fileStoragePath}/${auction?.auction_id}/sample-item-1298792.jpg`;
+
+  const handleProcessBidClick = (e: MouseEvent) => {
+    e.preventDefault();
+    if (isAuthenticated === true) {
+      setProcessingState(true);
+    } else {
+      // redirect to login
+    }
+  };
 
   return (
     <div className="flex flex-col flex-grow bg-slate-50">
@@ -191,35 +212,14 @@ const AuctionDetails = ({ auction, lastUpdate }: I_AuctionDetails) => {
           </p>
           <div
             className="inline-block p-2 mt-8 mb-4 border opacity-50 cursor-pointer"
-            onClick={async (e) => {
-              if (isAuthenticated === true) {
-                handleBid(
-                  e,
-                  auction,
-                  userJWT.data?.id,
-                  nextBidValue,
-                  updateBidTable,
-                  updateAuctionTable,
-                  updateBidStatus
-                );
-              } else {
-                // Do redirect
-                // Requires to also pass along the auctionId so that 
-                // on Login the redirect can happen to where the user left 
-                // off
-              }
+            onClick={(e) => {
+              handleProcessBidClick(e);
             }}
           >
             <p className="text-sm select-none text-neutral-400">
               temp bid button
             </p>
           </div>
-          <p className="mb-8 text-xs text-center text-neutral-400">
-            opening bid {auction.opening_bid_value} · increment by{" "}
-            {auction.increment} · current bid {currentHighBid} · next bid{" "}
-            {currentHighBid + auction.increment} · total bids {totalBids}
-          </p>
-
           <PayPalDialog bidValue={nextBidValue} />
         </div>
       </div>

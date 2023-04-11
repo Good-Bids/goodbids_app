@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { I_AuctionModel } from "~/utils/types/auctions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useSupabase from "./useSupabase";
 
@@ -553,39 +552,9 @@ export const useAddBidToBidTable = () => {
   ] as const;
 };
 
-// UnWrapped methods
-// can be wrapped at another time
-
-export const getBidsByAuctionId = async (auctionId: string) => {
-  try {
-    let result;
-
-    result = await supabaseClient
-      .from("bid")
-      .select()
-      .eq("auction_id", auctionId)
-      .throwOnError();
-
-    return {
-      status: result.status,
-      statusMessage: result.statusText,
-      bids: result.data,
-      hasError: false,
-      rawError: null,
-    };
-  } catch (err: any) {
-    return {
-      status: err?.code ?? "5000",
-      statusMessage: err?.message ?? "unknown error type",
-      bids: [],
-      hasError: true,
-      errorObj: err,
-    };
-  }
-};
-
-const updateBidCompleteStatus = async (bidId: string): Promise<T_SupabaseBidReturnObject> => {
-
+const updateBidCompleteStatus = async (
+  bidId: string
+): Promise<T_SupabaseBidReturnObject> => {
   try {
     let result;
 
@@ -622,9 +591,9 @@ export const useBidStatus = () => {
     },
     onSettled() {
       // note: on settled is same as "final in try catch" probably need
-      // to triple check the result for errors that have been thrown and 
+      // to triple check the result for errors that have been thrown and
       // not caught because of mutateAsync
-      queryClient.invalidateQueries({ queryKey: ['auctionQueryResults'] })
+      queryClient.invalidateQueries({ queryKey: ["auctionQueryResults"] });
     },
   });
 
@@ -644,4 +613,34 @@ export const useBidStatus = () => {
     },
     mutateAsync,
   ] as const;
+};
+
+// UnWrapped methods
+// can be wrapped at another time
+export const getBidsByAuctionId = async (auctionId: string) => {
+  try {
+    let result;
+
+    result = await supabaseClient
+      .from("bid")
+      .select()
+      .eq("auction_id", auctionId)
+      .throwOnError();
+
+    return {
+      status: result.status,
+      statusMessage: result.statusText,
+      bids: result.data,
+      hasError: false,
+      rawError: null,
+    };
+  } catch (err: any) {
+    return {
+      status: err?.code ?? "5000",
+      statusMessage: err?.message ?? "unknown error type",
+      bids: [],
+      hasError: true,
+      errorObj: err,
+    };
+  }
 };
