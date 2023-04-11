@@ -5,6 +5,8 @@ import { useState } from 'react';
 
 import { initialOptions } from '~/utils/constants';
 
+import * as ga from '../../lib/ga'
+
 interface PayPalDialogProps {
   bidValue: number
 }
@@ -12,6 +14,8 @@ interface PayPalDialogProps {
 export const PayPalDialog = ({ bidValue }: PayPalDialogProps) => {
 
   const [open, setOpen] = useState(false);
+
+  ga.event({ action: 'button_click', params: { label: 'Bid now', value: bidValue } })
 
   const handleBidClick = () => {
     setOpen(true)
