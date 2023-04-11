@@ -5,6 +5,7 @@ import Script from 'next/script'
 import { useAuctionsQuery } from "~/hooks/useAuction";
 import { useAdminCheckQuery } from "~/hooks/useCharityAdmin";
 import { useUserQuery } from "~/hooks/useUser";
+import * as ga from '../lib/ga'
 
 const Home: NextPage = () => {
 
@@ -22,6 +23,10 @@ const Home: NextPage = () => {
   /* AD. tmp commenting out for retyping response returned from ReactQuery ( needs to support UI ) */
   // const { data: auctions } = useAuctionsQuery()
 
+  const handleClick = () => {
+    ga.event({ action: 'button_click', params: { label: 'Sign up today' } })
+  }
+
   const getGreeting = (isPublic: boolean, isLoggedInBidder: boolean, isLoggedInCharity: boolean) => {
     if (isPublic) return (
       <>
@@ -29,7 +34,7 @@ const Home: NextPage = () => {
           We're better with you here.
         </span>
         <span className="text-bottleGreen text-4xl font-black">
-          <Link href="/SignUp" className="hover:underline decoration-screaminGreen">Sign up today. </Link>
+          <Link href="/SignUp" onClick={handleClick} className="hover:underline decoration-screaminGreen">Sign up today. </Link>
         </span>
         <span className="text-bottleGreen text-4xl font-black">
           <Link href="/auctions" className="hover:underline decoration-screaminGreen">View active auctions</Link>
