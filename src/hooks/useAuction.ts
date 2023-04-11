@@ -371,73 +371,6 @@ export const updateAuctionWithBid = async (
   }
 };
 
-const getBidderId = async (
-  userId: string
-) => {
-  try {
-    let result;
-
-    result = await supabaseClient
-      .from("user")
-      .select()
-      .eq("auth_id", userId)
-      .throwOnError();
-
-    console.log("UDI", userId, result);
-
-    return {
-      status: result.status,
-      statusMessage: result.statusText,
-      userData: result.data,
-      hasError: false,
-      rawError: null,
-    };
-  } catch (err: any) {
-    return {
-      status: err?.code ?? "5000",
-      statusMessage: err?.message ?? "unknown error type",
-      userData: [],
-      hasError: true,
-      errorObj: err,
-    };
-  }
-}
-
-// note this is the main user ID
-// from the auth tables
-export const useBidderIdQuery = (
-  userId: string,
-) => {
-
-  const { isLoading, isError, data, error } = useQuery({
-    queryKey: [
-      "userTableQueryResults",
-      userId,
-    ],
-    queryFn: async () => {
-      return await getBidderId(
-        userId
-      );
-    },
-  });
-
-  return [
-    {
-      queryStatus: {
-        isLoading,
-        isError,
-      },
-      userData: data?.userData ?? undefined,
-      hasError: data?.hasError || isError ? true : false,
-      errorMessage:
-        data?.hasError || isError
-          ? data?.statusMessage ?? "React Query encountered an error"
-          : "",
-      errorObj: data?.hasError || isError ? data?.errorObj ?? error : null,
-    }
-  ] as const;
-};
-
 export const getBidsByAuctionId = async (auctionId: string) => {
   try {
     let result;
@@ -466,16 +399,6 @@ export const getBidsByAuctionId = async (auctionId: string) => {
   }
 };
 
-/*
-  amount: number
-  auction_id: string
-  bid_id: string
-  bid_status: string
-  bidder_id: string
-  charity_id: string
-  created_at: string
-*/
-
 export const addBid = async (
   auctionId: string,
   charityId: string,
@@ -495,8 +418,39 @@ export const addBid = async (
         auction_id: auctionId,
         bidder_id: userId,
         charity_id: charityId,
-        bid_status: bidStatus
+        // bid_status: bidStatus // Leave this for default "PENDING"
       })
+      .select()
+      .throwOnError();
+
+    return {
+      status: result.status,
+      statusMessage: result.statusText,
+      bid: result.data,
+      hasError: false,
+      rawError: null,
+    };
+  } catch (err: any) {
+    return {
+      status: err?.code ?? "5000",
+      statusMessage: err?.message ?? "unknown error type",
+      bid: [],
+      hasError: true,
+      errorObj: err,
+    };
+  }
+};
+
+export const updateBidCompleteStatus = async (
+  bidId: string
+) => {
+  try {
+    let result;
+
+    result = await supabaseClient
+      .from("bid")
+      .update({ bid_status: "COMPLETED" })
+      .eq("bid_id", bidId)
       .select()
       .throwOnError();
 

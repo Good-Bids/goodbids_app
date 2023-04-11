@@ -6,7 +6,6 @@ import {
   preflightValidateBidAmount,
   getBidsByAuctionId,
   addBid,
-  useBidderIdQuery,
 } from "~/hooks/useAuction";
 import { useUserQuery } from "~/hooks/useUser";
 import { I_AuctionModel } from "~/utils/types/auctions";
@@ -64,26 +63,21 @@ const handleBid = async (
 ) => {
   e.preventDefault();
 
-  // console.log("DATA", auctionData, userId, nextBidValue)
-
+  // 1. preflight check
   const preFlightCheckResult = await preflightValidateBidAmount(
     auction.auction_id,
     auction.increment,
     nextBidValue
   );
-
-  // This is tmp just to check bid table via API
-  const getExistingBids = await getBidsByAuctionId(auction.auction_id);
+  console.log(
+    "[Handle Bid] PREFLIGHT isValidAmount: ",
+    preFlightCheckResult.bidAmountValid
+  );
 
   if (preFlightCheckResult.bidAmountValid === true) {
-    console.log(
-      "[Handle Bid] PREFLIGHT isValidAmount: ",
-      preFlightCheckResult.bidAmountValid
-    );
-    console.log(
-      "[Handle Bid] PREFLIGHT checkExistingBids: ",
-      getExistingBids.bids
-    );
+
+    // 2. update Bid table with data and set
+    //    to "PENDING"
     const updateBidTable = await addBid(
       auction.auction_id,
       auction.charity_id,
@@ -91,8 +85,17 @@ const handleBid = async (
       nextBidValue
     );
     console.log("[Handle Bid] UPDATE Bid Table: ", updateBidTable);
-    console.log("[Handle Bid] UPDATE Auction Table: ");
-    // const res = await updateAuctionWithBid(auctionId, nextBidValue);
+
+    // 3. update the Auction table with correct current bid
+    const updateAuctionResults = await updateAuctionWithBid(
+      auction.auction_id,
+      nextBidValue
+    );
+    console.log("[Handle Bid] UPDATE Auction Table: ", updateAuctionResults);
+
+    // 4. Update bid table with COMPLETED state
+    
+
   } else {
     // Race condition met: the current Bid is less than whats expected
     console.log(
@@ -119,13 +122,6 @@ const AuctionDetails = ({ auction, lastUpdate }: I_AuctionDetails) => {
 
   // gets the auth id from the jwt
   const userJWT = useUserQuery();
-  // need the JWT auth_id to get the bidder_id
-  // from the user Table
-  let userData = undefined;
-
-  if (userJWT?.data !== undefined) {
-    userData = useBidderIdQuery(userJWT.data.id);
-  }
 
   // set defaults
   let isInitialBid = false;
@@ -133,7 +129,7 @@ const AuctionDetails = ({ auction, lastUpdate }: I_AuctionDetails) => {
   let nextBidValue = 0;
   let totalBids = 0;
 
-  let isAuthenticated = userData.data?.role ?? false;
+  let isAuthenticated = userJWT.data?.role === "authenticated" ?? false;
 
   // the nextBidValue depends on if its the initial bid or not
   if (auction.bids !== undefined) {
@@ -152,8 +148,6 @@ const AuctionDetails = ({ auction, lastUpdate }: I_AuctionDetails) => {
 
   // the auctioned item has a slot for only 1 image
   const imageUrl = `${fileStoragePath}/${auction?.auction_id}/sample-item-1298792.jpg`;
-
-  console.log("USER DATA", userData);
 
   return (
     <div className="flex flex-col flex-grow bg-slate-50">
@@ -201,7 +195,7 @@ const AuctionDetails = ({ auction, lastUpdate }: I_AuctionDetails) => {
           <div
             className="inline-block p-2 mt-4 mb-4 border opacity-50 cursor-pointer"
             onClick={async (e) => {
-              handleBid(e, auction, "f", nextBidValue);
+              handleBid(e, auction, userJWT.data?.id, nextBidValue);
             }}
           >
             <p className="text-sm select-none text-neutral-400">
