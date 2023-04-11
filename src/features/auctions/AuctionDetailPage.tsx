@@ -2,10 +2,9 @@ import { MouseEvent, useRef } from "react";
 import { useRouter } from "next/router";
 import {
   useAuctionQuery,
-  updateAuctionWithBid,
   preflightValidateBidAmount,
-  getBidsByAuctionId,
-  addBid,
+  useAddBidToAuctionTable,
+  useAddBidToBidTable,
 } from "~/hooks/useAuction";
 import { useUserQuery } from "~/hooks/useUser";
 import { I_AuctionModel } from "~/utils/types/auctions";
@@ -59,7 +58,9 @@ const handleBid = async (
   e: MouseEvent,
   auction: I_AuctionModel,
   userId: string,
-  nextBidValue: number
+  nextBidValue: number,
+  updateBidTable: Function,
+  updateAuctionTable: Function
 ) => {
   e.preventDefault();
 
@@ -75,27 +76,24 @@ const handleBid = async (
   );
 
   if (preFlightCheckResult.bidAmountValid === true) {
-
     // 2. update Bid table with data and set
     //    to "PENDING"
-    const updateBidTable = await addBid(
-      auction.auction_id,
-      auction.charity_id,
-      userId,
-      nextBidValue
-    );
-    console.log("[Handle Bid] UPDATE Bid Table: ", updateBidTable);
+    const updateBidTableResults = await updateBidTable({
+      auctionId: auction.auction_id,
+      charityId: auction.charity_id,
+      userId: userId,
+      amount: nextBidValue,
+    });
+    console.log("[Handle Bid] UPDATE Bid Table: ", updateBidTableResults);
 
     // 3. update the Auction table with correct current bid
-    const updateAuctionResults = await updateAuctionWithBid(
-      auction.auction_id,
-      nextBidValue
-    );
+    const updateAuctionResults = await updateAuctionTable({
+      auctionId: auction.auction_id,
+      newBidValue: nextBidValue,
+    });
     console.log("[Handle Bid] UPDATE Auction Table: ", updateAuctionResults);
 
     // 4. Update bid table with COMPLETED state
-    
-
   } else {
     // Race condition met: the current Bid is less than whats expected
     console.log(
@@ -122,6 +120,9 @@ const AuctionDetails = ({ auction, lastUpdate }: I_AuctionDetails) => {
 
   // gets the auth id from the jwt
   const userJWT = useUserQuery();
+
+  const [bidUpdateStatus, updateBidTable] = useAddBidToBidTable();
+  const [auctionUpdateStatus, updateAuctionTable] = useAddBidToAuctionTable();
 
   // set defaults
   let isInitialBid = false;
@@ -195,7 +196,14 @@ const AuctionDetails = ({ auction, lastUpdate }: I_AuctionDetails) => {
           <div
             className="inline-block p-2 mt-4 mb-4 border opacity-50 cursor-pointer"
             onClick={async (e) => {
-              handleBid(e, auction, userJWT.data?.id, nextBidValue);
+              handleBid(
+                e,
+                auction,
+                userJWT.data?.id,
+                nextBidValue,
+                updateBidTable,
+                updateAuctionTable
+              );
             }}
           >
             <p className="text-sm select-none text-neutral-400">

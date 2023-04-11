@@ -2,7 +2,36 @@ import { useState } from "react";
 import { I_AuctionModel } from "~/utils/types/auctions";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import useSupabase from "./useSupabase";
+
 const supabaseClient = useSupabase();
+
+type T_SupabaseBidReturnObject = {
+  status: number,
+  statusMessage: string,
+  bid: any,
+  hasError: boolean,
+  rawError: any | null,
+}
+
+type T_SupabaseAuctionReturnObject = {
+  status: number,
+  statusMessage: string,
+  auction: any,
+  hasError: boolean,
+  rawError: any | null,
+}
+
+interface I_SupabaseBidVariables {
+  auctionId: string,
+  charityId: string,
+  userId: string,
+  amount: number
+}
+
+interface I_SupabaseAuctionBidVariables {
+  auctionId: string,
+  newBidValue: number
+}
 
 /**
  * getAuction
@@ -331,19 +360,19 @@ export const preflightValidateBidAmount = async (
  * async
  *
  * @param auctionId string
- * @param newHighBidValue number
+ * @param newBidValue number
  * @returns object
  */
 export const updateAuctionWithBid = async (
   auctionId: string,
-  newHighBidValue: number
-) => {
+  newBidValue: number
+): Promise<T_SupabaseAuctionReturnObject>  => {
   try {
     let result;
 
     result = await supabaseClient
       .from("auction")
-      .update({ high_bid_value: newHighBidValue })
+      .update({ high_bid_value: newBidValue })
       .eq("auction_id", auctionId)
       .select(
         `
@@ -356,7 +385,7 @@ export const updateAuctionWithBid = async (
     return {
       status: result.status,
       statusMessage: result.statusText,
-      auctions: result.data,
+      auction: result.data,
       hasError: false,
       rawError: null,
     };
@@ -364,12 +393,161 @@ export const updateAuctionWithBid = async (
     return {
       status: err?.code ?? "5000",
       statusMessage: err?.message ?? "unknown error type",
-      auctions: [],
+      auction: [],
       hasError: true,
-      errorObj: err,
+      rawError: err,
     };
   }
 };
+
+/**
+ * useAddBidToAuction
+ * 
+ * Wrapper around the Supabase call to update the auction table in the
+ * backend with the new current bid value
+ * 
+ * This is a hook wrapping a hook, the mutate method provided by RQuery
+ * is responsible for the input types so we use I_SupabaseAuctionBidVariables
+ * for hard typing the value
+ * 
+ * Note: we call this with mutateAsync. So that we can Await 
+ * and possibly role back or deal with multistage UI
+ * 
+ * TODO: Check error results and "query states". Also need to verify if 
+ * we can remove the async/await in the mutationFn as I think they do not
+ * do anything.
+ * 
+ * @returns Object
+ */
+export const useAddBidToAuctionTable = () => {
+  const { isError, isLoading, error, data, mutateAsync } = useMutation({
+    mutationFn: async (data:I_SupabaseAuctionBidVariables) => {
+      return await updateAuctionWithBid(data.auctionId, data.newBidValue);
+    },
+  });
+
+  return [
+    {
+      queryStatus: {
+        isLoading,
+        isError,
+      },
+      auction: data?.auction ?? undefined,
+      hasError: data?.hasError || isError ? true : false,
+      errorMessage:
+        data?.hasError || isError
+          ? data?.statusMessage ?? "React Query encountered an error"
+          : "",
+      errorObj: data?.hasError || isError ? data?.rawError ?? error : null,
+    },
+    mutateAsync,
+  ] as const;
+
+};
+
+/**
+ * addBid
+ * 
+ * Supabase call that is wrapped in RQuery mutation
+ * you can tell its coupled to RQ by the typeScript
+ * Promise.
+ * 
+ * Currently set to insert a bid to the bid table and 
+ * have the default system setting for bid_status set.
+ * 
+ * @param auctionId string
+ * @param charityId string
+ * @param userId string
+ * @param amount number
+ * @returns Object
+ */
+const addBid = async (
+  auctionId: string,
+  charityId: string,
+  userId: string,
+  amount: number
+): Promise<T_SupabaseBidReturnObject> => {
+
+  try {
+    let result;
+
+    result = await supabaseClient
+      .from("bid")
+      .insert({
+        amount: amount,
+        auction_id: auctionId,
+        bidder_id: userId,
+        charity_id: charityId,
+        // bid_status: "COMPLETED" // Leave this undefined for default: "PENDING"
+      })
+      .select()
+      .throwOnError();
+
+    return {
+      status: result.status,
+      statusMessage: result.statusText,
+      bid: result.data,
+      hasError: false,
+      rawError: null,
+    };
+  } catch (err: any) {
+    return {
+      status: err?.code ?? "5000",
+      statusMessage: err?.message ?? "unknown error type",
+      bid: [],
+      hasError: true,
+      rawError: err,
+    };
+  }
+};
+
+/**
+ * useAddBidToAuction
+ * 
+ * Wrapper around the Supabase call to update the bid table in the
+ * backend.
+ * 
+ * This is a hook wrapping a hook, the mutate method provided by RQuery
+ * is responsible for the input types so we use I_SupabaseBidVariables
+ * for hard typing the value
+ * 
+ * Note: we call this with mutateAsync. So that we can Await 
+ * and possibly role back or deal with multistage UI
+ * 
+ * TODO: Check error results and "query states". Also need to verify if 
+ * we can remove the async/await in the mutationFn as I think they do not
+ * do anything.
+ * 
+ * @returns Object
+ */
+export const useAddBidToBidTable = () => {
+  const { isError, isLoading, error, data, mutateAsync } = useMutation({
+    mutationFn: async (data:I_SupabaseBidVariables) => {
+      return await addBid(data.auctionId, data.charityId, data.userId, data.amount);
+    },
+  });
+
+  return [
+    {
+      queryStatus: {
+        isLoading,
+        isError,
+      },
+      bid: data?.bid ?? undefined,
+      hasError: data?.hasError || isError ? true : false,
+      errorMessage:
+        data?.hasError || isError
+          ? data?.statusMessage ?? "React Query encountered an error"
+          : "",
+      errorObj: data?.hasError || isError ? data?.rawError ?? error : null,
+    },
+    mutateAsync,
+  ] as const;
+
+};
+
+// UnWrapped methods
+// can be wrapped at another time
 
 export const getBidsByAuctionId = async (auctionId: string) => {
   try {
@@ -399,51 +577,7 @@ export const getBidsByAuctionId = async (auctionId: string) => {
   }
 };
 
-export const addBid = async (
-  auctionId: string,
-  charityId: string,
-  userId: string,
-  amount: number
-) => {
-  try {
-    
-    let result;
-    let bidStatus = "COMPLETED"; // <- should be pending probably
-
-
-    result = await supabaseClient
-      .from("bid")
-      .insert({
-        amount: amount,
-        auction_id: auctionId,
-        bidder_id: userId,
-        charity_id: charityId,
-        // bid_status: bidStatus // Leave this for default "PENDING"
-      })
-      .select()
-      .throwOnError();
-
-    return {
-      status: result.status,
-      statusMessage: result.statusText,
-      bid: result.data,
-      hasError: false,
-      rawError: null,
-    };
-  } catch (err: any) {
-    return {
-      status: err?.code ?? "5000",
-      statusMessage: err?.message ?? "unknown error type",
-      bid: [],
-      hasError: true,
-      errorObj: err,
-    };
-  }
-};
-
-export const updateBidCompleteStatus = async (
-  bidId: string
-) => {
+const updateBidCompleteStatus = async (bidId: string) => {
   try {
     let result;
 
