@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import {
   preflightValidateBidAmount, // note: not a hook Supabase call no RQ
-  useAuctionQuery,
   useAddBidToAuctionTable,
   useAddBidToBidTable,
   useBidStatus,
@@ -207,8 +206,6 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
 
   useInterval(() => setTimeLeft((prior) => (prior -= 1)), 1000);
 
-  const { charity: charityDetails } = useCharityQuery(auction.charity_id);
-
   return (
     <div className="flex flex-col gap-8 lg:flex-row">
       <ImageCarousel sources={[imageUrl, imageUrl]} />
@@ -240,7 +237,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
             <PayPalDialog bidValue={nextBidValue} />
           </>
         ) : (
-          <p className="text-left text-base text-neutral-800">
+          <p className="text-md text-left font-black text-neutral-800">
             Auction has ended. Thanks for playing!
           </p>
         )}
