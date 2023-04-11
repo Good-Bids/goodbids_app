@@ -90,7 +90,7 @@ export interface Database {
         Insert: {
           amount: number
           auction_id: string
-          bid_id: string
+          bid_id?: string
           bid_status?: string
           bidder_id: string
           charity_id: string

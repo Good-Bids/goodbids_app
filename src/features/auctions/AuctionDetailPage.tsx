@@ -4,7 +4,11 @@ import {
   useAuctionQuery,
   updateAuctionWithBid,
   preflightValidateBidAmount,
+  getBidsByAuctionId,
+  addBid,
+  useBidderIdQuery,
 } from "~/hooks/useAuction";
+import { useUserQuery } from "~/hooks/useUser";
 import { I_AuctionModel } from "~/utils/types/auctions";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,10 +21,16 @@ import { PayPalDialog } from "./PayPalDialog";
 // import { OrderResponseBody } from "@paypal/paypal-js/types/apis/orders";
 // import { CreateOrderActions } from "@paypal/paypal-js/types/components/buttons";
 
+/*
 type T_AuctionDetails = {
   auction: I_AuctionModel;
   lastUpdate: Date | null;
 };
+*/
+
+interface I_AuctionDetails extends I_AuctionModel {
+  lastUpdate: Date | null;
+}
 
 /**
  * TODO: move links to backend server into:
@@ -48,25 +58,47 @@ const QueryErrorDisplay = () => {
 
 const handleBid = async (
   e: MouseEvent,
-  auctionId: string,
-  bidIncrement: number,
+  auction: I_AuctionModel,
+  userId: string,
   nextBidValue: number
 ) => {
   e.preventDefault();
+
+  // console.log("DATA", auctionData, userId, nextBidValue)
+
   const preFlightCheckResult = await preflightValidateBidAmount(
-    auctionId,
-    bidIncrement,
+    auction.auction_id,
+    auction.increment,
     nextBidValue
   );
 
+  // This is tmp just to check bid table via API
+  const getExistingBids = await getBidsByAuctionId(auction.auction_id);
+
   if (preFlightCheckResult.bidAmountValid === true) {
-    console.log("[Handle Bid] PREFLIGHT isValidAmount: ", preFlightCheckResult.bidAmountValid);
-    console.log("[Handle Bid] UPDATE Bid Table: ");
+    console.log(
+      "[Handle Bid] PREFLIGHT isValidAmount: ",
+      preFlightCheckResult.bidAmountValid
+    );
+    console.log(
+      "[Handle Bid] PREFLIGHT checkExistingBids: ",
+      getExistingBids.bids
+    );
+    const updateBidTable = await addBid(
+      auction.auction_id,
+      auction.charity_id,
+      userId,
+      nextBidValue
+    );
+    console.log("[Handle Bid] UPDATE Bid Table: ", updateBidTable);
     console.log("[Handle Bid] UPDATE Auction Table: ");
     // const res = await updateAuctionWithBid(auctionId, nextBidValue);
   } else {
     // Race condition met: the current Bid is less than whats expected
-    console.log("[Handle Bid] PREFLIGHT isValidAmount: ", preFlightCheckResult.bidAmountValid);
+    console.log(
+      "[Handle Bid] PREFLIGHT isValidAmount: ",
+      preFlightCheckResult.bidAmountValid
+    );
   }
 };
 
@@ -82,14 +114,26 @@ const getRenderedAtInLocalTime = () => {
  *
  * TODO: defaults for all values
  */
-const AuctionDetails = ({ auction, lastUpdate }: T_AuctionDetails) => {
+const AuctionDetails = ({ auction, lastUpdate }: I_AuctionDetails) => {
   const auctionDetailsRef = useRef(getRenderedAtInLocalTime());
+
+  // gets the auth id from the jwt
+  const userJWT = useUserQuery();
+  // need the JWT auth_id to get the bidder_id
+  // from the user Table
+  let userData = undefined;
+
+  if (userJWT?.data !== undefined) {
+    userData = useBidderIdQuery(userJWT.data.id);
+  }
 
   // set defaults
   let isInitialBid = false;
   let currentHighBid = 0;
   let nextBidValue = 0;
   let totalBids = 0;
+
+  let isAuthenticated = userData.data?.role ?? false;
 
   // the nextBidValue depends on if its the initial bid or not
   if (auction.bids !== undefined) {
@@ -108,6 +152,8 @@ const AuctionDetails = ({ auction, lastUpdate }: T_AuctionDetails) => {
 
   // the auctioned item has a slot for only 1 image
   const imageUrl = `${fileStoragePath}/${auction?.auction_id}/sample-item-1298792.jpg`;
+
+  console.log("USER DATA", userData);
 
   return (
     <div className="flex flex-col flex-grow bg-slate-50">
@@ -155,7 +201,7 @@ const AuctionDetails = ({ auction, lastUpdate }: T_AuctionDetails) => {
           <div
             className="inline-block p-2 mt-4 mb-4 border opacity-50 cursor-pointer"
             onClick={async (e) => {
-              handleBid(e, auction.auction_id, auction.increment, nextBidValue);
+              handleBid(e, auction, "f", nextBidValue);
             }}
           >
             <p className="text-sm select-none text-neutral-400">
