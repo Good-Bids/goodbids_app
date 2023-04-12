@@ -74,7 +74,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
 
   const subscription = useMessageBus();
 
-  console.log("[MB - Subscriptions]", subscription.options);
+  console.log("[MB - Subscriptions]", subscription.mbus);
 
   // Hooks for adding a bid to Good bids
   // -----------------------------------
@@ -202,6 +202,11 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
     }
   };
 
+  /*
+
+  Tmp commenting out clock because its triggering 
+  re-renders on tick
+
   const [timeLeft, setTimeLeft] = useState<number>(63);
 
   const minutesLeft = Math.floor(timeLeft / 60);
@@ -212,12 +217,16 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   const auctionIsActive = auction.status === "ACTIVE" && timeLeft > 0;
 
   useInterval(() => setTimeLeft((prior) => (prior -= 1)), 1000);
+  */
 
   const { charity: charityDetails } = useCharityQuery(auction.charity_id);
 
   return (
     <div className="flex flex-col gap-8 lg:flex-row">
+      {/*
+      // temp hiding this because of re renders
       <ImageCarousel sources={[imageUrl, imageUrl]} />
+      */}
       <div
         className="flex flex-col items-start justify-start w-full gap-4 p-2 lg:w-1/3"
         id="auction-info-container"
@@ -237,6 +246,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
         </p>
         <p className="text-sm text-neutral-800">status: {auction.status}</p>
         <p className="text-base text-left text-neutral-800">{numberOfBids}</p>
+        {/*
         {auctionIsActive ? (
           <>
             <p className="text-base text-left text-neutral-800">
@@ -249,6 +259,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
             Auction has ended. Thanks for playing!
           </p>
         )}
+        */}
       </div>
     </div>
   );
