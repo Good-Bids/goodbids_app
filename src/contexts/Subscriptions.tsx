@@ -23,7 +23,8 @@ type T_MessageBusProviderProps = {
 type T_MessageBusValues = {
   isInitialized: boolean;
   subscriptions: RealtimeChannel[];
-  lastMessage?: any; // <- RealtimePostgresInsertPayload ???
+  lastBidLockMessage?: any; // <- RealtimePostgresInsertPayload ???
+  lastAuctionUpdateMessage?: any
 };
 
 interface I_MessageBusContext {
@@ -38,7 +39,8 @@ const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
   const [mbus, updateMBus] = useState<T_MessageBusValues>({
     isInitialized: false,
     subscriptions: [],
-    lastMessage: undefined,
+    lastBidLockMessage: undefined,
+    lastAuctionUpdateMessage: undefined
   });
 
   // Even Dan A. and the React docs use subscriptions as
@@ -56,13 +58,13 @@ const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
           updateMBus({
             ...mbus,
             isInitialized: true,
-            lastMessage: payload, // RealtimePostgresInsertPayload ???
+            lastBidLockMessage: payload, // RealtimePostgresInsertPayload ???
           });
         }
       )
       .subscribe();
 
-    const bidStateDelete: RealtimeChannel  = supabaseClient
+    const bidStateDelete: RealtimeChannel = supabaseClient
       .channel("custom-delete-channel")
       .on(
         "postgres_changes",
@@ -72,7 +74,22 @@ const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
           updateMBus({
             ...mbus,
             isInitialized: true,
-            lastMessage: payload, // RealtimePostgresInsertPayload ???
+            lastBidLockMessage: payload, // RealtimePostgresInsertPayload ???
+          });
+        }
+      )
+      .subscribe();
+
+    const auctionUpdate: RealtimeChannel = supabaseClient
+      .channel("custom-update-channel")
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "auction" },
+        (payload) => {
+          updateMBus({
+            ...mbus,
+            isInitialized: true,
+            lastAuctionUpdateMessage: payload, // RealtimePostgresInsertPayload ???
           });
         }
       )
@@ -81,8 +98,9 @@ const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
     updateMBus((prevState) => {
       return {
         isInitialized: true,
-        subscriptions: [bidStateInsert, bidStateDelete],
+        subscriptions: [bidStateInsert, bidStateDelete, auctionUpdate],
         lastMessage: undefined,
+        lastAuctionUpdateMessage: undefined
       };
     });
 
@@ -90,6 +108,7 @@ const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
     return () => {
       bidStateInsert.unsubscribe();
       bidStateDelete.unsubscribe();
+      auctionUpdate.unsubscribe();
     };
   }, []);
 

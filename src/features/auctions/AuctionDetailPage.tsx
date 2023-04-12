@@ -22,10 +22,6 @@ import { ImageCarousel } from "~/components/ImageCarousel";
 /** TS for the paypal project is here importing only Types */
 import { PayPalDialog } from "./PayPalDialog";
 
-// can also use the react-libs types
-// import { OrderResponseBody } from "@paypal/paypal-js/types/apis/orders";
-// import { CreateOrderActions } from "@paypal/paypal-js/types/components/buttons";
-
 /**
  * TODO: move links to backend server into:
  * 1. possibly the db itself so that links are hydrated via the row call
@@ -119,26 +115,26 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   useEffect(() => {
     if (!subscription.mbus.isInitialized) return;
 
-    if (subscription.mbus.lastMessage) {
+    if (subscription.mbus.lastBidLockMessage) {
 
-      let eventTriggered = subscription.mbus.lastMessage?.eventType;
+      let eventTriggered = subscription.mbus.lastBidLockMessage?.eventType;
       let filterOnAuctionId = "n/a";
 
       if(eventTriggered === "INSERT") {
-        filterOnAuctionId = subscription.mbus.lastMessage?.new.auction_id;
+        filterOnAuctionId = subscription.mbus.lastBidLockMessage?.new.auction_id;
       }
       if(eventTriggered === "DELETE") {
-        filterOnAuctionId = subscription.mbus.lastMessage?.old.auction_id;
+        filterOnAuctionId = subscription.mbus.lastBidLockMessage?.old.auction_id;
       }
       
       if (filterOnAuctionId === auction.auction_id) {
 
-        let dateTime = subscription.mbus.lastMessage?.commit_timestamp;
-        let errors = subscription.mbus.lastMessage?.errors;
-        let ttl = subscription.mbus.lastMessage?.new.ttl;
+        let dateTime = subscription.mbus.lastBidLockMessage?.commit_timestamp;
+        let errors = subscription.mbus.lastBidLockMessage?.errors;
+        let ttl = subscription.mbus.lastBidLockMessage?.new.ttl;
 
         // Inserts
-        if (subscription.mbus.lastMessage?.eventType === "INSERT") {
+        if (subscription.mbus.lastBidLockMessage?.eventType === "INSERT") {
           console.log(
             "[Bid Lock] - A bid lock has been registered",
             dateTime,
@@ -148,7 +144,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
         }
 
         // Deletes
-        if (subscription.mbus.lastMessage?.eventType === "DELETE") {
+        if (subscription.mbus.lastBidLockMessage?.eventType === "DELETE") {
           console.log(
             "[Bid Lock] - A bid lock has been removed",
             dateTime,
@@ -163,7 +159,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   }, [
     auction.auction_id,
     subscription.mbus.isInitialized,
-    subscription.mbus.lastMessage,
+    subscription.mbus.lastBidLockMessage,
   ]);
 
   // should apply isAuthenticated here
@@ -324,13 +320,13 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
             {charityDetails?.name}
           </Link>
         </p>
-        <p className="text-sm text-neutral-800">status: {auction.status}</p>
+        <p className="text-sm text-neutral-800">Auction Status: {auction.status}</p>
         <p className="text-sm text-neutral-800">
           is bid in process (locked): {isBidLocked ? "yes" : "no"}
         </p>
         {isBidLocked && (
           <p className="text-sm text-neutral-800">
-            bid lock info: {isBidLocked ? "yes" : "no"}
+            there is a bid in process currently "time left component here"
           </p>
         )}
         <p className="text-left text-base text-neutral-800">{numberOfBids}</p>
