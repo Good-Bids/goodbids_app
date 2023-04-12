@@ -1,7 +1,9 @@
 export const pageview = (url: string): void => {
-  (window as any).gtag("config", "G-CXJ4181QHF", {
-    page_path: url,
-  });
+  if (window !== undefined) {
+    (window as any).gtag("config", "G-CXJ4181QHF", {
+      page_path: url,
+    });
+  }
 };
 
 export const event = ({
@@ -11,5 +13,7 @@ export const event = ({
   action: string;
   params: any;
 }): void => {
-  (window as any).gtag("event", action, params);
+  if (window !== undefined) {
+    (window as any).gtag("event", action, params);
+  }
 };

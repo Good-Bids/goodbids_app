@@ -11,6 +11,8 @@ import { useRouter } from "next/router";
 import * as ga from "../lib/ga";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { initialOptions } from "~/utils/constants";
+import { GoogleAnalyticsScript } from "~/lib/GoogleAnalyticsScript";
+import Head from "next/head";
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
@@ -40,16 +42,24 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   }, [router.events]);
 
   return (
-    <QueryClientProvider client={queryClient.current}>
-      <UserContextProvider>
-        <PayPalScriptProvider options={initialOptions}>
-          <AppLayoutWrapper>
-            <Component {...pageProps} />
-          </AppLayoutWrapper>
-        </PayPalScriptProvider>
-      </UserContextProvider>
-      <ReactQueryDevtools />
-    </QueryClientProvider>
+    <>
+      <Head>
+        <title>GoodBids</title>
+        <meta name="description" content="Donate & Win" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <GoogleAnalyticsScript />
+      <QueryClientProvider client={queryClient.current}>
+        <UserContextProvider>
+          <PayPalScriptProvider options={initialOptions}>
+            <AppLayoutWrapper>
+              <Component {...pageProps} />
+            </AppLayoutWrapper>
+          </PayPalScriptProvider>
+        </UserContextProvider>
+        <ReactQueryDevtools />
+      </QueryClientProvider>
+    </>
   );
 };
 
