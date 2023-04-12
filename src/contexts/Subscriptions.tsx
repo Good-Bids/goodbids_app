@@ -9,11 +9,11 @@
  * 
  */
 
-import React, { createContext } from "react";
+import React, { createContext, useContext } from "react";
 import useSupabase from "../hooks/useSupabase";
 
 type T_MessageBusProviderProps = {
-  children: JSX.Element;
+  children: JSX.Element; // Only accepts FC not class ( basically wrap a single element )
 };
 
 type T_MessageBusOptions = {
@@ -41,8 +41,8 @@ const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
 };
 
 const useMessageBus = () => {
-  const context = React.useContext(MessageBusContext);
-  if (context === undefined) {
+  const context = useContext(MessageBusContext);
+  if (!context) {
     throw new Error("useMessageBus must be used within a MessageBusProvider");
   }
   return context;

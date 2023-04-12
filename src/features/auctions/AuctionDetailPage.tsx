@@ -8,6 +8,8 @@ import {
   useAuctionQuery,
   useBidStatus,
 } from "~/hooks/useAuction";
+import {useMessageBus} from "~/contexts/Subscriptions";
+
 import { useCharityQuery } from "~/hooks/useCharity";
 import useInterval from "~/hooks/useInterval";
 import { useUserQuery } from "~/hooks/useUser";
@@ -69,6 +71,10 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   // assuming that the hook will cause re-render and logout automatically
   const isAuthenticated: boolean =
     userJWT.data?.role === "authenticated" ?? false;
+
+  const subscription = useMessageBus();
+
+  console.log("[MB - Subscriptions]", subscription.options);
 
   // Hooks for adding a bid to Good bids
   // -----------------------------------
@@ -213,11 +219,11 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
     <div className="flex flex-col gap-8 lg:flex-row">
       <ImageCarousel sources={[imageUrl, imageUrl]} />
       <div
-        className="flex w-full flex-col items-start justify-start gap-4 p-2 lg:w-1/3"
+        className="flex flex-col items-start justify-start w-full gap-4 p-2 lg:w-1/3"
         id="auction-info-container"
       >
         <p className="text-3xl font-black text-black">{auction.name}</p>
-        <p className="text-left text-base text-neutral-800">
+        <p className="text-base text-left text-neutral-800">
           {auction.description}
         </p>
         <p className="text-xs text-neutral-800">
@@ -230,16 +236,16 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
           </Link>
         </p>
         <p className="text-sm text-neutral-800">status: {auction.status}</p>
-        <p className="text-left text-base text-neutral-800">{numberOfBids}</p>
+        <p className="text-base text-left text-neutral-800">{numberOfBids}</p>
         {auctionIsActive ? (
           <>
-            <p className="text-left text-base text-neutral-800">
+            <p className="text-base text-left text-neutral-800">
               {minutesLeft}:{formattedSecondsLeft} left before this auction ends
             </p>
             <PayPalDialog bidValue={nextBidValue} />
           </>
         ) : (
-          <p className="text-md text-left font-black text-neutral-800">
+          <p className="font-black text-left text-md text-neutral-800">
             Auction has ended. Thanks for playing!
           </p>
         )}
@@ -271,14 +277,14 @@ export const AuctionDetailPage = () => {
   }
 
   return (
-    <div className="flex w-full flex-grow flex-col p-24">
+    <div className="flex flex-col flex-grow w-full p-24">
       {/* temp container for testing hook query status and errors */}
-      <p className="mb-2 bg-slate-50 pb-2 pl-2 pt-2 text-xs text-neutral-800">
+      <p className="pt-2 pb-2 pl-2 mb-2 text-xs bg-slate-50 text-neutral-800">
         query: status: {queryStatus.isLoading ? "loading" : "done"}
       </p>
 
       {/* temp container for Auction Detail View module */}
-      <div className="flex w-full flex-grow flex-col">
+      <div className="flex flex-col flex-grow w-full">
         <AuctionDetails auction={auction} />
       </div>
     </div>
