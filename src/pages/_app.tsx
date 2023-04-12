@@ -8,13 +8,13 @@ import { AppLayoutWrapper } from "~/shared/components/layout/AppLayoutWrapper";
 import { UserContextProvider } from "~/contexts/UserContextProvider";
 import React from "react";
 import { useRouter } from "next/router";
-import * as ga from '../lib/ga'
+import * as ga from "../lib/ga";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { initialOptions } from "~/utils/constants";
+import { GoogleAnalyticsScript } from "~/lib/GoogleAnalyticsScript";
+import Head from "next/head";
 
-const MyApp = ({
-  Component,
-  pageProps,
-}: AppProps) => {
-
+const MyApp = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
 
   const queryClient = React.useRef(
@@ -32,24 +32,34 @@ const MyApp = ({
 
   React.useEffect(() => {
     const handleRouteChange = (url: string) => {
-      ga.pageview(url)
-    }
-    router.events.on('routeChangeComplete', handleRouteChange)
+      ga.pageview(url);
+    };
+    router.events.on("routeChangeComplete", handleRouteChange);
 
     return () => {
-      router.events.off('routeChangeComplete', handleRouteChange)
-    }
-  }, [router.events])
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router.events]);
 
   return (
-    <QueryClientProvider client={queryClient.current}>
-      <UserContextProvider>
-        <AppLayoutWrapper>
-          <Component {...pageProps} />
-        </AppLayoutWrapper>
-      </UserContextProvider>
-      <ReactQueryDevtools />
-    </QueryClientProvider>
+    <>
+      <Head>
+        <title>GoodBids</title>
+        <meta name="description" content="Donate & Win" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <GoogleAnalyticsScript />
+      <QueryClientProvider client={queryClient.current}>
+        <UserContextProvider>
+          <PayPalScriptProvider options={initialOptions}>
+            <AppLayoutWrapper>
+              <Component {...pageProps} />
+            </AppLayoutWrapper>
+          </PayPalScriptProvider>
+        </UserContextProvider>
+        <ReactQueryDevtools />
+      </QueryClientProvider>
+    </>
   );
 };
 

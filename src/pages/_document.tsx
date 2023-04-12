@@ -1,5 +1,5 @@
 // pages/_document.js
-import { Html, Head, Main, NextScript } from 'next/document'
+import { Html, Head, Main, NextScript } from "next/document";
 
 export default function Document() {
   return (
@@ -7,10 +7,10 @@ export default function Document() {
       <Head>
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
       </Head>
-      <body className='padding-32px'>
+      <body className="padding-32px">
         <Main />
         <NextScript />
       </body>
     </Html>
-  )
+  );
 }

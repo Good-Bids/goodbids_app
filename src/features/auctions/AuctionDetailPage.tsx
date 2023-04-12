@@ -1,19 +1,22 @@
 import { MouseEvent, useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 import {
   preflightValidateBidAmount, // note: not a hook Supabase call no RQ
-  useAuctionQuery,
   useAddBidToAuctionTable,
   useAddBidToBidTable,
+  useAuctionQuery,
   useBidStatus,
 } from "~/hooks/useAuction";
+import { useCharityQuery } from "~/hooks/useCharity";
+import useInterval from "~/hooks/useInterval";
 import { useUserQuery } from "~/hooks/useUser";
-import Image from "next/image";
 import Link from "next/link";
+import { T_AuctionModelExtended } from "~/utils/types/auctions";
+import { ImageCarousel } from "~/components/ImageCarousel";
 
 /** TS for the paypal project is here importing only Types */
 import { PayPalDialog } from "./PayPalDialog";
-import { T_AuctionModelExtended } from "~/utils/types/auctions";
 
 // can also use the react-libs types
 // import { OrderResponseBody } from "@paypal/paypal-js/types/apis/orders";
@@ -193,55 +196,53 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
     }
   };
 
+  const [timeLeft, setTimeLeft] = useState<number>(63);
+
+  const minutesLeft = Math.floor(timeLeft / 60);
+  const secondsLeft = timeLeft - minutesLeft * 60;
+  const formattedSecondsLeft =
+    secondsLeft.toLocaleString().length == 1 ? "0" + secondsLeft : secondsLeft;
+
+  const auctionIsActive = auction.status === "ACTIVE" && timeLeft > 0;
+
+  useInterval(() => setTimeLeft((prior) => (prior -= 1)), 1000);
+
+  const { charity: charityDetails } = useCharityQuery(auction.charity_id);
+
   return (
-    <div className="flex flex-grow flex-col bg-slate-50">
-      <div className="flex w-full flex-col border-b p-2">
-        <p className="text-3xl font-bold text-black">{auction.name}</p>
+    <div className="flex flex-col gap-8 lg:flex-row">
+      <ImageCarousel sources={[imageUrl, imageUrl]} />
+      <div
+        className="flex w-full flex-col items-start justify-start gap-4 p-2 lg:w-1/3"
+        id="auction-info-container"
+      >
+        <p className="text-3xl font-black text-black">{auction.name}</p>
+        <p className="text-left text-base text-neutral-800">
+          {auction.description}
+        </p>
         <p className="text-xs text-neutral-800">
-          charity name and link {"-> "}
+          {"supports "}
           <Link
             href={`/charities/${auction.charity_id}`}
             className="decoration-screaminGreen hover:underline"
           >
-            {auction.charity_id}
+            {charityDetails?.name}
           </Link>
         </p>
-      </div>
-      <div className="flex flex-grow flex-row">
-        <div className="flex w-96 flex-col">
-          <p className="pb-1 pl-2 pt-2 text-sm text-neutral-800">
-            status: {auction.status}
-          </p>
-          <div className="overflow-hidden p-2">
-            <Image
-              className="w-full"
-              src={imageUrl}
-              alt={"item to be won"}
-              priority={true}
-              width={240}
-              height={240}
-            />
-          </div>
-        </div>
-        <div className="flex w-3/4 flex-col items-center justify-center p-2">
-          <p className="text-3xl font-bold text-black">
-            Current High Bid: ${currentHighBid}
-          </p>
-          <p className="text-center text-base text-neutral-800">
-            {auction.description}
-          </p>
-          <div
-            className="mb-4 mt-8 inline-block cursor-pointer border p-2 opacity-50"
-            onClick={(e) => {
-              handleProcessBidClick(e);
-            }}
-          >
-            <p className="select-none text-sm text-neutral-400">
-              temp bid button
+        <p className="text-sm text-neutral-800">status: {auction.status}</p>
+        <p className="text-left text-base text-neutral-800">{numberOfBids}</p>
+        {auctionIsActive ? (
+          <>
+            <p className="text-left text-base text-neutral-800">
+              {minutesLeft}:{formattedSecondsLeft} left before this auction ends
             </p>
-          </div>
-          <PayPalDialog bidValue={nextBidValue} />
-        </div>
+            <PayPalDialog bidValue={nextBidValue} />
+          </>
+        ) : (
+          <p className="text-md text-left font-black text-neutral-800">
+            Auction has ended. Thanks for playing!
+          </p>
+        )}
       </div>
     </div>
   );

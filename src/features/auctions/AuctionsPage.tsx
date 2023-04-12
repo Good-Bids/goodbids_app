@@ -24,7 +24,6 @@ import { useAuctionsQuery } from "~/hooks/useAuction";
 import {
   I_AuctionCollection,
   T_AuctionBid,
-  T_AuctionModel,
   T_AuctionModelExtended,
 } from "~/utils/types/auctions";
 import { PayPalDialog } from "./PayPalDialog";

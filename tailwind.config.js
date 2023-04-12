@@ -19,11 +19,11 @@ const config = {
         'outerSpace-100': '#d3d4d4',
         'outerSpace-50': '#e9eae9',
         bottleGreen: '#0a3624',
-        screaminGreen: '#5bf146',
-        hintOfGreen: '#ecffe9',
-        pompadour: '#68004b',
-        cornflowerLilac: '#ffa7a7',
-        fairPink: '#ffeeee'
+        screaminGreen: '#70FF8F',
+        hintOfGreen: '#D9FFD2',
+        pompadour: '#68004B',
+        cornflowerLilac: '#FFB3B3',
+        fairPink: '#FFE7EF'
       },
       fontFamily: {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans]
