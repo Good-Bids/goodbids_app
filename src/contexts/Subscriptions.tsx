@@ -9,21 +9,21 @@
  *
  */
 
-import React, { useEffect, createContext, useContext } from "react";
+import { useState, useEffect, useRef, createContext, useContext } from "react";
 import useSupabase from "../hooks/useSupabase";
+import { RealtimeChannel } from "@supabase/supabase-js";
+
+// TODO: fix this
+import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 
 type T_MessageBusProviderProps = {
-  children: JSX.Element; // Only accepts FC not class ( basically wrap a single element )
+  children: JSX.Element // Only accepts FC not class ( basically wrap a single element )
 };
 
-type T_Subscriptions = {
-  supabase: any
-}
-
 type T_MessageBusValues = {
-  isInitialized: boolean;
-  autoRestart?: boolean; // not used
-  subscriptions: T_Subscriptions[] | [] 
+  isInitialized: boolean
+  subscriptions: RealtimeChannel[]
+  lastMessage?: any // <- RealtimePostgresInsertPayload ???
 };
 
 interface I_MessageBusContext {
@@ -33,30 +33,47 @@ interface I_MessageBusContext {
 const MessageBusContext = createContext<I_MessageBusContext | null>(null);
 
 const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
+
   const supabaseClient = useSupabase();
 
-  const mbus: T_MessageBusValues = {
+  const [mbus, updateMBus] = useState<T_MessageBusValues>({
     isInitialized: false,
-    subscriptions: []
-  };
+    subscriptions: [],
+    lastMessage: undefined
+  });
 
+  // Even Dan A. and the React docs use subscriptions as
+  // an example, when in reality its wrong.
+  // These things simply are an impedance failure
+  // which needs to be external to React.
   useEffect(() => {
-
-    const bidState = supabaseClient
+    const bidState: RealtimeChannel = supabaseClient
       .channel("custom-insert-channel")
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "bid_state" },
         (payload) => {
-          console.log("Change received!", payload);
+          // RaceCondition between Callback and state
+          updateMBus({
+            ...mbus,
+            isInitialized: true,
+            lastMessage: payload // RealtimePostgresInsertPayload ???
+          });
         }
       )
       .subscribe();
-      console.log("[MB - Subscriptions] subscribe tp bid_state changes");
 
+    updateMBus((prevState) => {
+      return {
+        isInitialized: true,
+        subscriptions: [bidState],
+        lastMessage: undefined
+      };
+    });
+
+    // cleanup
     return () => {
       bidState.unsubscribe();
-      console.log("[MB - Subscriptions] unsubscribe from bid_state changes");
     };
   }, []);
 

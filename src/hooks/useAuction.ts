@@ -4,6 +4,19 @@ import useSupabase from "./useSupabase";
 
 const supabaseClient = useSupabase();
 
+type T_SupabaseBaseReturnObject = {
+  status: number;
+  statusMessage: string;
+  hasError: boolean;
+  rawError: any | null;
+}
+
+type T_BidStatusModel = {
+  bidStatus: any
+};
+
+type T_SupabaseBidStatusReturnObject = T_SupabaseBaseReturnObject & T_BidStatusModel;
+
 type T_SupabaseBidReturnObject = {
   status: number;
   statusMessage: string;
@@ -641,6 +654,69 @@ export const getBidsByAuctionId = async (auctionId: string) => {
       bids: [],
       hasError: true,
       errorObj: err,
+    };
+  }
+};
+
+
+export const addBidLock = async (
+  auctionId: string
+): Promise<T_SupabaseBidStatusReturnObject> => {
+  try {
+    let result;
+
+    result = await supabaseClient
+      .from("bid_state")
+      .insert({
+        auction_id: auctionId,
+      })
+      .select()
+      .throwOnError();
+
+    return {
+      status: result.status,
+      statusMessage: result.statusText,
+      bidStatus: result.data,
+      hasError: false,
+      rawError: null,
+    };
+  } catch (err: any) {
+    return {
+      status: err?.code ?? "5000",
+      statusMessage: err?.message ?? "unknown error type",
+      bidStatus: [],
+      hasError: true,
+      rawError: err,
+    };
+  }
+};
+
+export const isBidLocked = async (
+  auctionId: string
+): Promise<T_SupabaseBidStatusReturnObject> => {
+  try {
+    let result;
+
+    result = await supabaseClient
+      .from("bid_state")
+      .select()
+      .eq("auction_id", auctionId)
+      .throwOnError();
+
+    return {
+      status: result.status,
+      statusMessage: result.statusText,
+      bidStatus: result.data,
+      hasError: false,
+      rawError: null,
+    };
+  } catch (err: any) {
+    return {
+      status: err?.code ?? "5000",
+      statusMessage: err?.message ?? "unknown error type",
+      bidStatus: [],
+      hasError: true,
+      rawError: err,
     };
   }
 };

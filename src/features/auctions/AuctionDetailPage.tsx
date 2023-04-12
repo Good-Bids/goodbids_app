@@ -2,13 +2,15 @@ import { MouseEvent, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import {
+  isBidLocked, // note: async Supabase call not a hook
+  addBidLock, // note: async Supabase call not a hook
   preflightValidateBidAmount, // note: not a hook Supabase call no RQ
   useAddBidToAuctionTable,
   useAddBidToBidTable,
   useAuctionQuery,
   useBidStatus,
 } from "~/hooks/useAuction";
-import {useMessageBus} from "~/contexts/Subscriptions";
+import { useMessageBus } from "~/contexts/Subscriptions";
 
 import { useCharityQuery } from "~/hooks/useCharity";
 import useInterval from "~/hooks/useInterval";
@@ -66,15 +68,20 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   // showing error messages or success
   const [isProcessingBid, setProcessingState] = useState(false);
 
+  // can be set automatically AND or local set for UI snappiness 
+  const [isBidLocked, updateBidLock] = useState(false);
+
   // gets the auth id from the jwt
   const userJWT = useUserQuery();
   // assuming that the hook will cause re-render and logout automatically
   const isAuthenticated: boolean =
     userJWT.data?.role === "authenticated" ?? false;
 
+  // Subscription to the Bid Lock table
+  // Allows us to listen for insert into the Lock table
+  // subscription.lastMessage returns the "Full Monty" from the
+  // event.
   const subscription = useMessageBus();
-
-  console.log("[MB - Subscriptions]", subscription.mbus);
 
   // Hooks for adding a bid to Good bids
   // -----------------------------------
@@ -105,6 +112,21 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
     currentHighBid = auction.high_bid_value ?? currentHighBid;
     nextBidValue = currentHighBid + auction.increment;
   }
+
+  // Subscription listeners
+  // Updates on if the Channel has been init or a new message returns
+  useEffect(() => {
+    if (!subscription.mbus.isInitialized) return;
+    if (subscription.mbus.lastMessage) {
+      let dateTime =
+        subscription.mbus.lastMessage?.commit_timestamp ?? undefined;
+      let channelEvent = subscription.mbus.lastMessage?.eventType ?? undefined; // Should be INSERT
+      let errors = subscription.mbus.lastMessage?.errors ?? undefined; // Do these actually appear ?
+      let ttl = subscription.mbus.lastMessage?.new.ttl ?? undefined; // Time to life
+      let auctionId =
+        subscription.mbus.lastMessage?.new.auction_id ?? undefined; // verify the auction lock for user
+    }
+  }, [subscription.mbus.isInitialized, subscription.mbus.lastMessage]);
 
   // Note for now I wrapped these in a useEffect
   // Its just as easy to remove the guts of it
@@ -245,7 +267,33 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
           </Link>
         </p>
         <p className="text-sm text-neutral-800">status: {auction.status}</p>
+        <p className="text-sm text-neutral-800">
+          is bid in process (locked): {isBidLocked ? "yes" : "no"}
+        </p>
+        {isBidLocked && (
+          <p className="text-sm text-neutral-800">
+            bid lock info: {isBidLocked ? "yes" : "no"}
+          </p>
+        )}
         <p className="text-base text-left text-neutral-800">{numberOfBids}</p>
+
+        <div
+          className="block p-5 border cursor-pointer"
+          onClick={(e) => {
+            e.preventDefault();
+            if (isAuthenticated === true) {
+              // Send insert msg to Bid Lock table
+              // Which in turn also broadcasts the change to everyone else
+              addBidLock(auction.auction_id);
+              // Lock current users page
+              // This should happen after the INSERT works
+              updateBidLock(true);
+            }
+          }}
+        >
+          <p>test lock</p>
+        </div>
+
         {/*
         {auctionIsActive ? (
           <>
@@ -289,15 +337,7 @@ export const AuctionDetailPage = () => {
 
   return (
     <div className="flex flex-col flex-grow w-full p-24">
-      {/* temp container for testing hook query status and errors */}
-      <p className="pt-2 pb-2 pl-2 mb-2 text-xs bg-slate-50 text-neutral-800">
-        query: status: {queryStatus.isLoading ? "loading" : "done"}
-      </p>
-
-      {/* temp container for Auction Detail View module */}
-      <div className="flex flex-col flex-grow w-full">
-        <AuctionDetails auction={auction} />
-      </div>
+      <AuctionDetails auction={auction} />
     </div>
   );
 };
