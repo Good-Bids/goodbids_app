@@ -2,7 +2,7 @@ import { MouseEvent, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import {
-  isBidLocked, // note: async Supabase call not a hook
+  checkIsBidLocked, // note: async Supabase call not a hook
   addBidLock, // note: async Supabase call not a hook
   preflightValidateBidAmount, // note: not a hook Supabase call no RQ
   useAddBidToAuctionTable,
@@ -68,7 +68,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   // showing error messages or success
   const [isProcessingBid, setProcessingState] = useState(false);
 
-  // can be set automatically AND or local set for UI snappiness 
+  // can be set automatically AND or local set for UI snappiness
   const [isBidLocked, updateBidLock] = useState(false);
 
   // gets the auth id from the jwt
@@ -115,18 +115,63 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
 
   // Subscription listeners
   // Updates on if the Channel has been init or a new message returns
+  // should apply isAuthenticated here
   useEffect(() => {
     if (!subscription.mbus.isInitialized) return;
+
     if (subscription.mbus.lastMessage) {
-      let dateTime =
-        subscription.mbus.lastMessage?.commit_timestamp ?? undefined;
-      let channelEvent = subscription.mbus.lastMessage?.eventType ?? undefined; // Should be INSERT
-      let errors = subscription.mbus.lastMessage?.errors ?? undefined; // Do these actually appear ?
-      let ttl = subscription.mbus.lastMessage?.new.ttl ?? undefined; // Time to life
-      let auctionId =
-        subscription.mbus.lastMessage?.new.auction_id ?? undefined; // verify the auction lock for user
+      let filterOnAuctionId = subscription.mbus.lastMessage?.new.auction_id;
+
+      if (filterOnAuctionId === auction.auction_id) {
+        let dateTime = subscription.mbus.lastMessage?.commit_timestamp;
+        let errors = subscription.mbus.lastMessage?.errors;
+        let ttl = subscription.mbus.lastMessage?.new.ttl;
+
+        // Inserts
+        if (subscription.mbus.lastMessage?.eventType === "INSERT") {
+          console.log(
+            "[Bid Lock] - A bid lock has been registered",
+            dateTime,
+            " ttl(sec):" + ttl,
+            errors
+          );
+        }
+
+        // Deletes
+        if (subscription.mbus.lastMessage?.eventType === "DELETE") {
+          console.log(
+            "[Bid Lock] - A bid lock has been removed",
+            dateTime,
+            errors
+          );
+        }
+      }
     }
-  }, [subscription.mbus.isInitialized, subscription.mbus.lastMessage]);
+  }, [
+    auction.auction_id,
+    subscription.mbus.isInitialized,
+    subscription.mbus.lastMessage,
+  ]);
+
+  // should apply isAuthenticated here
+  useEffect(() => {
+    const checkForLock = async () => {
+      const hasLockResult = await checkIsBidLocked(auction.auction_id);
+      const hasLock = hasLockResult.bidStatus.length > 0 ? true : false;
+      console.log(
+        "[Bid Lock] - Checking on page load for locks",
+        hasLockResult,
+        hasLock
+      );
+
+      if (hasLock === true) {
+        updateBidLock(true);
+      }
+    };
+
+    checkForLock();
+    return () => {};
+  }, [auction.auction_id]);
 
   // Note for now I wrapped these in a useEffect
   // Its just as easy to remove the guts of it
@@ -250,11 +295,11 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
       <ImageCarousel sources={[imageUrl, imageUrl]} />
       */}
       <div
-        className="flex flex-col items-start justify-start w-full gap-4 p-2 lg:w-1/3"
+        className="flex w-full flex-col items-start justify-start gap-4 p-2 lg:w-1/3"
         id="auction-info-container"
       >
         <p className="text-3xl font-black text-black">{auction.name}</p>
-        <p className="text-base text-left text-neutral-800">
+        <p className="text-left text-base text-neutral-800">
           {auction.description}
         </p>
         <p className="text-xs text-neutral-800">
@@ -275,10 +320,10 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
             bid lock info: {isBidLocked ? "yes" : "no"}
           </p>
         )}
-        <p className="text-base text-left text-neutral-800">{numberOfBids}</p>
+        <p className="text-left text-base text-neutral-800">{numberOfBids}</p>
 
         <div
-          className="block p-5 border cursor-pointer"
+          className="block cursor-pointer border p-5"
           onClick={(e) => {
             e.preventDefault();
             if (isAuthenticated === true) {
@@ -336,7 +381,7 @@ export const AuctionDetailPage = () => {
   }
 
   return (
-    <div className="flex flex-col flex-grow w-full p-24">
+    <div className="flex w-full flex-grow flex-col p-24">
       <AuctionDetails auction={auction} />
     </div>
   );

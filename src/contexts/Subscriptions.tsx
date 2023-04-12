@@ -17,29 +17,28 @@ import { RealtimeChannel } from "@supabase/supabase-js";
 import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 
 type T_MessageBusProviderProps = {
-  children: JSX.Element // Only accepts FC not class ( basically wrap a single element )
+  children: JSX.Element; // Only accepts FC not class ( basically wrap a single element )
 };
 
 type T_MessageBusValues = {
-  isInitialized: boolean
-  subscriptions: RealtimeChannel[]
-  lastMessage?: any // <- RealtimePostgresInsertPayload ???
+  isInitialized: boolean;
+  subscriptions: RealtimeChannel[];
+  lastMessage?: any; // <- RealtimePostgresInsertPayload ???
 };
 
 interface I_MessageBusContext {
-  mbus: T_MessageBusValues
+  mbus: T_MessageBusValues;
 }
 
 const MessageBusContext = createContext<I_MessageBusContext | null>(null);
 
 const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
-
   const supabaseClient = useSupabase();
 
   const [mbus, updateMBus] = useState<T_MessageBusValues>({
     isInitialized: false,
     subscriptions: [],
-    lastMessage: undefined
+    lastMessage: undefined,
   });
 
   // Even Dan A. and the React docs use subscriptions as
@@ -47,7 +46,7 @@ const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
   // These things simply are an impedance failure
   // which needs to be external to React.
   useEffect(() => {
-    const bidState: RealtimeChannel = supabaseClient
+    const bidStateInsert: RealtimeChannel = supabaseClient
       .channel("custom-insert-channel")
       .on(
         "postgres_changes",
@@ -57,8 +56,19 @@ const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
           updateMBus({
             ...mbus,
             isInitialized: true,
-            lastMessage: payload // RealtimePostgresInsertPayload ???
+            lastMessage: payload, // RealtimePostgresInsertPayload ???
           });
+        }
+      )
+      .subscribe();
+
+    const bidStateDelete: RealtimeChannel  = supabaseClient
+      .channel("custom-delete-channel")
+      .on(
+        "postgres_changes",
+        { event: "DELETE", schema: "public", table: "bid_state" },
+        (payload) => {
+          console.log("Change received!", payload);
         }
       )
       .subscribe();
@@ -66,14 +76,15 @@ const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
     updateMBus((prevState) => {
       return {
         isInitialized: true,
-        subscriptions: [bidState],
-        lastMessage: undefined
+        subscriptions: [bidStateInsert, bidStateDelete],
+        lastMessage: undefined,
       };
     });
 
     // cleanup
     return () => {
-      bidState.unsubscribe();
+      bidStateInsert.unsubscribe();
+      bidStateDelete.unsubscribe();
     };
   }, []);
 

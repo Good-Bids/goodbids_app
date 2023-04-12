@@ -691,7 +691,7 @@ export const addBidLock = async (
   }
 };
 
-export const isBidLocked = async (
+export const checkIsBidLocked = async (
   auctionId: string
 ): Promise<T_SupabaseBidStatusReturnObject> => {
   try {
