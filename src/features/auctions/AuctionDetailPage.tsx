@@ -120,9 +120,19 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
     if (!subscription.mbus.isInitialized) return;
 
     if (subscription.mbus.lastMessage) {
-      let filterOnAuctionId = subscription.mbus.lastMessage?.new.auction_id;
 
+      let eventTriggered = subscription.mbus.lastMessage?.eventType;
+      let filterOnAuctionId = "n/a";
+
+      if(eventTriggered === "INSERT") {
+        filterOnAuctionId = subscription.mbus.lastMessage?.new.auction_id;
+      }
+      if(eventTriggered === "DELETE") {
+        filterOnAuctionId = subscription.mbus.lastMessage?.old.auction_id;
+      }
+      
       if (filterOnAuctionId === auction.auction_id) {
+
         let dateTime = subscription.mbus.lastMessage?.commit_timestamp;
         let errors = subscription.mbus.lastMessage?.errors;
         let ttl = subscription.mbus.lastMessage?.new.ttl;
@@ -144,6 +154,9 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
             dateTime,
             errors
           );
+          updateBidLock((prev) => {
+            return false
+          });
         }
       }
     }

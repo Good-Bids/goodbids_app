@@ -68,7 +68,12 @@ const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
         "postgres_changes",
         { event: "DELETE", schema: "public", table: "bid_state" },
         (payload) => {
-          console.log("Change received!", payload);
+          // RaceCondition between Callback and state
+          updateMBus({
+            ...mbus,
+            isInitialized: true,
+            lastMessage: payload, // RealtimePostgresInsertPayload ???
+          });
         }
       )
       .subscribe();
