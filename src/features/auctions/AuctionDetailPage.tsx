@@ -116,19 +116,19 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
     if (!subscription.mbus.isInitialized) return;
 
     if (subscription.mbus.lastBidLockMessage) {
-
       let eventTriggered = subscription.mbus.lastBidLockMessage?.eventType;
       let filterOnAuctionId = "n/a";
 
-      if(eventTriggered === "INSERT") {
-        filterOnAuctionId = subscription.mbus.lastBidLockMessage?.new.auction_id;
+      if (eventTriggered === "INSERT") {
+        filterOnAuctionId =
+          subscription.mbus.lastBidLockMessage?.new.auction_id;
       }
-      if(eventTriggered === "DELETE") {
-        filterOnAuctionId = subscription.mbus.lastBidLockMessage?.old.auction_id;
+      if (eventTriggered === "DELETE") {
+        filterOnAuctionId =
+          subscription.mbus.lastBidLockMessage?.old.auction_id;
       }
-      
-      if (filterOnAuctionId === auction.auction_id) {
 
+      if (filterOnAuctionId === auction.auction_id) {
         let dateTime = subscription.mbus.lastBidLockMessage?.commit_timestamp;
         let errors = subscription.mbus.lastBidLockMessage?.errors;
         let ttl = subscription.mbus.lastBidLockMessage?.new.ttl;
@@ -151,7 +151,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
             errors
           );
           updateBidLock((prev) => {
-            return false
+            return false;
           });
         }
       }
@@ -297,12 +297,12 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
 
   const { charity: charityDetails } = useCharityQuery(auction.charity_id);
 
+  // temp this here for now
+  const auctionIsActive = auction.status === "ACTIVE" ? true : false;
+
   return (
     <div className="flex flex-col gap-8 lg:flex-row">
-      {/*
-      // temp hiding this because of re renders
       <ImageCarousel sources={[imageUrl, imageUrl]} />
-      */}
       <div
         className="flex w-full flex-col items-start justify-start gap-4 p-2 lg:w-1/3"
         id="auction-info-container"
@@ -320,7 +320,9 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
             {charityDetails?.name}
           </Link>
         </p>
-        <p className="text-sm text-neutral-800">Auction Status: {auction.status}</p>
+        <p className="text-sm text-neutral-800">
+          Auction Status: {auction.status}
+        </p>
         <p className="text-sm text-neutral-800">
           is bid in process (locked): {isBidLocked ? "yes" : "no"}
         </p>
@@ -348,20 +350,20 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
           <p>test lock</p>
         </div>
 
-        {/*
         {auctionIsActive ? (
           <>
+            {/*
             <p className="text-base text-left text-neutral-800">
               {minutesLeft}:{formattedSecondsLeft} left before this auction ends
             </p>
+            */}
             <PayPalDialog bidValue={nextBidValue} />
           </>
         ) : (
-          <p className="font-black text-left text-md text-neutral-800">
+          <p className="text-md text-left font-black text-neutral-800">
             Auction has ended. Thanks for playing!
           </p>
         )}
-        */}
       </div>
     </div>
   );
