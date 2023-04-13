@@ -106,6 +106,26 @@ export interface Database {
           created_at?: string
         }
       }
+      bid_state: {
+        Row: {
+          auction_id: string
+          created_at: string
+          status: string
+          ttl: number
+        }
+        Insert: {
+          auction_id: string
+          created_at?: string
+          status?: string
+          ttl?: number
+        }
+        Update: {
+          auction_id?: string
+          created_at?: string
+          status?: string
+          ttl?: number
+        }
+      }
       bidder_auction_status: {
         Row: {
           auction_id: string
@@ -194,7 +214,6 @@ export interface Database {
           created_at: string | null
           description: string
           item_id: string
-          item_image_id: string | null
           name: string
           value: number | null
         }
@@ -204,7 +223,6 @@ export interface Database {
           created_at?: string | null
           description: string
           item_id?: string
-          item_image_id?: string | null
           name: string
           value?: number | null
         }
@@ -214,7 +232,6 @@ export interface Database {
           created_at?: string | null
           description?: string
           item_id?: string
-          item_image_id?: string | null
           name?: string
           value?: number | null
         }

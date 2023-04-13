@@ -148,6 +148,29 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   // temp this here for now
   const auctionIsActive = auction.status === "ACTIVE" ? true : false;
 
+  const supabaseClient = useSupabase();
+
+  const listenToAuction = supabaseClient
+    .channel("custom-all-channel")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "auction" },
+      (payload) => {
+        console.log("Change received!", payload);
+      }
+    )
+    .subscribe();
+  const listenToBids = supabaseClient
+    .channel("custom-all-channel")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "bids" },
+      (payload) => {
+        console.log("Change received on bids!", payload);
+      }
+    )
+    .subscribe();
+
   return (
     <div className="flex h-2/4 flex-col gap-8 overflow-y-auto lg:flex-row">
       <ImageCarousel sources={[imageUrl, imageUrl]} />
