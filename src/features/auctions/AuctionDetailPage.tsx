@@ -1,16 +1,7 @@
 import { MouseEvent, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import {
-  checkIsBidLocked, // note: async Supabase call not a hook
-  addBidLock, // note: async Supabase call not a hook
-  removeBidLockByAuctionId, // note: async Supabase call not a hook
-  preflightValidateBidAmount, // note: not a hook Supabase call no RQ
-  useAddBidToAuctionTable,
-  useAddBidToBidTable,
-  useAuctionQuery,
-  useBidStatus,
-} from "~/hooks/useAuction";
+import { useAuctionQuery, useUpdateAuctionCache } from "~/hooks/useAuction";
 import { useMessageBus } from "~/contexts/Subscriptions";
 
 import { useCharityQuery } from "~/hooks/useCharity";
@@ -22,6 +13,7 @@ import { ImageCarousel } from "~/components/ImageCarousel";
 
 /** TS for the paypal project is here importing only Types */
 import { PayPalDialog } from "./PayPalDialog";
+import { bidHandler } from "../processBid";
 
 /**
  * TODO: move links to backend server into:
@@ -61,8 +53,7 @@ interface AuctionDetailsProps {
 
 const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   const router = useRouter();
-  // trigger component level state for processing a bid
-  // can extend this to { isProcessingBid, bidStatus } for
+
   // showing error messages or success
   const [isProcessingBid, setProcessingState] = useState(false);
 
@@ -81,16 +72,11 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   // event.
   const subscription = useMessageBus();
 
-  // Hooks for adding a bid to Good bids
-  // -----------------------------------
+  // For manually updating the current Auction Model
+  const triggerUpdateAuction = useUpdateAuctionCache();
 
-  // 1. insert on bid table
-  const [bidUpdateStatus, updateBidTable] = useAddBidToBidTable();
-  // 2. update auction table with current values
-  const [auctionUpdateStatus, updateAuctionTable] = useAddBidToAuctionTable();
-  // 3. update bid table to "COMPLETED"
-  const [bidStatusComplete, updateBidStatus] = useBidStatus();
-  // END Bid hooks
+  // gets the Charity data 
+  const { charity: charityDetails } = useCharityQuery(auction.charity_id);
 
   // Derived state
   // Required to setup bid amount
@@ -152,131 +138,38 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
     subscription.mbus.lastAuctionUpdateMessage,
   ]);
 
-  // should apply isAuthenticated here
-  useEffect(() => {
-    const checkForLock = async () => {
-      const hasLockResult = await checkIsBidLocked(auction.auction_id);
-      const hasLock = hasLockResult.bidStatus.length > 0 ? true : false;
-      console.log(
-        "[Bid Lock] - Checking on page load for locks",
-        hasLockResult,
-        hasLock
-      );
-
-      if (hasLock === true) {
-        updateBidLock(true);
-      }
-    };
-
-    checkForLock();
-    return () => {};
-  }, [auction.auction_id]);
-
-  // Note for now I wrapped these in a useEffect
-  // Its just as easy to remove the guts of it
-  // keeping the skeleton in the useEffect so its a single call
-  // moving the faux state machine outside the component
   useEffect(() => {
     const processBid = async () => {
-      // Check preflight
-      const preFlightCheckResult = await preflightValidateBidAmount(
-        auction.auction_id,
-        auction.increment,
-        nextBidValue
+
+      if(userJWT.data?.id === undefined) return;
+
+      const bidResult = await bidHandler(
+        userJWT.data?.id,
+        auction,
+        nextBidValue,
+        () => {
+          console.log("[Process BID] - START");
+        },
+        () => {
+          console.log("[Process BID] - COMPLETE");
+        },
+        () => {
+          console.log("[Process BID] - ERROR");
+        }
       );
-      console.log("[Process BID] - PreFlight Bid Check ", preFlightCheckResult);
-
-      // Send insert msg to Bid Lock table
-      // Which in turn also broadcasts the change to everyone else
-      addBidLock(auction.auction_id);
-      updateBidLock(true);
-
-      // check error
-      // If not valid then there was a race condition and the bid needs to refresh
-      // the bid value - this will be hit a lot on active auctions
-      // Show Sorry -> Missed your window, would you like to update your bid
-
-      // Start the process
-      const updateBidTableResults = await updateBidTable({
-        auctionId: auction.auction_id,
-        charityId: auction.charity_id,
-        userId: userJWT.data?.id ?? "", // <- should not ever be undefined after auth
-        amount: nextBidValue,
-      });
-      console.log(
-        "[Process BID] - Add bid to bid table as PENDING ",
-        updateBidTableResults
-      );
-
-      // check error
-      // If there was a insert to bid table in DB the error it will manifest here
-      // stop processing bid and reset component state
-      // Show Sorry -> Network / System error
-
-      // Update new bid value in auction table
-      const updateAuctionResults = await updateAuctionTable({
-        auctionId: auction.auction_id,
-        newBidValue: nextBidValue,
-      });
-      console.log(
-        "[Process BID] - Update the auction table ",
-        updateAuctionResults
-      );
-
-      // check error
-      // If there was a update to auction table in DB the error it will manifest here
-      // stop processing bid and reset component state - can not RollBack in the db
-      // there will be orphaned "PENDING" bids in the DB
-      // Show Sorry -> Network / System error
-
-      // Update bid table to Complete status
-      const bidCompletedResults = await updateBidStatus({
-        bidId: updateBidTableResults.bid[0].bid_id,
-      });
-
-      console.log("[Process BID] - Update the bid table ", bidCompletedResults);
-
-      // check error
-      // If there was a update to bid table in DB error it will manifest here
-      // this call is at the end of the bid, it changes the bid table status to
-      // COMPLETE instead of PENDING - What to do in this situation -
-      // the bid is added and the auction table has a new current bid value
-      // already reflected in the component and for everyone.
-      // It could be the result of a network error. Perhaps there is way to
-      // signal the site admin of failure and re-connect the bid status manually
-
-      // This is async
-      // when flow is nailed down we can turn this into an await for errors
-      removeBidLockByAuctionId(auction.auction_id).then((resp) => {
-        // console.log("Testing removal of lock", resp);
-      });
-
-      // Finally re-enable the component state
+      // Check for ERRORS then reset
+      console.log("[Process BID] - POST run", bidResult);
       setProcessingState(false);
-      // Show Happy face -> Bid was completed
+      triggerUpdateAuction();
     };
 
     if (isProcessingBid) {
       processBid();
     }
-
-    return () => {
-      // See if Supabase support cancel request so we can clean up
-    };
   }, [isProcessingBid]);
 
   // the auctioned item has a slot for only 1 image
   const imageUrl = `${fileStoragePath}/${auction?.auction_id}/sample-item-1298792.jpg`;
-
-  const handleProcessBidClick = (e: MouseEvent) => {
-    e.preventDefault();
-    if (isAuthenticated === true) {
-      setProcessingState(true);
-    } else {
-      router.push("/login");
-      // redirect to login
-    }
-  };
 
   /*
 
@@ -294,8 +187,6 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
 
   useInterval(() => setTimeLeft((prior) => (prior -= 1)), 1000);
   */
-
-  const { charity: charityDetails } = useCharityQuery(auction.charity_id);
 
   // temp this here for now
   const auctionIsActive = auction.status === "ACTIVE" ? true : false;
@@ -347,13 +238,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
           className="block cursor-pointer border p-5"
           onClick={(e) => {
             e.preventDefault();
-            if (isAuthenticated === true) {
-              // Start bid process
-              setProcessingState(true);
-              // Lock current users page
-              // This should happen after the INSERT works
-              updateBidLock(true);
-            }
+            handleBidClick();
           }}
         >
           <p>Test a Bid: {nextBidValue}</p>

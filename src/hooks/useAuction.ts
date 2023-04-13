@@ -9,13 +9,14 @@ type T_SupabaseBaseReturnObject = {
   statusMessage: string;
   hasError: boolean;
   rawError: any | null;
-}
-
-type T_BidStatusModel = {
-  bidStatus: any
 };
 
-type T_SupabaseBidStatusReturnObject = T_SupabaseBaseReturnObject & T_BidStatusModel;
+type T_BidStatusModel = {
+  bidStatus: any;
+};
+
+type T_SupabaseBidStatusReturnObject = T_SupabaseBaseReturnObject &
+  T_BidStatusModel;
 
 type T_SupabaseBidReturnObject = {
   status: number;
@@ -416,6 +417,43 @@ export const updateAuctionWithBid = async (
   }
 };
 
+export const updateAuctionWithBidAutoUpdate = async (
+  auctionId: string,
+  newBidValue: number
+): Promise<T_SupabaseAuctionReturnObject> => {
+  try {
+    let result;
+
+    result = await supabaseClient
+      .from("auction")
+      .update({ high_bid_value: newBidValue })
+      .eq("auction_id", auctionId)
+      .select(
+        `
+          *,
+          bids: bid(*)
+        `
+      )
+      .throwOnError();
+
+    return {
+      status: result.status,
+      statusMessage: result.statusText,
+      auction: result.data,
+      hasError: false,
+      rawError: null,
+    };
+  } catch (err: any) {
+    return {
+      status: err?.code ?? "5000",
+      statusMessage: err?.message ?? "unknown error type",
+      auction: [],
+      hasError: true,
+      rawError: err,
+    };
+  }
+};
+
 /**
  * useAddBidToAuction
  *
@@ -477,7 +515,7 @@ export const useAddBidToAuctionTable = () => {
  * @param amount number
  * @returns Object
  */
-const addBid = async (
+export const addBid = async (
   auctionId: string,
   charityId: string,
   userId: string,
@@ -565,7 +603,7 @@ export const useAddBidToBidTable = () => {
   ] as const;
 };
 
-const updateBidCompleteStatus = async (
+export const updateBidCompleteStatus = async (
   bidId: string
 ): Promise<T_SupabaseBidReturnObject> => {
   try {
@@ -658,7 +696,6 @@ export const getBidsByAuctionId = async (auctionId: string) => {
   }
 };
 
-
 export const addBidLock = async (
   auctionId: string
 ): Promise<T_SupabaseBidStatusReturnObject> => {
@@ -749,4 +786,14 @@ export const removeBidLockByAuctionId = async (
       rawError: err,
     };
   }
+};
+
+export const useUpdateAuctionCache = () => {
+  const queryClient = useQueryClient();
+
+  const update = () => {
+    queryClient.invalidateQueries({ queryKey: ["auctionQueryResults"] });
+  };
+
+  return update;
 };
