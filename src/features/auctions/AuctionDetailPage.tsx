@@ -18,6 +18,15 @@ import { ImageCarousel } from "~/components/ImageCarousel";
 import useInterval from "~/hooks/useInterval";
 import Image from "next/image";
 
+import {
+  CreateOrderData,
+  CreateOrderActions,
+  OnApproveData,
+  OnApproveActions,
+  OnCancelledActions,
+} from "@paypal/paypal-js";
+import { PayPalButtons } from "@paypal/react-paypal-js";
+
 // Types
 import { T_AuctionModelExtended } from "~/utils/types/auctions";
 interface AuctionDetailsProps {
@@ -49,13 +58,12 @@ const QueryErrorDisplay = () => {
 };
 
 const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
-
   // can be set automatically AND or local set for UI snappiness
   const [isBidLocked, updateBidLock] = useState(false);
 
   // gets the auth id from the jwt
   const userJWT = useUserQuery();
-  
+
   // assuming that the hook will cause re-render and logout automatically
   const isAuthenticated: boolean =
     userJWT.data?.role === "authenticated" ?? false;
@@ -69,7 +77,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   // For manually updating the current Auction Model
   const triggerUpdateAuction = useUpdateAuctionCache();
 
-  // gets the Charity data 
+  // gets the Charity data
   const { charity: charityDetails } = useCharityQuery(auction.charity_id);
 
   // Derived state
@@ -159,6 +167,48 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   // temp this here for now
   const auctionIsActive = auction.status === "ACTIVE" ? true : false;
 
+
+  // paypal specific method
+  const handleCreateOrder = async (
+    data: CreateOrderData,
+    actions: CreateOrderActions
+  ) => {
+    // updatePaypalState("CREATE_ORDER");
+    return await actions.order?.create({
+      purchase_units: [
+        {
+          amount: {
+            value: nextBidValue.toString(10),
+          },
+        },
+      ],
+    });
+  };
+
+  // paypal specific method
+  const handleApprove = async (
+    data: OnApproveData,
+    actions: OnApproveActions
+  ) => {
+    // updatePaypalState("COMPLETED");
+    const details = await actions.order?.capture();
+    // const name = details?.payer?.name?.given_name ?? "an unknown GoodBidder"; // because capture() can be promise | undefined
+    console.log("PP: Completed triggered", data, details);
+  };
+
+  // paypal specific method
+  const handleCancel = async (
+    data: Record<string, unknown>,
+    actions: OnCancelledActions
+  ) => {
+    console.log("PP: cancel triggered", data);
+  };
+
+  // paypal specific method
+  const handleError = async (error: Record<string, unknown>) => {
+    console.log("PP: error triggered", error);
+  };
+
   return (
     <div className="flex flex-col gap-8 overflow-y-auto h-2/4 lg:flex-row">
       <ImageCarousel sources={[imageUrl, imageUrl]} />
@@ -198,11 +248,19 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
             <p className="text-base text-left text-neutral-800">
               {minutesLeft}:{formattedSecondsLeft} left before this auction ends
             </p>
-            */}
             <PayPalDialog
               bidValue={nextBidValue}
               auction={auction}
             />
+            */}
+            <div className="flex flex-col">
+              <PayPalButtons
+                createOrder={handleCreateOrder}
+                onApprove={handleApprove}
+                onCancel={handleCancel}
+                onError={handleError}
+              />
+            </div>
           </>
         ) : (
           <p className="font-black text-left text-md text-neutral-800">
