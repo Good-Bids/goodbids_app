@@ -720,3 +720,33 @@ export const checkIsBidLocked = async (
     };
   }
 };
+
+export const removeBidLockByAuctionId = async (
+  auctionId: string
+): Promise<T_SupabaseBidStatusReturnObject> => {
+  try {
+    let result;
+
+    result = await supabaseClient
+      .from("bid_state")
+      .delete()
+      .eq("auction_id", auctionId)
+      .throwOnError();
+
+    return {
+      status: result.status,
+      statusMessage: result.statusText,
+      bidStatus: result.data,
+      hasError: false,
+      rawError: null,
+    };
+  } catch (err: any) {
+    return {
+      status: err?.code ?? "5000",
+      statusMessage: err?.message ?? "unknown error type",
+      bidStatus: [],
+      hasError: true,
+      rawError: err,
+    };
+  }
+};

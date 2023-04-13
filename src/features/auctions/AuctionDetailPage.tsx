@@ -4,6 +4,7 @@ import Image from "next/image";
 import {
   checkIsBidLocked, // note: async Supabase call not a hook
   addBidLock, // note: async Supabase call not a hook
+  removeBidLockByAuctionId, // note: async Supabase call not a hook
   preflightValidateBidAmount, // note: not a hook Supabase call no RQ
   useAddBidToAuctionTable,
   useAddBidToBidTable,
@@ -178,6 +179,11 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
       );
       console.log("[Process BID] - PreFlight Bid Check ", preFlightCheckResult);
 
+      // Send insert msg to Bid Lock table
+      // Which in turn also broadcasts the change to everyone else
+      addBidLock(auction.auction_id);
+      updateBidLock(true);
+
       // check error
       // If not valid then there was a race condition and the bid needs to refresh
       // the bid value - this will be hit a lot on active auctions
@@ -220,8 +226,9 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
       const bidCompletedResults = await updateBidStatus({
         bidId: updateBidTableResults.bid[0].bid_id,
       });
+
       console.log(
-        "[Process BID] - Update the auction table ",
+        "[Process BID] - Update the bid table ",
         bidCompletedResults
       );
 
@@ -233,6 +240,11 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
       // already reflected in the component and for everyone.
       // It could be the result of a network error. Perhaps there is way to
       // signal the site admin of failure and re-connect the bid status manually
+
+      // This is async
+      removeBidLockByAuctionId(auction.auction_id).then((resp) => {
+        console.log("Testing removal of lock", resp);
+      });
 
       // Finally re-enable the component state
       setProcessingState(false);
@@ -320,16 +332,15 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
           onClick={(e) => {
             e.preventDefault();
             if (isAuthenticated === true) {
-              // Send insert msg to Bid Lock table
-              // Which in turn also broadcasts the change to everyone else
-              addBidLock(auction.auction_id);
+              // Start bid process
+              setProcessingState(true);
               // Lock current users page
               // This should happen after the INSERT works
               updateBidLock(true);
             }
           }}
         >
-          <p>test lock</p>
+          <p>Test a Bid: {nextBidValue}</p>
         </div>
 
         {auctionIsActive ? (
