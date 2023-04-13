@@ -119,9 +119,11 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
         subscription.mbus.lastBidLockMessage.auctionId === auction.auction_id
       ) {
         if (subscription.mbus.lastBidLockMessage.eventType === "INSERT") {
+          console.log("[Process BID] - Update from bid_state table adding local LOCK");
           updateBidLock(true);
         }
         if (subscription.mbus.lastBidLockMessage.eventType === "DELETE") {
+          console.log("[Process BID] - Update from bid_state table removing local LOCK");
           updateBidLock(false);
         }
       }
@@ -242,8 +244,9 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
       // signal the site admin of failure and re-connect the bid status manually
 
       // This is async
+      // when flow is nailed down we can turn this into an await for errors
       removeBidLockByAuctionId(auction.auction_id).then((resp) => {
-        console.log("Testing removal of lock", resp);
+        // console.log("Testing removal of lock", resp);
       });
 
       // Finally re-enable the component state
