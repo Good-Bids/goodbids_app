@@ -1,19 +1,28 @@
-import { MouseEvent, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+
+// Routing and links
 import { useRouter } from "next/router";
-import Image from "next/image";
-import { useAuctionQuery, useUpdateAuctionCache } from "~/hooks/useAuction";
+import Link from "next/link";
+
+// listener for db onChange
 import { useMessageBus } from "~/contexts/Subscriptions";
 
+// React Query hooks
+import { useAuctionQuery, useUpdateAuctionCache } from "~/hooks/useAuction";
 import { useCharityQuery } from "~/hooks/useCharity";
-import useInterval from "~/hooks/useInterval";
 import { useUserQuery } from "~/hooks/useUser";
-import Link from "next/link";
-import { T_AuctionModelExtended } from "~/utils/types/auctions";
-import { ImageCarousel } from "~/components/ImageCarousel";
 
-/** TS for the paypal project is here importing only Types */
+// Components
 import { PayPalDialog } from "./PayPalDialog";
-import { bidHandler } from "../processBid";
+import { ImageCarousel } from "~/components/ImageCarousel";
+import useInterval from "~/hooks/useInterval";
+import Image from "next/image";
+
+// Types
+import { T_AuctionModelExtended } from "~/utils/types/auctions";
+interface AuctionDetailsProps {
+  auction: T_AuctionModelExtended;
+}
 
 /**
  * TODO: move links to backend server into:
@@ -39,29 +48,14 @@ const QueryErrorDisplay = () => {
   return <p>ERROR</p>;
 };
 
-/**
- * AuctionDetails
- *
- * Note: lastUpdate comes from ReactQuery and is a JS Date obj not
- * luxon. It is already localized
- *
- * TODO: defaults for all values
- */
-interface AuctionDetailsProps {
-  auction: T_AuctionModelExtended;
-}
-
 const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
-  const router = useRouter();
-
-  // showing error messages or success
-  const [isProcessingBid, setProcessingState] = useState(false);
 
   // can be set automatically AND or local set for UI snappiness
   const [isBidLocked, updateBidLock] = useState(false);
 
   // gets the auth id from the jwt
   const userJWT = useUserQuery();
+  
   // assuming that the hook will cause re-render and logout automatically
   const isAuthenticated: boolean =
     userJWT.data?.role === "authenticated" ?? false;
@@ -107,13 +101,13 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
       ) {
         if (subscription.mbus.lastBidLockMessage.eventType === "INSERT") {
           console.log(
-            "[Process BID] - Update from bid_state table adding local LOCK"
+            "[MSG bus] - Update from bid_state table adding local LOCK"
           );
           updateBidLock(true);
         }
         if (subscription.mbus.lastBidLockMessage.eventType === "DELETE") {
           console.log(
-            "[Process BID] - Update from bid_state table removing local LOCK"
+            "[MSG bus] - Update from bid_state table removing local LOCK"
           );
           updateBidLock(false);
         }
@@ -128,6 +122,10 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
         if (subscription.mbus.lastAuctionUpdateMessage.eventType === "UPDATE") {
           // TRIGGER AUCTION REFETCH
           // we already get the new auction model but its missing bids
+          // Even tho we can trigger an update on an auction change
+          // this will also trigger on change of DB auction halfway in the bid
+          // process ... but we need it if this is not the bidding client
+          // triggerUpdateAuction();
         }
       }
     }
@@ -137,36 +135,6 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
     subscription.mbus.lastBidLockMessage,
     subscription.mbus.lastAuctionUpdateMessage,
   ]);
-
-  useEffect(() => {
-    const processBid = async () => {
-
-      if(userJWT.data?.id === undefined) return;
-
-      const bidResult = await bidHandler(
-        userJWT.data?.id,
-        auction,
-        nextBidValue,
-        () => {
-          console.log("[Process BID] - START");
-        },
-        () => {
-          console.log("[Process BID] - COMPLETE");
-        },
-        () => {
-          console.log("[Process BID] - ERROR");
-        }
-      );
-      // Check for ERRORS then reset
-      console.log("[Process BID] - POST run", bidResult);
-      setProcessingState(false);
-      triggerUpdateAuction();
-    };
-
-    if (isProcessingBid) {
-      processBid();
-    }
-  }, [isProcessingBid]);
 
   // the auctioned item has a slot for only 1 image
   const imageUrl = `${fileStoragePath}/${auction?.auction_id}/sample-item-1298792.jpg`;
@@ -191,25 +159,15 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   // temp this here for now
   const auctionIsActive = auction.status === "ACTIVE" ? true : false;
 
-  const handleBidClick = () => {
-    if (isAuthenticated === true) {
-      // Start bid process
-      setProcessingState(true);
-      // Lock current users page
-      // This should happen after the INSERT works
-      updateBidLock(true);
-    }
-  };
-
   return (
-    <div className="flex h-2/4 flex-col gap-8 overflow-y-auto lg:flex-row">
+    <div className="flex flex-col gap-8 overflow-y-auto h-2/4 lg:flex-row">
       <ImageCarousel sources={[imageUrl, imageUrl]} />
       <div
-        className="flex w-full flex-col items-start justify-start gap-4 p-2 lg:w-1/3"
+        className="flex flex-col items-start justify-start w-full gap-4 p-2 lg:w-1/3"
         id="auction-info-container"
       >
         <p className="text-3xl font-black text-black">{auction.name}</p>
-        <p className="text-left text-base text-neutral-800">
+        <p className="text-base text-left text-neutral-800">
           {auction.description}
         </p>
         <p className="text-xs text-neutral-800">
@@ -232,17 +190,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
             there is a bid in process currently "time left component here"
           </p>
         )}
-        <p className="text-left text-base text-neutral-800">{numberOfBids}</p>
-
-        <div
-          className="block cursor-pointer border p-5"
-          onClick={(e) => {
-            e.preventDefault();
-            handleBidClick();
-          }}
-        >
-          <p>Test a Bid: {nextBidValue}</p>
-        </div>
+        <p className="text-base text-left text-neutral-800">{numberOfBids}</p>
 
         {auctionIsActive ? (
           <>
@@ -253,12 +201,11 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
             */}
             <PayPalDialog
               bidValue={nextBidValue}
-              onClick={handleBidClick}
-              auctionId={auction.auction_id}
+              auction={auction}
             />
           </>
         ) : (
-          <p className="text-md text-left font-black text-neutral-800">
+          <p className="font-black text-left text-md text-neutral-800">
             Auction has ended. Thanks for playing!
           </p>
         )}
@@ -290,7 +237,7 @@ export const AuctionDetailPage = () => {
   }
 
   return (
-    <div className="flex w-full flex-grow flex-col p-24">
+    <div className="flex flex-col flex-grow w-full p-24">
       <AuctionDetails auction={auction} />
     </div>
   );
