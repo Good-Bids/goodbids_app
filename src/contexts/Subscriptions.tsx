@@ -24,7 +24,7 @@ type T_MessageBusValues = {
   isInitialized: boolean;
   subscriptions: RealtimeChannel[];
   lastBidLockMessage?: any; // <- RealtimePostgresInsertPayload ???
-  lastAuctionUpdateMessage?: any
+  lastAuctionUpdateMessage?: any;
 };
 
 interface I_MessageBusContext {
@@ -33,6 +33,37 @@ interface I_MessageBusContext {
 
 const MessageBusContext = createContext<I_MessageBusContext | null>(null);
 
+// Should be -> RealtimePostgresInsertPayload 
+const transformBidLockInsertMsg = (payload: any) => {
+  return {
+    dateTime: payload.commit_timestamp, // Note: Supabase wrong, its dateTime not timestamp
+    errors: payload.errors,
+    ttl: payload.new.ttl,
+    auctionId: payload.new.auction_id,
+    eventType: payload.eventType
+  };
+};
+
+// Should be -> RealtimePostgresUpdatePayload 
+const transformBidLockDeleteMsg = (payload: any) => {
+  return {
+    dateTime: payload.commit_timestamp, // Note: Supabase wrong, its dateTime not timestamp
+    errors: payload.errors,
+    ttl: payload.new.ttl,
+    auctionId: payload.old.auction_id,
+    eventType: payload.eventType
+  };
+};
+
+const transformAuctionUpdateMsg = (payload: any) => {
+  return {
+    dateTime: payload.commit_timestamp, // Note: Supabase wrong, its dateTime not timestamp
+    errors: payload.errors,
+    auction: payload.new, // returns the Auction ROW
+    eventType: payload.eventType
+  };
+};
+
 const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
   const supabaseClient = useSupabase();
 
@@ -40,7 +71,7 @@ const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
     isInitialized: false,
     subscriptions: [],
     lastBidLockMessage: undefined,
-    lastAuctionUpdateMessage: undefined
+    lastAuctionUpdateMessage: undefined,
   });
 
   useEffect(() => {
@@ -54,7 +85,7 @@ const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
           updateMBus({
             ...mbus,
             isInitialized: true,
-            lastBidLockMessage: payload, // RealtimePostgresInsertPayload ???
+            lastBidLockMessage: transformBidLockInsertMsg(payload),
           });
         }
       )
@@ -70,7 +101,7 @@ const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
           updateMBus({
             ...mbus,
             isInitialized: true,
-            lastBidLockMessage: payload, // RealtimePostgresInsertPayload ???
+            lastBidLockMessage: transformBidLockDeleteMsg(payload),
           });
         }
       )
@@ -82,10 +113,11 @@ const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "auction" },
         (payload) => {
+          // transformAuctionUpdateMsg
           updateMBus({
             ...mbus,
             isInitialized: true,
-            lastAuctionUpdateMessage: payload, // RealtimePostgresInsertPayload ???
+            lastAuctionUpdateMessage: transformAuctionUpdateMsg(payload),
           });
         }
       )
@@ -96,7 +128,7 @@ const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
         isInitialized: true,
         subscriptions: [bidStateInsert, bidStateDelete, auctionUpdate],
         lastMessage: undefined,
-        lastAuctionUpdateMessage: undefined
+        lastAuctionUpdateMessage: undefined,
       };
     });
 

@@ -109,50 +109,31 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
     nextBidValue = currentHighBid + auction.increment;
   }
 
-  // Subscription listeners
-  // Updates on if the Channel has been init or a new message returns
-  // should apply isAuthenticated here
+  // Realtime Supabase DB onChange Subscription listeners
   useEffect(() => {
     if (!subscription.mbus.isInitialized) return;
-
+    // Listen for bid lock messages
     if (subscription.mbus.lastBidLockMessage) {
-      let eventTriggered = subscription.mbus.lastBidLockMessage?.eventType;
-      let filterOnAuctionId = "n/a";
-
-      if (eventTriggered === "INSERT") {
-        filterOnAuctionId =
-          subscription.mbus.lastBidLockMessage?.new.auction_id;
-      }
-      if (eventTriggered === "DELETE") {
-        filterOnAuctionId =
-          subscription.mbus.lastBidLockMessage?.old.auction_id;
-      }
-
-      if (filterOnAuctionId === auction.auction_id) {
-        let dateTime = subscription.mbus.lastBidLockMessage?.commit_timestamp;
-        let errors = subscription.mbus.lastBidLockMessage?.errors;
-        let ttl = subscription.mbus.lastBidLockMessage?.new.ttl;
-
-        // Inserts
-        if (subscription.mbus.lastBidLockMessage?.eventType === "INSERT") {
-          console.log(
-            "[Bid Lock] - A bid lock has been registered",
-            dateTime,
-            " ttl(sec):" + ttl,
-            errors
-          );
+      if (
+        subscription.mbus.lastBidLockMessage.auctionId === auction.auction_id
+      ) {
+        if (subscription.mbus.lastBidLockMessage.eventType === "INSERT") {
+          updateBidLock(true);
         }
-
-        // Deletes
-        if (subscription.mbus.lastBidLockMessage?.eventType === "DELETE") {
-          console.log(
-            "[Bid Lock] - A bid lock has been removed",
-            dateTime,
-            errors
-          );
-          updateBidLock((prev) => {
-            return false;
-          });
+        if (subscription.mbus.lastBidLockMessage.eventType === "DELETE") {
+          updateBidLock(false);
+        }
+      }
+    }
+    // Listen for auction update messages
+    if (subscription.mbus.lastAuctionUpdateMessage) {
+      if (
+        subscription.mbus.lastAuctionUpdateMessage.auctionId ===
+        auction.auction_id
+      ) {
+        if (subscription.mbus.lastAuctionUpdateMessage.eventType === "UPDATE") {
+          // TRIGGER AUCTION REFETCH
+          // we already get the new auction model but its missing bids
         }
       }
     }
@@ -160,6 +141,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
     auction.auction_id,
     subscription.mbus.isInitialized,
     subscription.mbus.lastBidLockMessage,
+    subscription.mbus.lastAuctionUpdateMessage,
   ]);
 
   // should apply isAuthenticated here
