@@ -43,10 +43,6 @@ const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
     lastAuctionUpdateMessage: undefined
   });
 
-  // Even Dan A. and the React docs use subscriptions as
-  // an example, when in reality its wrong.
-  // These things simply are an impedance failure
-  // which needs to be external to React.
   useEffect(() => {
     const bidStateInsert: RealtimeChannel = supabaseClient
       .channel("custom-insert-channel")
