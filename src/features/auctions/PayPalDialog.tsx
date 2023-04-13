@@ -138,12 +138,12 @@ export const PayPalDialog = ({ bidValue, auction }: PayPalDialogProps) => {
   }, [isDialogOpen, bidLockId, paypalState]);
 
   // paypal specific method
-  const handleCreateOrder = (
+  const handleCreateOrder = async (
     data: CreateOrderData,
     actions: CreateOrderActions
   ) => {
     updatePaypalState("CREATE_ORDER");
-    return actions.order?.create({
+    return await actions.order?.create({
       purchase_units: [
         {
           amount: {
@@ -174,12 +174,14 @@ export const PayPalDialog = ({ bidValue, auction }: PayPalDialogProps) => {
   ) => {
     // this is where we'll update bid state to cancelled
     updatePaypalState("CANCELLED");
+    console.log("PP: cancel triggered", data);
   };
 
   // paypal specific method
   const handleError = async (error: Record<string, unknown>) => {
     // this is where we'll update bid state to error
     updatePaypalState("ERROR");
+    console.log("PP: error triggered", error);
   };
 
   return (
