@@ -3,6 +3,7 @@ import {
   CreateOrderActions,
   OnApproveData,
   OnApproveActions,
+  OnCancelledActions,
 } from "@paypal/paypal-js";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import {
@@ -18,12 +19,19 @@ import { useState } from "react";
 import { initialOptions } from "~/utils/constants";
 
 import * as ga from "../../lib/ga";
+import { checkIsBidLocked } from "~/hooks/useAuction";
 
 interface PayPalDialogProps {
   bidValue: number;
+  onClick: () => void;
+  auctionId: string;
 }
 
-export const PayPalDialog = ({ bidValue }: PayPalDialogProps) => {
+export const PayPalDialog = ({
+  bidValue,
+  onClick,
+  auctionId,
+}: PayPalDialogProps) => {
   const [open, setOpen] = useState(false);
 
   ga.event({
@@ -33,6 +41,7 @@ export const PayPalDialog = ({ bidValue }: PayPalDialogProps) => {
 
   const handleBidClick = () => {
     setOpen(true);
+    onClick();
     // also will need to write to bids table with status of pending
   };
   const handleCreateOrder = (
@@ -56,7 +65,19 @@ export const PayPalDialog = ({ bidValue }: PayPalDialogProps) => {
   ) => {
     const details = await actions.order?.capture();
     const name = details?.payer?.name?.given_name ?? "an unknown GoodBidder"; // because capture() can be promise | undefined
+
+    // this is where we'll do more with supabase on success
     alert(`Transaction completed by ${name}`);
+  };
+  const handleCancel = async (
+    data: Record<string, unknown>,
+    actions: OnCancelledActions
+  ) => {
+    // this is where we'll update bid state to cancelled
+  };
+
+  const handleError = async (error: Record<string, unknown>) => {
+    // this is where we'll update bid state to error
   };
 
   return (
@@ -68,7 +89,7 @@ export const PayPalDialog = ({ bidValue }: PayPalDialogProps) => {
         >
           <button
             className={`container rounded-full bg-bottleGreen px-8 py-4 text-xl font-bold text-hintOfGreen`}
-            onClick={() => handleBidClick}
+            onClick={handleBidClick}
           >
             {`GoodBid $${bidValue} now`}
           </button>
@@ -86,6 +107,8 @@ export const PayPalDialog = ({ bidValue }: PayPalDialogProps) => {
           <PayPalButtons
             createOrder={handleCreateOrder}
             onApprove={handleApprove}
+            onCancel={handleCancel}
+            onError={handleError}
           />
         </div>
       </DialogContent>

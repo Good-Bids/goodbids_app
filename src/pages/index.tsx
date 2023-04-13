@@ -15,7 +15,8 @@ const Home: NextPage = () => {
   const isLoggedInBidder = isLoggedIn && !isCharityAdmin;
   const charityIsCreated = Boolean(charityId);
   const isPublic = !user && !isUserQueryLoading;
-  const userFirstName = user?.user_metadata.name.split(" ")[0] ?? "friend";
+  const userFirstName: string =
+    user?.user_metadata?.name?.split(" ")[0] ?? "friend";
   /* AD. tmp commenting out for retyping response returned from ReactQuery ( needs to support UI ) */
   // const { data: auctions } = useAuctionsQuery()
 

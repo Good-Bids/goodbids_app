@@ -20,13 +20,15 @@ export const AuthPage = () => {
     return url;
   };
 
+  const redirectURL = getRedirectURL();
+
   const router = useRouter();
 
   if (user === undefined) {
     return (
       <>
         <Auth
-          redirectTo={getRedirectURL()}
+          redirectTo={redirectURL}
           appearance={{ theme: ThemeSupa }}
           supabaseClient={supabaseClient}
           providers={["google"]}

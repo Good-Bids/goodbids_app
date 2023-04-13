@@ -60,6 +60,7 @@ interface AuctionDetailsProps {
 }
 
 const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
+  const router = useRouter();
   // trigger component level state for processing a bid
   // can extend this to { isProcessingBid, bidStatus } for
   // showing error messages or success
@@ -119,11 +120,15 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
         subscription.mbus.lastBidLockMessage.auctionId === auction.auction_id
       ) {
         if (subscription.mbus.lastBidLockMessage.eventType === "INSERT") {
-          console.log("[Process BID] - Update from bid_state table adding local LOCK");
+          console.log(
+            "[Process BID] - Update from bid_state table adding local LOCK"
+          );
           updateBidLock(true);
         }
         if (subscription.mbus.lastBidLockMessage.eventType === "DELETE") {
-          console.log("[Process BID] - Update from bid_state table removing local LOCK");
+          console.log(
+            "[Process BID] - Update from bid_state table removing local LOCK"
+          );
           updateBidLock(false);
         }
       }
@@ -229,10 +234,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
         bidId: updateBidTableResults.bid[0].bid_id,
       });
 
-      console.log(
-        "[Process BID] - Update the bid table ",
-        bidCompletedResults
-      );
+      console.log("[Process BID] - Update the bid table ", bidCompletedResults);
 
       // check error
       // If there was a update to bid table in DB error it will manifest here
@@ -271,6 +273,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
     if (isAuthenticated === true) {
       setProcessingState(true);
     } else {
+      router.push("/login");
       // redirect to login
     }
   };
@@ -297,8 +300,18 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   // temp this here for now
   const auctionIsActive = auction.status === "ACTIVE" ? true : false;
 
+  const handleBidClick = () => {
+    if (isAuthenticated === true) {
+      // Start bid process
+      setProcessingState(true);
+      // Lock current users page
+      // This should happen after the INSERT works
+      updateBidLock(true);
+    }
+  };
+
   return (
-    <div className="flex flex-col gap-8 lg:flex-row">
+    <div className="flex h-2/4 flex-col gap-8 overflow-y-auto lg:flex-row">
       <ImageCarousel sources={[imageUrl, imageUrl]} />
       <div
         className="flex w-full flex-col items-start justify-start gap-4 p-2 lg:w-1/3"
@@ -353,7 +366,11 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
               {minutesLeft}:{formattedSecondsLeft} left before this auction ends
             </p>
             */}
-            <PayPalDialog bidValue={nextBidValue} />
+            <PayPalDialog
+              bidValue={nextBidValue}
+              onClick={handleBidClick}
+              auctionId={auction.auction_id}
+            />
           </>
         ) : (
           <p className="text-md text-left font-black text-neutral-800">
