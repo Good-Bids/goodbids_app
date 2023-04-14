@@ -129,7 +129,7 @@ export const AuctionListRowView = ({ auction }: AuctionListRowViewProps) => {
       </div>
       <div className="flex w-64 flex-shrink-0 flex-col items-center justify-center bg-slate-50 p-4">
         {isBiddingAvailable ? (
-          <PayPalDialog bidValue={nextBidValue} />
+          <PayPalDialog bidValue={nextBidValue} auction={auction} />
         ) : (
           <DisabledBidButton />
         )}
