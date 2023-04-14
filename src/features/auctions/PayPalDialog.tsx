@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
-import {
+import type {
   CreateOrderData,
   CreateOrderActions,
   OnApproveData,
@@ -76,7 +76,7 @@ export const PayPalDialog = ({ bidValue, auction }: PayPalDialogProps) => {
   useEffect(() => {
     const startProcess = async () => {
       /** typeScript fix. userId will always be defined */
-      let userIdTSFix = userJWT.data?.id ?? "";
+      const userIdTSFix = userJWT.data?.id ?? "";
       const preFlightCheckResult = await preflightValidateBidAmount(
         auction.auction_id,
         auction.increment,
@@ -100,7 +100,7 @@ export const PayPalDialog = ({ bidValue, auction }: PayPalDialogProps) => {
 
     const completeBidProcess = async () => {
       /** typeScript fix. bidLockId will always be defined here */
-      let bidLockIdTSFix = bidLockId ?? "";
+      const bidLockIdTSFix = bidLockId ?? "";
       const updateAuctionResults = await updateAuctionWithBid(
         auction.auction_id,
         bidValue
@@ -203,10 +203,10 @@ export const PayPalDialog = ({ bidValue, auction }: PayPalDialogProps) => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Goodbid ${bidValue}</DialogTitle>
+          <DialogTitle>GoodBid ${bidValue}</DialogTitle>
           <DialogDescription>
-            Don't worry, this is still just a test. You won't be charged, I
-            promise.
+            Don&apos;t worry, this is still just a test. You won&apos;t be
+            charged, I promise.
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col">

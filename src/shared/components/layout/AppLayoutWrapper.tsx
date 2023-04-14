@@ -1,10 +1,8 @@
-import Image, { ImageProps } from "next/image";
+import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import { LogoWithText } from "~/components/LogoWithText";
 
-import { useAdminCheckQuery } from "~/hooks/useCharityAdmin";
 import useSupabase from "~/hooks/useSupabase";
 import { useUserQuery } from "~/hooks/useUser";
 
@@ -32,7 +30,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
         <Link href="/">
           <LogoWithText color="#0a3624" showText />
         </Link>
-        {!user ? (
+        {user == null ? (
           <Link href="/LogIn">
             <p className="text-right font-bold text-bottleGreen">Sign in</p>
           </Link>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 // Routing and links
 import { useRouter } from "next/router";
@@ -8,9 +8,8 @@ import Link from "next/link";
 import { useMessageBus } from "~/contexts/Subscriptions";
 
 // React Query hooks
-import { useAuctionQuery, useUpdateAuctionCache } from "~/hooks/useAuction";
+import { useAuctionQuery } from "~/hooks/useAuction";
 import { useCharityQuery } from "~/hooks/useCharity";
-import { useUserQuery } from "~/hooks/useUser";
 
 // Components
 import { PayPalDialog } from "./PayPalDialog";
@@ -48,21 +47,11 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   // can be set automatically AND or local set for UI snappiness
   const [isBidLocked, updateBidLock] = useState(false);
 
-  // gets the auth id from the jwt
-  const userJWT = useUserQuery();
-
-  // assuming that the hook will cause re-render and logout automatically
-  const isAuthenticated: boolean =
-    userJWT.data?.role === "authenticated" ?? false;
-
   // Subscription to the Bid Lock table
   // Allows us to listen for insert into the Lock table
   // subscription.lastMessage returns the "Full Monty" from the
   // event.
   const subscription = useMessageBus();
-
-  // For manually updating the current Auction Model
-  const triggerUpdateAuction = useUpdateAuctionCache();
 
   // gets the Charity data
   const { charity: charityDetails } = useCharityQuery(auction.charity_id);
@@ -74,8 +63,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   // Derived state
   // Required to setup bid amount
   const numberOfBids = Array.isArray(auction.bids) ? auction.bids.length : 1;
-  const isInitialBid: boolean = numberOfBids > 0 ? false : true;
-  const totalBids: number = numberOfBids || 0;
+  const isInitialBid: boolean = !(numberOfBids > 0);
 
   // set defaults
   let currentHighBid = 0;
@@ -149,7 +137,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   */
 
   // temp this here for now
-  const auctionIsActive = auction.status === "ACTIVE" ? true : false;
+  const auctionIsActive = auction.status === "ACTIVE";
 
   const supabaseClient = useSupabase();
 
@@ -202,7 +190,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
         </p>
         {isBidLocked && (
           <p className="text-sm text-neutral-800">
-            there is a bid in process currently "time left component here"
+            Someone&apos;s placing a bid right now.
           </p>
         )}
         <p className="text-left text-base text-neutral-800">{numberOfBids}</p>
@@ -235,12 +223,12 @@ export const AuctionDetailPage = () => {
   const { queryStatus, auction, hasError } = useAuctionQuery(auctionId);
 
   // ReactQuery Status -> loading
-  if (queryStatus.isLoading && queryStatus.isError === false) {
+  if (queryStatus.isLoading && !queryStatus.isError) {
     return <QueryLoadingDisplay />;
   }
 
   // ReactQuery SubQuery or auctionId Validation -> error
-  if (queryStatus.isLoading === false && hasError) {
+  if (!queryStatus.isLoading && hasError) {
     return <QueryErrorDisplay />;
   }
 

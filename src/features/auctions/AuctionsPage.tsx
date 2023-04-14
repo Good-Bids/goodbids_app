@@ -19,12 +19,13 @@
  * backend integrations
  *
  */
+import React from "react";
 import { DateTime } from "luxon"; // TODO: move this into utils/date or something like that
 import { useAuctionsQuery } from "~/hooks/useAuction";
 import {
-  I_AuctionCollection,
-  T_AuctionBid,
-  T_AuctionModelExtended,
+  type I_AuctionCollection,
+  type T_AuctionBid,
+  type T_AuctionModelExtended,
 } from "~/utils/types/auctions";
 import { PayPalDialog } from "./PayPalDialog";
 import Link from "next/link";
@@ -56,10 +57,10 @@ const getLatestBid = (
 ): T_AuctionBid | undefined => {
   if (bids !== null) {
     if (Array.isArray(bids)) {
-      let clonedBids = structuredClone(bids) as any;
+      const clonedBids = structuredClone(bids) as any;
       clonedBids.sort((objA: T_AuctionBid, objB: T_AuctionBid) => {
-        let dateA = DateTime.fromISO(objA.created_at);
-        let dateB = DateTime.fromISO(objB.created_at);
+        const dateA = DateTime.fromISO(objA.created_at);
+        const dateB = DateTime.fromISO(objB.created_at);
         if (dateA > dateB) return -1;
         if (dateA < dateB) return 1;
         return 0;
@@ -104,10 +105,10 @@ export const AuctionListRowView = ({ auction }: AuctionListRowViewProps) => {
   // note: top_bid_duration can be null - from ts
   // auction.top_bid_duration > Date.now() - most recent bid
   if (lastBid !== undefined) {
-    let topBidDuration = auction.top_bid_duration ?? 0;
-    let currentWallClock = DateTime.local();
-    let lastBidDateTime = DateTime.fromISO(lastBid.created_at);
-    let timeDiff = currentWallClock.diff(lastBidDateTime, "seconds");
+    const topBidDuration = auction.top_bid_duration ?? 0;
+    const currentWallClock = DateTime.local();
+    const lastBidDateTime = DateTime.fromISO(lastBid.created_at);
+    const timeDiff = currentWallClock.diff(lastBidDateTime, "seconds");
     timeDiffAsSeconds = timeDiff.toObject().seconds ?? 0;
 
     if (topBidDuration > timeDiffAsSeconds) {
@@ -161,7 +162,7 @@ const AuctionsListView = ({ auctions }: I_AuctionCollection) => {
  * Main functional component responsible for rendering layout
  */
 export const AuctionsPage = () => {
-  const [query, setQueryParameters] = useAuctionsQuery("ACTIVE", 0, 25);
+  const [query] = useAuctionsQuery("ACTIVE", 0, 25);
 
   return (
     <div className="flex w-full flex-grow flex-col p-24">
