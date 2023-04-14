@@ -7,7 +7,7 @@ import {
   OnApproveActions,
   OnCancelledActions,
 } from "@paypal/paypal-js";
-import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { PayPalButtons } from "@paypal/react-paypal-js";
 
 import {
   Dialog,
@@ -27,8 +27,6 @@ import {
   removeBidLockByAuctionId,
 } from "~/hooks/useAuction";
 
-import { initialOptions } from "~/utils/constants";
-
 import * as ga from "../../lib/ga";
 import { useUserQuery } from "~/hooks/useUser";
 
@@ -43,9 +41,8 @@ export const PayPalDialog = ({ bidValue, auction }: PayPalDialogProps) => {
   // State of the Dialog
   const [isDialogOpen, updateDialogState] = useState(false);
 
-  // Keep track of bid state
-  const [bidProcessStarted, updateProcessStarted] = useState(false);
-
+  // When the paypal button is clicked it signals to locks the
+  // bidding for everyone and saves the lockId here
   const [bidLockId, updateBidLockId] = useState();
 
   // Track paypal calls
@@ -69,7 +66,7 @@ export const PayPalDialog = ({ bidValue, auction }: PayPalDialogProps) => {
   //       mistakenly hits the close via the
   //       dialog background
   useEffect(() => {
-    console.log("[DIALOG STATE]", isDialogOpen);
+    
   }, [isDialogOpen]);
 
   // Rough state control flow for synchronizing the

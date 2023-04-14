@@ -417,43 +417,6 @@ export const updateAuctionWithBid = async (
   }
 };
 
-export const updateAuctionWithBidAutoUpdate = async (
-  auctionId: string,
-  newBidValue: number
-): Promise<T_SupabaseAuctionReturnObject> => {
-  try {
-    let result;
-
-    result = await supabaseClient
-      .from("auction")
-      .update({ high_bid_value: newBidValue })
-      .eq("auction_id", auctionId)
-      .select(
-        `
-          *,
-          bids: bid(*)
-        `
-      )
-      .throwOnError();
-
-    return {
-      status: result.status,
-      statusMessage: result.statusText,
-      auction: result.data,
-      hasError: false,
-      rawError: null,
-    };
-  } catch (err: any) {
-    return {
-      status: err?.code ?? "5000",
-      statusMessage: err?.message ?? "unknown error type",
-      auction: [],
-      hasError: true,
-      rawError: err,
-    };
-  }
-};
-
 /**
  * useAddBidToAuction
  *
@@ -603,6 +566,14 @@ export const useAddBidToBidTable = () => {
   ] as const;
 };
 
+/**
+ * updateBidCompleteStatus
+ * 
+ * Simple direct call to change the status col in the bid
+ * table to "COMPLETE"
+ * 
+ * @param bidId string
+ */
 export const updateBidCompleteStatus = async (
   bidId: string
 ): Promise<T_SupabaseBidReturnObject> => {
@@ -634,6 +605,18 @@ export const updateBidCompleteStatus = async (
   }
 };
 
+/**
+ * useBidStatus
+ * 
+ * ReactQuery wrapper that uses mutateAsync to update the
+ * bid table. Because this wraps the updateBidComplete status
+ * the function also triggers the auto update of the
+ * auction values as it assumes that the bid went through
+ * 
+ * Note: the required value of bidId is passed in from the hook's
+ * update method in the component
+ * 
+ */
 export const useBidStatus = () => {
   const queryClient = useQueryClient();
   const { isError, isLoading, error, data, mutateAsync } = useMutation({
@@ -666,36 +649,18 @@ export const useBidStatus = () => {
   ] as const;
 };
 
-// UnWrapped methods
-// can be wrapped at another time
-export const getBidsByAuctionId = async (auctionId: string) => {
-  try {
-    let result;
-
-    result = await supabaseClient
-      .from("bid")
-      .select()
-      .eq("auction_id", auctionId)
-      .throwOnError();
-
-    return {
-      status: result.status,
-      statusMessage: result.statusText,
-      bids: result.data,
-      hasError: false,
-      rawError: null,
-    };
-  } catch (err: any) {
-    return {
-      status: err?.code ?? "5000",
-      statusMessage: err?.message ?? "unknown error type",
-      bids: [],
-      hasError: true,
-      errorObj: err,
-    };
-  }
-};
-
+/**
+ * addBidLock
+ * 
+ * When the paypal button is clicked it registers
+ * intent to bid. We then lock the bidding for this
+ * auction with its auction_id. The lock is removed
+ * with the removeBidLockByAuctionId method and 
+ * both these calls trigger the Supabase DB change
+ * messages for all connected clients
+ * 
+ * @param auctionId string 
+ */
 export const addBidLock = async (
   auctionId: string
 ): Promise<T_SupabaseBidStatusReturnObject> => {
@@ -728,36 +693,13 @@ export const addBidLock = async (
   }
 };
 
-export const checkIsBidLocked = async (
-  auctionId: string
-): Promise<T_SupabaseBidStatusReturnObject> => {
-  try {
-    let result;
-
-    result = await supabaseClient
-      .from("bid_state")
-      .select()
-      .eq("auction_id", auctionId)
-      .throwOnError();
-
-    return {
-      status: result.status,
-      statusMessage: result.statusText,
-      bidStatus: result.data,
-      hasError: false,
-      rawError: null,
-    };
-  } catch (err: any) {
-    return {
-      status: err?.code ?? "5000",
-      statusMessage: err?.message ?? "unknown error type",
-      bidStatus: [],
-      hasError: true,
-      rawError: err,
-    };
-  }
-};
-
+/**
+ * removeBidLockByAuctionId
+ * 
+ * see addBid method call for details
+ * 
+ * @param auctionId string
+ */
 export const removeBidLockByAuctionId = async (
   auctionId: string
 ): Promise<T_SupabaseBidStatusReturnObject> => {
@@ -788,11 +730,78 @@ export const removeBidLockByAuctionId = async (
   }
 };
 
+/**
+ * checkIsBidLocked
+ * 
+ * When a user goes to a specific auction page
+ * there is a possibility that the auction can have
+ * a bid that is underway. This call can check onLoad
+ * so that the UI can display or disable the bid
+ * UI.
+ * 
+ * @param auctionId string
+ */
+export const checkIsBidLocked = async (
+  auctionId: string
+): Promise<T_SupabaseBidStatusReturnObject> => {
+  try {
+    let result;
+
+    result = await supabaseClient
+      .from("bid_state")
+      .select()
+      .eq("auction_id", auctionId)
+      .throwOnError();
+
+    return {
+      status: result.status,
+      statusMessage: result.statusText,
+      bidStatus: result.data,
+      hasError: false,
+      rawError: null,
+    };
+  } catch (err: any) {
+    return {
+      status: err?.code ?? "5000",
+      statusMessage: err?.message ?? "unknown error type",
+      bidStatus: [],
+      hasError: true,
+      rawError: err,
+    };
+  }
+};
+
+/**
+ * useUpdateAuctionCache
+ * 
+ * Used to manually trigger a reload of the 
+ * current auction displayed. For after a bid
+ * or failure of a bid.
+ */
 export const useUpdateAuctionCache = () => {
   const queryClient = useQueryClient();
 
   const update = () => {
     queryClient.invalidateQueries({ queryKey: ["auctionQueryResults"] });
+  };
+
+  return update;
+};
+
+/**
+ * useUpdateAuctionCollectionCache
+ * 
+ * Used to manually trigger a reload of the 
+ * current auction collection. 
+ * 
+ * Note: when refreshing this, need to be careful
+ * of the current paginated range values. 
+ */
+export const useUpdateAuctionCollectionCache = () => {
+  const queryClient = useQueryClient();
+
+  const update = () => {
+    queryClient.invalidateQueries({ queryKey: ["auctionCollectionQueryResults"] });
   };
 
   return update;

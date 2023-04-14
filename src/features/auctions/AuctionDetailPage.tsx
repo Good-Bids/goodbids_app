@@ -16,7 +16,6 @@ import { useUserQuery } from "~/hooks/useUser";
 import { PayPalDialog } from "./PayPalDialog";
 import { ImageCarousel } from "~/components/ImageCarousel";
 import useInterval from "~/hooks/useInterval";
-import Image from "next/image";
 
 // Types
 import { T_AuctionModelExtended } from "~/utils/types/auctions";
@@ -24,11 +23,6 @@ interface AuctionDetailsProps {
   auction: T_AuctionModelExtended;
 }
 
-/**
- * TODO: move links to backend server into:
- * 1. possibly the db itself so that links are hydrated via the row call
- * 2. env app bootstrap fields
- */
 const fileStoragePath: string =
   "https://imjsqwufoypzctthvxmr.supabase.co/storage/v1/object/public/auction-assets";
 
@@ -91,23 +85,19 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   }
 
   // Realtime Supabase DB onChange Subscription listeners
+  // TODO: Refactor this. This is a temp useEffect
   useEffect(() => {
     if (!subscription.mbus.isInitialized) return;
+    
     // Listen for bid lock messages
     if (subscription.mbus.lastBidLockMessage) {
       if (
         subscription.mbus.lastBidLockMessage.auctionId === auction.auction_id
       ) {
         if (subscription.mbus.lastBidLockMessage.eventType === "INSERT") {
-          console.log(
-            "[MSG bus] - Update from bid_state table adding local LOCK"
-          );
           updateBidLock(true);
         }
         if (subscription.mbus.lastBidLockMessage.eventType === "DELETE") {
-          console.log(
-            "[MSG bus] - Update from bid_state table removing local LOCK"
-          );
           updateBidLock(false);
         }
       }
@@ -135,7 +125,6 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
     subscription.mbus.lastAuctionUpdateMessage,
   ]);
 
-  // the auctioned item has a slot for only 1 image
   const imageUrl = `${fileStoragePath}/${auction?.auction_id}/sample-item-1298792.jpg`;
 
   /*
