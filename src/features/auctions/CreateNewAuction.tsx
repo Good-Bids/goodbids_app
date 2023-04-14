@@ -3,27 +3,72 @@
  *
  * once a user has the 'charityAdmin' role,
  * they can create auctions for their charity.
- *
+ * 
+ * The page requires a CHARITY_ID to be provided
+ * 
+ * TODO: need to get a validation lib
+ * and proper error correction and display
+ * 
+ * #note: the policy in the auctions table designates
+ * that the charity admin id matches the auth id. In the 
+ * charity admin table this is not the case.
+ * I manually altered my charity admin id to match my user id
+ * to make this work
+ * 
  */
 
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
+import useSupabase from "~/hooks/useSupabase";
+import { useUserQuery } from "~/hooks/useUser";
+
+type T_FormValues = {
+  name: string;
+  description: string;
+  opening_bid_value: number;
+  increment: number;
+  top_bid_duration: number;
+};
+
+const supabaseClient = useSupabase();
 
 export const CreateNewAuctionPage = () => {
+
+  // TODO: Verify Authenticated before 
+  // submit form
+  const userJWT = useUserQuery();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<T_FormValues>();
 
-  const onSubmit = (data) => console.log(data);
-
-  console.log(errors);
+  const onSubmit: SubmitHandler<T_FormValues> = async (data) => {
+    try {
+      const result = await supabaseClient
+        .from("auction")
+        .insert([
+          {
+            charity_id: "",
+            name: data.name,
+            description: data.description,
+            opening_bid_value: data.opening_bid_value,
+            increment: data.increment,
+            top_bid_duration: data.top_bid_duration,
+          },
+        ])
+        .throwOnError();
+      console.log("SUBMIT COMPLETED", result);
+    } catch (error) {
+      console.log("SUBMIT ERROR", error);
+    }
+  };
 
   return (
-    <div className="p-6 border">
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <div className="flex flex-col w-full p-6 border rounded-md bg-slate-50">
+      <form className="w-96" onSubmit={handleSubmit(onSubmit)}>
         <label
-          htmlFor="Auction Name"
+          htmlFor="name"
           className="block mb-2 text-sm font-medium text-gray-900"
         >
           Auction Name
@@ -32,26 +77,26 @@ export const CreateNewAuctionPage = () => {
           type="text"
           className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
           placeholder="Auction Name"
-          {...register("Auction Name", { required: true, max: 80, min: 10 })}
+          {...register("name", { required: true, max: 80, min: 10 })}
         />
         <label
-          htmlFor="Auction Name"
+          htmlFor="description"
           className="block mb-2 text-sm font-medium text-gray-900"
         >
           Auction description
         </label>
-        <input
-          type="text"
+        <textarea
+          rows={8}
           className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
           placeholder="Auction description"
-          {...register("Auction description", {
+          {...register("description", {
             required: true,
-            max: 200,
+            max: 250,
             min: 10,
           })}
         />
         <label
-          htmlFor="Auction Name"
+          htmlFor="opening_bid_value"
           className="block mb-2 text-sm font-medium text-gray-900"
         >
           Opening bid value
@@ -60,10 +105,14 @@ export const CreateNewAuctionPage = () => {
           type="number"
           className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
           placeholder="Opening bid value"
-          {...register("Opening bid value", { required: true, max: 3, min: 1 })}
+          {...register("opening_bid_value", {
+            required: true,
+            max: 30,
+            min: 1,
+          })}
         />
         <label
-          htmlFor="Auction Name"
+          htmlFor="increment"
           className="block mb-2 text-sm font-medium text-gray-900"
         >
           Bid increment
@@ -72,10 +121,10 @@ export const CreateNewAuctionPage = () => {
           type="number"
           className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
           placeholder="Bid increment"
-          {...register("Bid increment", { required: true, max: 100, min: 1 })}
+          {...register("increment", { required: true, max: 100, min: 1 })}
         />
         <label
-          htmlFor="Auction Name"
+          htmlFor="top_bid_duration"
           className="block mb-2 text-sm font-medium text-gray-900"
         >
           Top bid duration
@@ -84,7 +133,7 @@ export const CreateNewAuctionPage = () => {
           type="number"
           className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
           placeholder="Top bid duration, this is set to seconds"
-          {...register("Top bid duration, this is set to seconds", {
+          {...register("top_bid_duration", {
             required: true,
             max: 10000,
             min: 1,
@@ -99,7 +148,6 @@ export const CreateNewAuctionPage = () => {
             Submit
           </button>
         </div>
-        
       </form>
     </div>
   );
