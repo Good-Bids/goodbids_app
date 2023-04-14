@@ -6,6 +6,8 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "~/styles/globals.css";
 import { AppLayoutWrapper } from "~/shared/components/layout/AppLayoutWrapper";
 import { UserContextProvider } from "~/contexts/UserContextProvider";
+import { MessageBusProvider } from "~/contexts/Subscriptions";
+
 import React from "react";
 import { useRouter } from "next/router";
 import * as ga from "../lib/ga";
@@ -52,9 +54,11 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       <QueryClientProvider client={queryClient.current}>
         <UserContextProvider>
           <PayPalScriptProvider options={initialOptions}>
-            <AppLayoutWrapper>
-              <Component {...pageProps} />
-            </AppLayoutWrapper>
+            <MessageBusProvider>
+              <AppLayoutWrapper>
+                <Component {...pageProps} />
+              </AppLayoutWrapper>
+            </MessageBusProvider>
           </PayPalScriptProvider>
         </UserContextProvider>
         <ReactQueryDevtools />
