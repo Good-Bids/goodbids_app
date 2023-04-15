@@ -17,7 +17,24 @@
  *
  */
 
-import { useEffect, useState } from "react";
+/*
+
+TODO: Add these fields to the form
+
+Status (‘DRAFT’)
+Type (‘STANDARD’)
+Minimum Bids (10)
+High Bid Value (0)
+Bid currency (‘USD’)
+Allowed free bids([‘’])
+Over_bid_good_time_active (false)
+Over_bid_good_time_early_fee (0)
+Over_bid_good_time_often_fee (0)
+Over_bid_good_time_late_fee (0)
+
+*/
+
+import { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useUserQuery } from "~/hooks/useUser";
 import { useAuctionQuery } from "~/hooks/useAuction";
