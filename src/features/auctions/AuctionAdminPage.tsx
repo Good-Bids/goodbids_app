@@ -3,23 +3,26 @@
  *
  * once a user has the 'charityAdmin' role,
  * they can create auctions for their charity.
- * 
+ *
  * The page requires a CHARITY_ID to be provided
- * 
+ *
  * TODO: need to get a validation lib
  * and proper error correction and display
- * 
+ *
  * #note: the policy in the auctions table designates
- * that the charity admin id matches the auth id. In the 
+ * that the charity admin id matches the auth id. In the
  * charity admin table this is not the case.
  * I manually altered my charity admin id to match my user id
  * to make this work
- * 
+ *
  */
 
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import useSupabase from "~/hooks/useSupabase";
 import { useUserQuery } from "~/hooks/useUser";
+import { useAuctionQuery } from "~/hooks/useAuction";
+import { useRouter } from "next/router";
+import useSupabase from "~/hooks/useSupabase";
 
 type T_FormValues = {
   name: string;
@@ -31,17 +34,58 @@ type T_FormValues = {
 
 const supabaseClient = useSupabase();
 
-export const AuctionAdminPage = () => {
+/**
+ * QueryLoadingDisplay
+ * not implemented
+ */
+const QueryLoadingDisplay = () => {
+  return <p>LOADING</p>;
+};
 
-  // TODO: Verify Authenticated before 
-  // submit form
+/**
+ * QueryErrorDisplay
+ * not implemented
+ */
+const QueryErrorDisplay = () => {
+  return <p>ERROR</p>;
+};
+
+export const AuctionAdminPage = () => {
+  // Get user that is authenticated
   const userJWT = useUserQuery();
+  // TODO: trigger redirect to auth page if no JWT or "LOGGED OUT"
+
+  // Get incoming Auction Id
+  const router = useRouter();
+  const auctionId = router.query?.auctionId as string; // < router mess
+  // note is not capture all the result object, UI will be missing error
+  // notifications that can be useful for display
+  const { queryStatus, auction, hasError } = useAuctionQuery(auctionId);
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<T_FormValues>();
+
+  useEffect(() => {
+    if (auction !== undefined) {
+      // reset FORM with auction details
+      console.log("RESET and UPDATE form", auction);
+      // casting feels very wrong.
+      // yet these values need to exist if the auction is in the table
+      // in reality the defaults should not be undefined or null in the schema
+      let mappedData = {
+        name: auction.name as string,
+        description: auction.description as string,
+        opening_bid_value: auction.opening_bid_value as number,
+        increment: auction.increment as number,
+        top_bid_duration: auction.top_bid_duration as number,
+      };
+      reset(mappedData);
+    }
+  }, [auction]);
 
   const onSubmit: SubmitHandler<T_FormValues> = async (data) => {
     try {
@@ -63,6 +107,20 @@ export const AuctionAdminPage = () => {
       console.log("SUBMIT ERROR", error);
     }
   };
+
+  // ReactQuery Status -> loading
+  if (queryStatus.isLoading && queryStatus.isError === false) {
+    return <QueryLoadingDisplay />;
+  }
+
+  // ReactQuery SubQuery or auctionId Validation -> error
+  if (!queryStatus.isLoading === false && hasError) {
+    return <QueryErrorDisplay />;
+  }
+
+  if (auction === undefined) {
+    return <QueryErrorDisplay />;
+  }
 
   return (
     <div className="flex flex-col w-full p-6 border rounded-md bg-slate-50">

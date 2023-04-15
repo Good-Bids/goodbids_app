@@ -47,7 +47,7 @@ interface I_SupabaseUpdateBidVariables {
  *
  * @param auctionId
  */
-const getAuction = async (auctionId: string) => {
+export const getAuction = async (auctionId: string) => {
   try {
     const result = await supabaseClient
       .from("auction")
@@ -110,7 +110,7 @@ export const useAuctionQuery = (auctionId?: string | undefined) => {
       },
       auction: undefined,
       hasError: true,
-      errorMessage: "Invalid auction ID",
+      errorMessage: "Undefined, please provide an auctionId",
       errorObj: {
         code: "5000",
         message: "Invalid auction ID",
