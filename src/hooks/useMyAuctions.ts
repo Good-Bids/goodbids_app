@@ -23,7 +23,7 @@
  */
 
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import useSupabase from "./useSupabase";
 
 const supabaseClient = useSupabase();
@@ -55,7 +55,7 @@ const getCharityUserAdministers = async (
       .from("charity_admin")
       .select()
       .eq("user_id", userId)
-      .eq("is_charity_admin", true)
+      .eq("is_charity_admin", true) // Note if table is fixed can remove this check
       .throwOnError();
 
     return {
