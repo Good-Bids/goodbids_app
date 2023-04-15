@@ -53,7 +53,7 @@ export const AuctionListRowView = ({ auction }: AuctionListRowViewProps) => {
         <p className="pb-2 text-sm">{auction.description}</p>
         <Link
           className="self-start p-2 border"
-          href={`/auctions/${auction.auction_id}`}
+          href={`/auctions/admin/${auction.auction_id}`}
         >
           <p className="text-sm text-neutral-400">edit auction details</p>
         </Link>
