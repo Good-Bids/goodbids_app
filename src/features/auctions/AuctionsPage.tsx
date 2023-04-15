@@ -34,13 +34,13 @@ import Link from "next/link";
  * QueryLoadingDisplay
  * not implemented
  */
-const QueryLoadingDisplay = () => {};
+// const QueryLoadingDisplay = () => {};
 
 /**
  * QueryErrorDisplay
  * not implemented
  */
-const QueryErrorDisplay = () => {};
+// const QueryErrorDisplay = () => {};
 
 /**
  * Bids Utilities

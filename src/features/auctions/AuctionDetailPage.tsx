@@ -81,28 +81,32 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
   // Realtime Supabase DB onChange Subscription listeners
   // TODO: Refactor this. This is a temp useEffect
   useEffect(() => {
-    if (!subscription.mbus.isInitialized) return;
+    if (!subscription.messageBus.isInitialized) return;
 
     // Listen for bid lock messages
-    if (subscription.mbus.lastBidLockMessage) {
+    if (subscription.messageBus.lastBidLockMessage) {
       if (
-        subscription.mbus.lastBidLockMessage.auctionId === auction.auction_id
+        subscription.messageBus.lastBidLockMessage.auctionId ===
+        auction.auction_id
       ) {
-        if (subscription.mbus.lastBidLockMessage.eventType === "INSERT") {
+        if (subscription.messageBus.lastBidLockMessage.eventType === "INSERT") {
           updateBidLock(true);
         }
-        if (subscription.mbus.lastBidLockMessage.eventType === "DELETE") {
+        if (subscription.messageBus.lastBidLockMessage.eventType === "DELETE") {
           updateBidLock(false);
         }
       }
     }
     // Listen for auction update messages
-    if (subscription.mbus.lastAuctionUpdateMessage) {
+    if (subscription.messageBus.lastAuctionUpdateMessage) {
       if (
-        subscription.mbus.lastAuctionUpdateMessage.auctionId ===
+        subscription.messageBus.lastAuctionUpdateMessage.auctionId ===
         auction.auction_id
       ) {
-        if (subscription.mbus.lastAuctionUpdateMessage.eventType === "UPDATE") {
+        if (
+          subscription.messageBus.lastAuctionUpdateMessage.eventType ===
+          "UPDATE"
+        ) {
           // TRIGGER AUCTION REFETCH
           // we already get the new auction model but its missing bids
           // Even tho we can trigger an update on an auction change
@@ -114,9 +118,9 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
     }
   }, [
     auction.auction_id,
-    subscription.mbus.isInitialized,
-    subscription.mbus.lastBidLockMessage,
-    subscription.mbus.lastAuctionUpdateMessage,
+    subscription.messageBus.isInitialized,
+    subscription.messageBus.lastBidLockMessage,
+    subscription.messageBus.lastAuctionUpdateMessage,
   ]);
 
   /*
