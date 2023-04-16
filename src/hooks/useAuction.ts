@@ -36,6 +36,43 @@ interface I_SupabaseUpdateBidVariables {
   bidId: string;
 }
 
+export const updateAuctionStatus = async (
+  auctionId: string,
+  status: string
+): Promise<T_SupabaseAuctionReturnObject> => {
+  try {
+    let result;
+
+    result = await supabaseClient
+      .from("auction")
+      .update({ status: status })
+      .eq("auction_id", auctionId)
+      .select(
+        `
+          *,
+          bids: bid(*)
+        `
+      )
+      .throwOnError();
+
+    return {
+      status: result.status,
+      statusMessage: result.statusText,
+      auction: result.data,
+      hasError: false,
+      rawError: null,
+    };
+  } catch (err: any) {
+    return {
+      status: err?.code ?? "5000",
+      statusMessage: err?.message ?? "unknown error type",
+      auction: [],
+      hasError: true,
+      rawError: err,
+    };
+  }
+};
+
 /**
  * getAuction
  *
