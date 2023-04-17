@@ -300,18 +300,6 @@ export const UpdateAuctionForm = () => {
             <input
               type="number"
               className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-              placeholder="unknown values"
-              {...register("over_bid_good_time_early_fee")}
-            />
-            <label
-              htmlFor="over_bid_good_time_early_fee"
-              className="block mb-2 text-sm font-medium text-gray-900"
-            >
-              over bid good time early fee
-            </label>
-            <input
-              type="number"
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
               placeholder=""
               {...register("over_bid_good_time_early_fee")}
             />
