@@ -29,6 +29,8 @@ export const useStorageItemsQuery = (auctionId?: string) => {
     ["auctionAssets", auctionId],
     async () => getItemsFromStorage(auctionId),
     {
+      select: (data) =>
+        data?.filter((item) => item.name !== ".emptyFolderPlaceholder"),
       enabled: auctionId !== undefined,
     }
   );

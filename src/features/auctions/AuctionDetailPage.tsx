@@ -20,6 +20,7 @@ import { useStorageItemsQuery } from "~/hooks/useStorage";
 
 // Types
 import { T_AuctionModelExtended } from "~/utils/types/auctions";
+import useSupabase from "~/hooks/useSupabase";
 interface AuctionDetailsProps {
   auction: T_AuctionModelExtended;
 }
@@ -65,6 +66,10 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
 
   // gets the Charity data
   const { charity: charityDetails } = useCharityQuery(auction.charity_id);
+  const { data: auctionImages } = useStorageItemsQuery(auction.auction_id);
+  const imageUrls = auctionImages?.map(
+    (item) => `${fileStoragePath}/${auction?.auction_id}/${item.name}`
+  );
 
   // Derived state
   // Required to setup bid amount
@@ -126,8 +131,6 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
     subscription.mbus.lastAuctionUpdateMessage,
   ]);
 
-  const imageUrl = `${fileStoragePath}/${auction?.auction_id}/sample-item-1298792.jpg`;
-
   /*
 
   Tmp commenting out clock because its triggering 
@@ -173,7 +176,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
 
   return (
     <div className="flex h-2/4 flex-col gap-8 overflow-y-auto lg:flex-row">
-      <ImageCarousel sources={[imageUrl, imageUrl]} />
+      {imageUrls && <ImageCarousel sources={imageUrls} />}
       <div
         className="flex w-full flex-col items-start justify-start gap-4 p-2 lg:w-1/3"
         id="auction-info-container"
