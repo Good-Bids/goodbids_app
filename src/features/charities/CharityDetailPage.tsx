@@ -21,10 +21,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useCharityQuery } from "../../hooks/useCharity";
 import { useAuctionsQuery } from "~/hooks/useAuction";
-import {
-  I_AuctionCollection,
-  T_AuctionModelExtended,
-} from "~/utils/types/auctions";
+import { I_AuctionCollection, AuctionExtended } from "~/utils/types/auctions";
 import { I_CharityModel } from "~/utils/types/charities";
 
 /**
@@ -51,7 +48,7 @@ const QueryErrorDisplay = () => {
  */
 
 interface LimitedAuctionListRowViewProps {
-  auction: T_AuctionModelExtended;
+  auction: AuctionExtended;
 }
 
 export const LimitedAuctionListRowView = ({

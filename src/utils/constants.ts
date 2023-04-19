@@ -6,3 +6,6 @@ export const initialOptions = {
   intent: "capture",
   // debug: true
 };
+
+export const fileStoragePath: string =
+  "https://imjsqwufoypzctthvxmr.supabase.co/storage/v1/object/public/auction-assets";

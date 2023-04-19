@@ -10,10 +10,7 @@
  *
  */
 import { useMyAuctionsQuery } from "~/hooks/useMyAuctions";
-import {
-  I_AuctionCollection,
-  T_AuctionModelExtended,
-} from "~/utils/types/auctions";
+import { I_AuctionCollection, AuctionExtended } from "~/utils/types/auctions";
 import { useUserQuery } from "~/hooks/useUser";
 import Link from "next/link";
 
@@ -42,7 +39,7 @@ const QueryErrorDisplay = () => {
  */
 
 interface AuctionListRowViewProps {
-  auction: T_AuctionModelExtended;
+  auction: AuctionExtended;
 }
 
 export const AuctionListRowView = ({ auction }: AuctionListRowViewProps) => {
@@ -52,7 +49,7 @@ export const AuctionListRowView = ({ auction }: AuctionListRowViewProps) => {
         <p className="pb-2 text-base font-medium">{auction.name}</p>
         <p className="pb-2 text-sm">{auction.description}</p>
         <Link
-          className="self-start p-2 border"
+          className="self-start border p-2"
           href={`/auctions/admin/${auction.auction_id}`}
         >
           <p className="text-sm text-neutral-400">edit auction details</p>
@@ -69,7 +66,7 @@ export const AuctionListRowView = ({ auction }: AuctionListRowViewProps) => {
  */
 const AuctionsListView = ({ auctions }: I_AuctionCollection) => {
   return (
-    <ul className="flex flex-col flex-grow bg-slate-100">
+    <ul className="flex flex-grow flex-col bg-slate-100">
       {auctions.map((auction) => (
         <AuctionListRowView key={auction.auction_id} auction={auction} />
       ))}
@@ -110,14 +107,14 @@ export const MyAuctionsPage = () => {
   }
 
   return (
-    <div className="flex flex-col flex-grow w-full p-24">
+    <div className="flex w-full flex-grow flex-col p-24">
       <h1 className="pb-4 text-6xl font-bold text-black">Auctions</h1>
 
       {/* temp container for testing pagination windows via the ui + hook */}
-      <div className="p-2 mb-2 text-xs bg-slate-50 text-neutral-800">Page:</div>
+      <div className="mb-2 bg-slate-50 p-2 text-xs text-neutral-800">Page:</div>
 
       {/* temp container for Auctions View module */}
-      <div className="flex flex-col flex-grow w-full">
+      <div className="flex w-full flex-grow flex-col">
         <AuctionsListView auctions={myAuctions.auctions} />
       </div>
     </div>

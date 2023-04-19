@@ -16,6 +16,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
   const router = useRouter();
 
   const handleLogoutClick = async () => {
+    console.log("click");
     await supabaseClient.auth.signOut().then(() => {
       router.reload();
     });
@@ -25,7 +26,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
     <>
       <div
         id="appLayoutWrapperHead"
-        className="max-w-screen fixed left-0 right-0 top-0 z-10 flex h-20 flex-row items-center justify-between bg-outerSpace-100 p-2"
+        className="fixed left-0 right-0 top-0 z-10 flex h-20 flex-row items-center justify-between bg-outerSpace-100 p-2"
       >
         <Link href="/">
           <LogoWithText color="#0a3624" showText />
@@ -46,7 +47,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
       </div>
       <main
         id="appLayoutWrapperMain"
-        className="min-w-screen fixed top-20 z-0 m-2 flex min-h-screen flex-col items-center justify-start overflow-auto lg:ml-24 lg:mt-20"
+        className="fixed left-0 right-0 top-20 z-0 m-2 flex h-full flex-col items-center justify-start overflow-y-auto lg:mx-24 lg:my-20"
       >
         {children}
       </main>

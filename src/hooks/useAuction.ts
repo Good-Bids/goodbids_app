@@ -4,37 +4,36 @@ import useSupabase from "./useSupabase";
 
 const supabaseClient = useSupabase();
 
-type T_SupabaseBaseReturnObject = {
+interface SupabaseBaseReturnObject {
   status: number;
   statusMessage: string;
   hasError: boolean;
   rawError: any | null;
-};
+}
 
-type T_BidStatusModel = {
+interface BidStatusModel {
   bidStatus: any;
-};
+}
 
-type T_SupabaseBidStatusReturnObject = T_SupabaseBaseReturnObject &
-  T_BidStatusModel;
+type SupabaseBidStatusReturnObject = SupabaseBaseReturnObject & BidStatusModel;
 
-type T_SupabaseBidReturnObject = {
+interface SupabaseBidReturnObject {
   status: number;
   statusMessage: string;
   bid: any;
   hasError: boolean;
   rawError: any | null;
-};
+}
 
-type T_SupabaseAuctionReturnObject = {
+interface SupabaseAuctionReturnObject {
   status: number;
   statusMessage: string;
   auction: any;
   hasError: boolean;
   rawError: any | null;
-};
+}
 
-interface I_SupabaseBidVariables {
+interface SupabaseBidVariables {
   auctionId: string;
   charityId: string;
   userId: string;
@@ -53,13 +52,11 @@ interface I_SupabaseUpdateBidVariables {
 export const updateAuctionStatus = async (
   auctionId: string,
   status: string
-): Promise<T_SupabaseAuctionReturnObject> => {
+): Promise<SupabaseAuctionReturnObject> => {
   try {
-    let result;
-
-    result = await supabaseClient
+    const result = await supabaseClient
       .from("auction")
-      .update({ status: status })
+      .update({ status })
       .eq("auction_id", auctionId)
       .select(
         `
@@ -195,7 +192,7 @@ export const useAuctionQuery = (auctionId?: string | undefined) => {
         : null,
     },
     auction: data?.auction ?? undefined,
-    hasError: data?.hasError || isError ? true : false,
+    hasError: !!(data?.hasError || isError),
     errorMessage:
       data?.hasError || isError
         ? data?.statusMessage ?? "React Query encountered an error"
@@ -333,7 +330,7 @@ export const useAuctionsQuery = (
         isError,
       },
       auctions: data?.auctions ?? [],
-      hasError: data?.hasError || isError ? true : false,
+      hasError: !!(data?.hasError || isError),
       errorMessage:
         data?.hasError || isError
           ? data?.statusMessage ?? "React Query encountered an error"
@@ -366,10 +363,9 @@ export const preflightValidateBidAmount = async (
   newBidValue: number
 ) => {
   try {
-    let result;
     let isValidBidAmount = false;
 
-    result = await supabaseClient
+    const result = await supabaseClient
       .from("auction")
       .select("high_bid_value")
       .eq("auction_id", auctionId)
@@ -378,7 +374,7 @@ export const preflightValidateBidAmount = async (
 
     if (result.data !== null) {
       if (result.data[0] !== undefined) {
-        let currentBidValue = result.data[0].high_bid_value ?? 0;
+        const currentBidValue = result.data[0].high_bid_value ?? 0;
         if (currentBidValue + bidIncrement <= newBidValue) {
           isValidBidAmount = true;
         }
@@ -420,11 +416,9 @@ export const preflightValidateBidAmount = async (
 export const updateAuctionWithBid = async (
   auctionId: string,
   newBidValue: number
-): Promise<T_SupabaseAuctionReturnObject> => {
+): Promise<SupabaseAuctionReturnObject> => {
   try {
-    let result;
-
-    result = await supabaseClient
+    const result = await supabaseClient
       .from("auction")
       .update({ high_bid_value: newBidValue })
       .eq("auction_id", auctionId)
@@ -474,7 +468,6 @@ export const updateAuctionWithBid = async (
  * @returns Object
  */
 export const useAddBidToAuctionTable = () => {
-  const queryClient = useQueryClient();
   const { isError, isLoading, error, data, mutateAsync } = useMutation({
     mutationFn: async (data: I_SupabaseAuctionBidVariables) => {
       return await updateAuctionWithBid(data.auctionId, data.newBidValue);
@@ -488,7 +481,7 @@ export const useAddBidToAuctionTable = () => {
         isError,
       },
       auction: data?.auction ?? undefined,
-      hasError: data?.hasError || isError ? true : false,
+      hasError: !!(data?.hasError || isError),
       errorMessage:
         data?.hasError || isError
           ? data?.statusMessage ?? "React Query encountered an error"
@@ -520,14 +513,12 @@ export const addBid = async (
   charityId: string,
   userId: string,
   amount: number
-): Promise<T_SupabaseBidReturnObject> => {
+): Promise<SupabaseBidReturnObject> => {
   try {
-    let result;
-
-    result = await supabaseClient
+    const result = await supabaseClient
       .from("bid")
       .insert({
-        amount: amount,
+        amount,
         auction_id: auctionId,
         bidder_id: userId,
         charity_id: charityId,
@@ -575,7 +566,7 @@ export const addBid = async (
  */
 export const useAddBidToBidTable = () => {
   const { isError, isLoading, error, data, mutateAsync } = useMutation({
-    mutationFn: async (data: I_SupabaseBidVariables) => {
+    mutationFn: async (data: SupabaseBidVariables) => {
       return await addBid(
         data.auctionId,
         data.charityId,
@@ -592,7 +583,7 @@ export const useAddBidToBidTable = () => {
         isError,
       },
       bid: data?.bid ?? undefined,
-      hasError: data?.hasError || isError ? true : false,
+      hasError: !!(data?.hasError || isError),
       errorMessage:
         data?.hasError || isError
           ? data?.statusMessage ?? "React Query encountered an error"
@@ -605,19 +596,17 @@ export const useAddBidToBidTable = () => {
 
 /**
  * updateBidCompleteStatus
- * 
+ *
  * Simple direct call to change the status col in the bid
  * table to "COMPLETE"
- * 
+ *
  * @param bidId string
  */
 export const updateBidCompleteStatus = async (
   bidId: string
-): Promise<T_SupabaseBidReturnObject> => {
+): Promise<SupabaseBidReturnObject> => {
   try {
-    let result;
-
-    result = await supabaseClient
+    const result = await supabaseClient
       .from("bid")
       .update({ bid_status: "COMPLETE" })
       .eq("bid_id", bidId)
@@ -644,15 +633,15 @@ export const updateBidCompleteStatus = async (
 
 /**
  * useBidStatus
- * 
+ *
  * ReactQuery wrapper that uses mutateAsync to update the
  * bid table. Because this wraps the updateBidComplete status
  * the function also triggers the auto update of the
  * auction values as it assumes that the bid went through
- * 
+ *
  * Note: the required value of bidId is passed in from the hook's
  * update method in the component
- * 
+ *
  */
 export const useBidStatus = () => {
   const queryClient = useQueryClient();
@@ -660,11 +649,13 @@ export const useBidStatus = () => {
     mutationFn: async (data: I_SupabaseUpdateBidVariables) => {
       return await updateBidCompleteStatus(data.bidId);
     },
-    onSettled() {
+    onSettled: async () => {
       // note: on settled is same as "final in try catch" probably need
       // to triple check the result for errors that have been thrown and
       // not caught because of mutateAsync
-      queryClient.invalidateQueries({ queryKey: ["auctionQueryResults"] });
+      await queryClient.invalidateQueries({
+        queryKey: ["auctionQueryResults"],
+      });
     },
   });
 
@@ -675,7 +666,7 @@ export const useBidStatus = () => {
         isError,
       },
       bid: data?.bid ?? undefined,
-      hasError: data?.hasError || isError ? true : false,
+      hasError: !!(data?.hasError || isError),
       errorMessage:
         data?.hasError || isError
           ? data?.statusMessage ?? "React Query encountered an error"
@@ -688,23 +679,21 @@ export const useBidStatus = () => {
 
 /**
  * addBidLock
- * 
+ *
  * When the paypal button is clicked it registers
  * intent to bid. We then lock the bidding for this
  * auction with its auction_id. The lock is removed
- * with the removeBidLockByAuctionId method and 
+ * with the removeBidLockByAuctionId method and
  * both these calls trigger the Supabase DB change
  * messages for all connected clients
- * 
- * @param auctionId string 
+ *
+ * @param auctionId string
  */
 export const addBidLock = async (
   auctionId: string
-): Promise<T_SupabaseBidStatusReturnObject> => {
+): Promise<SupabaseBidStatusReturnObject> => {
   try {
-    let result;
-
-    result = await supabaseClient
+    const result = await supabaseClient
       .from("bid_state")
       .insert({
         auction_id: auctionId,
@@ -732,18 +721,16 @@ export const addBidLock = async (
 
 /**
  * removeBidLockByAuctionId
- * 
+ *
  * see addBid method call for details
- * 
+ *
  * @param auctionId string
  */
 export const removeBidLockByAuctionId = async (
   auctionId: string
-): Promise<T_SupabaseBidStatusReturnObject> => {
+): Promise<SupabaseBidStatusReturnObject> => {
   try {
-    let result;
-
-    result = await supabaseClient
+    const result = await supabaseClient
       .from("bid_state")
       .delete()
       .eq("auction_id", auctionId)
@@ -769,22 +756,20 @@ export const removeBidLockByAuctionId = async (
 
 /**
  * checkIsBidLocked
- * 
+ *
  * When a user goes to a specific auction page
  * there is a possibility that the auction can have
  * a bid that is underway. This call can check onLoad
  * so that the UI can display or disable the bid
  * UI.
- * 
+ *
  * @param auctionId string
  */
 export const checkIsBidLocked = async (
   auctionId: string
-): Promise<T_SupabaseBidStatusReturnObject> => {
+): Promise<SupabaseBidStatusReturnObject> => {
   try {
-    let result;
-
-    result = await supabaseClient
+    const result = await supabaseClient
       .from("bid_state")
       .select()
       .eq("auction_id", auctionId)
@@ -810,16 +795,16 @@ export const checkIsBidLocked = async (
 
 /**
  * useUpdateAuctionCache
- * 
- * Used to manually trigger a reload of the 
+ *
+ * Used to manually trigger a reload of the
  * current auction displayed. For after a bid
  * or failure of a bid.
  */
 export const useUpdateAuctionCache = () => {
   const queryClient = useQueryClient();
 
-  const update = () => {
-    queryClient.invalidateQueries({ queryKey: ["auctionQueryResults"] });
+  const update = async () => {
+    await queryClient.invalidateQueries({ queryKey: ["auctionQueryResults"] });
   };
 
   return update;
@@ -827,18 +812,20 @@ export const useUpdateAuctionCache = () => {
 
 /**
  * useUpdateAuctionCollectionCache
- * 
- * Used to manually trigger a reload of the 
- * current auction collection. 
- * 
+ *
+ * Used to manually trigger a reload of the
+ * current auction collection.
+ *
  * Note: when refreshing this, need to be careful
- * of the current paginated range values. 
+ * of the current paginated range values.
  */
 export const useUpdateAuctionCollectionCache = () => {
   const queryClient = useQueryClient();
 
-  const update = () => {
-    queryClient.invalidateQueries({ queryKey: ["auctionCollectionQueryResults"] });
+  const update = async () => {
+    await queryClient.invalidateQueries({
+      queryKey: ["auctionCollectionQueryResults"],
+    });
   };
 
   return update;

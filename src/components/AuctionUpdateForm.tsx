@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import useSupabase from "~/hooks/useSupabase";
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
 
-type T_FormValues = {
+type AuctionFormValues = {
   name: string;
   description: string;
   opening_bid_value: number;
@@ -40,7 +40,7 @@ const QueryErrorDisplay = () => {
 };
 
 export const UpdateAuctionForm = () => {
-    // Get user that is authenticated
+  // Get user that is authenticated
   const userJWT = useUserQuery();
   // TODO: trigger redirect to auth page if no JWT or "LOGGED OUT"
 
@@ -61,7 +61,7 @@ export const UpdateAuctionForm = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<T_FormValues>();
+  } = useForm<AuctionFormValues>();
 
   useEffect(() => {
     if (auction !== undefined) {
@@ -93,7 +93,7 @@ export const UpdateAuctionForm = () => {
     }
   }, [auction]);
 
-  const onSubmit: SubmitHandler<T_FormValues> = async (data) => {
+  const onSubmit: SubmitHandler<AuctionFormValues> = async (data) => {
     try {
       // manually spelled it out for transform and cleaning of vars prior to submit
       const result = await supabaseClient
@@ -139,213 +139,213 @@ export const UpdateAuctionForm = () => {
   }
 
   return (
-      <form
-        className="flex flex-col border rounded-md bg-slate-50"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <div className="flex flex-row p-4">
-          <div className="flex flex-col flex-shrink-0 pr-2 w-96">
-            <label
-              htmlFor="name"
-              className="block mb-2 text-sm font-medium text-gray-900"
-            >
-              Auction Name
-            </label>
-            <input
-              type="text"
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Auction Name"
-              {...register("name", { required: true, max: 80, min: 10 })}
-            />
-            <label
-              htmlFor="description"
-              className="block mb-2 text-sm font-medium text-gray-900"
-            >
-              Auction description
-            </label>
-            <textarea
-              rows={8}
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Auction description"
-              {...register("description", {
-                required: true,
-                max: 250,
-                min: 10,
-              })}
-            />
-            <label
-              htmlFor="opening_bid_value"
-              className="block mb-2 text-sm font-medium text-gray-900"
-            >
-              Opening bid value
-            </label>
-            <input
-              type="number"
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Opening bid value"
-              {...register("opening_bid_value", {
-                required: true,
-                max: 30,
-                min: 1,
-              })}
-            />
-            <label
-              htmlFor="increment"
-              className="block mb-2 text-sm font-medium text-gray-900"
-            >
-              Bid increment
-            </label>
-            <input
-              type="number"
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Bid increment"
-              {...register("increment", { required: true, max: 100, min: 1 })}
-            />
-            <label
-              htmlFor="top_bid_duration"
-              className="block mb-2 text-sm font-medium text-gray-900"
-            >
-              Top bid duration
-            </label>
-            <input
-              type="number"
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Top bid duration, this is set to seconds"
-              {...register("top_bid_duration", {
-                required: true,
-                max: 10000,
-                min: 1,
-              })}
-            />
-          </div>
-          <div className="flex flex-col flex-shrink-0 pl-2 w-96">
-            <label
-              htmlFor="type"
-              className="block mb-2 text-sm font-medium text-gray-900"
-            >
-              Auction Type
-            </label>
-            <input
-              type="text"
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-              placeholder="STANDARD"
-              {...register("type", { required: true, max: 10 })}
-            />
-            <label
-              htmlFor="status"
-              className="block mb-2 text-sm font-medium text-gray-900"
-            >
-              Auction Status
-            </label>
-            <input
-              type="text"
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-              placeholder="DRAFT"
-              {...register("status", { required: true, max: 10 })}
-            />
-            <label
-              htmlFor="minimum_bids"
-              className="block mb-2 text-sm font-medium text-gray-900"
-            >
-              Minimum Bids
-            </label>
-            <input
-              type="text"
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-              placeholder="10"
-              {...register("minimum_bids", { required: true })}
-            />
-            <label
-              htmlFor="bid_currency"
-              className="block mb-2 text-sm font-medium text-gray-900"
-            >
-              Bid Currency (iso 3 char) should match paypal iso list
-            </label>
-            <input
-              type="text"
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-              placeholder="USD"
-              {...register("bid_currency", { required: true })}
-            />
-            <label
-              htmlFor="allowed_free_bids"
-              className="block mb-2 text-sm font-medium text-gray-900"
-            >
-              Allowed Free Bids
-            </label>
-            <input
-              type="text"
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-              placeholder="unknown values"
-              {...register("allowed_free_bids")}
-            />
-            <label
-              htmlFor="over_bid_good_time_active"
-              className="block mb-2 text-sm font-medium text-gray-900"
-            >
-              over bid good time active
-            </label>
-            <input
-              type="text"
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-              placeholder="TRUE"
-              {...register("over_bid_good_time_active")}
-            />
-            <label
-              htmlFor="over_bid_good_time_early_fee"
-              className="block mb-2 text-sm font-medium text-gray-900"
-            >
-              over bid good time early fee
-            </label>
-            <input
-              type="number"
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-              placeholder=""
-              {...register("over_bid_good_time_early_fee")}
-            />
-            <label
-              htmlFor="over_bid_good_time_often_fee"
-              className="block mb-2 text-sm font-medium text-gray-900"
-            >
-              over bid good time often fee
-            </label>
-            <input
-              type="number"
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-              placeholder=""
-              {...register("over_bid_good_time_often_fee")}
-            />
-            <label
-              htmlFor="over_bid_good_time_late_fee"
-              className="block mb-2 text-sm font-medium text-gray-900"
-            >
-              over bid good time late fee
-            </label>
-            <input
-              type="number"
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-              placeholder=""
-              {...register("over_bid_good_time_late_fee")}
-            />
-          </div>
+    <form
+      className="flex flex-col rounded-md border bg-slate-50"
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <div className="flex flex-row p-4">
+        <div className="flex w-96 flex-shrink-0 flex-col pr-2">
+          <label
+            htmlFor="name"
+            className="mb-2 block text-sm font-medium text-gray-900"
+          >
+            Auction Name
+          </label>
+          <input
+            type="text"
+            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            placeholder="Auction Name"
+            {...register("name", { required: true, max: 80, min: 10 })}
+          />
+          <label
+            htmlFor="description"
+            className="mb-2 block text-sm font-medium text-gray-900"
+          >
+            Auction description
+          </label>
+          <textarea
+            rows={8}
+            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            placeholder="Auction description"
+            {...register("description", {
+              required: true,
+              max: 250,
+              min: 10,
+            })}
+          />
+          <label
+            htmlFor="opening_bid_value"
+            className="mb-2 block text-sm font-medium text-gray-900"
+          >
+            Opening bid value
+          </label>
+          <input
+            type="number"
+            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            placeholder="Opening bid value"
+            {...register("opening_bid_value", {
+              required: true,
+              max: 30,
+              min: 1,
+            })}
+          />
+          <label
+            htmlFor="increment"
+            className="mb-2 block text-sm font-medium text-gray-900"
+          >
+            Bid increment
+          </label>
+          <input
+            type="number"
+            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            placeholder="Bid increment"
+            {...register("increment", { required: true, max: 100, min: 1 })}
+          />
+          <label
+            htmlFor="top_bid_duration"
+            className="mb-2 block text-sm font-medium text-gray-900"
+          >
+            Top bid duration
+          </label>
+          <input
+            type="number"
+            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            placeholder="Top bid duration, this is set to seconds"
+            {...register("top_bid_duration", {
+              required: true,
+              max: 10000,
+              min: 1,
+            })}
+          />
         </div>
-        <div className="flex flex-row w-full border-t">
-          <div className="flex items-center flex-grow pl-4">
-            <p className="text-sm text-neutral-300">
-              {updatesResult === undefined
-                ? "form status/errors info here"
-                : updatesResult.status}
-            </p>
-          </div>
-          <div className="p-4">
-            <button
-              type="submit"
-              className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 sm:w-auto"
-            >
-              UPDATE
-            </button>
-          </div>
+        <div className="flex w-96 flex-shrink-0 flex-col pl-2">
+          <label
+            htmlFor="type"
+            className="mb-2 block text-sm font-medium text-gray-900"
+          >
+            Auction Type
+          </label>
+          <input
+            type="text"
+            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            placeholder="STANDARD"
+            {...register("type", { required: true, max: 10 })}
+          />
+          <label
+            htmlFor="status"
+            className="mb-2 block text-sm font-medium text-gray-900"
+          >
+            Auction Status
+          </label>
+          <input
+            type="text"
+            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            placeholder="DRAFT"
+            {...register("status", { required: true, max: 10 })}
+          />
+          <label
+            htmlFor="minimum_bids"
+            className="mb-2 block text-sm font-medium text-gray-900"
+          >
+            Minimum Bids
+          </label>
+          <input
+            type="text"
+            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            placeholder="10"
+            {...register("minimum_bids", { required: true })}
+          />
+          <label
+            htmlFor="bid_currency"
+            className="mb-2 block text-sm font-medium text-gray-900"
+          >
+            Bid Currency (iso 3 char) should match paypal iso list
+          </label>
+          <input
+            type="text"
+            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            placeholder="USD"
+            {...register("bid_currency", { required: true })}
+          />
+          <label
+            htmlFor="allowed_free_bids"
+            className="mb-2 block text-sm font-medium text-gray-900"
+          >
+            Allowed Free Bids
+          </label>
+          <input
+            type="text"
+            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            placeholder="unknown values"
+            {...register("allowed_free_bids")}
+          />
+          <label
+            htmlFor="over_bid_good_time_active"
+            className="mb-2 block text-sm font-medium text-gray-900"
+          >
+            over bid good time active
+          </label>
+          <input
+            type="text"
+            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            placeholder="TRUE"
+            {...register("over_bid_good_time_active")}
+          />
+          <label
+            htmlFor="over_bid_good_time_early_fee"
+            className="mb-2 block text-sm font-medium text-gray-900"
+          >
+            over bid good time early fee
+          </label>
+          <input
+            type="number"
+            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            placeholder=""
+            {...register("over_bid_good_time_early_fee")}
+          />
+          <label
+            htmlFor="over_bid_good_time_often_fee"
+            className="mb-2 block text-sm font-medium text-gray-900"
+          >
+            over bid good time often fee
+          </label>
+          <input
+            type="number"
+            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            placeholder=""
+            {...register("over_bid_good_time_often_fee")}
+          />
+          <label
+            htmlFor="over_bid_good_time_late_fee"
+            className="mb-2 block text-sm font-medium text-gray-900"
+          >
+            over bid good time late fee
+          </label>
+          <input
+            type="number"
+            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            placeholder=""
+            {...register("over_bid_good_time_late_fee")}
+          />
         </div>
-      </form>
+      </div>
+      <div className="flex w-full flex-row border-t">
+        <div className="flex flex-grow items-center pl-4">
+          <p className="text-sm text-neutral-300">
+            {updatesResult === undefined
+              ? "form status/errors info here"
+              : updatesResult.status}
+          </p>
+        </div>
+        <div className="p-4">
+          <button
+            type="submit"
+            className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 sm:w-auto"
+          >
+            UPDATE
+          </button>
+        </div>
+      </div>
+    </form>
   );
-}
+};

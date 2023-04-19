@@ -14,18 +14,15 @@ import { useCharityQuery } from "~/hooks/useCharity";
 // Components
 import { PayPalDialog } from "./PayPalDialog";
 import { ImageCarousel } from "~/components/ImageCarousel";
-import useInterval from "~/hooks/useInterval";
 import { useStorageItemsQuery } from "~/hooks/useStorage";
 
 // Types
-import { T_AuctionModelExtended } from "~/utils/types/auctions";
+import { type AuctionExtended } from "~/utils/types/auctions";
 import useSupabase from "~/hooks/useSupabase";
+import { fileStoragePath } from "~/utils/constants";
 interface AuctionDetailsProps {
-  auction: T_AuctionModelExtended;
+  auction: AuctionExtended;
 }
-
-const fileStoragePath: string =
-  "https://imjsqwufoypzctthvxmr.supabase.co/storage/v1/object/public/auction-assets";
 
 /**
  * QueryLoadingDisplay
@@ -145,7 +142,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
 
   const supabaseClient = useSupabase();
 
-  const listenToAuction = supabaseClient
+  supabaseClient
     .channel("custom-all-channel")
     .on(
       "postgres_changes",
@@ -155,7 +152,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
       }
     )
     .subscribe();
-  const listenToBids = supabaseClient
+  supabaseClient
     .channel("custom-all-channel")
     .on(
       "postgres_changes",
@@ -166,9 +163,13 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
     )
     .subscribe();
 
+  const charityId: string = auction.charity_id;
+
+  const charityURL = `/charities/${charityId}`;
+
   return (
-    <div className="flex h-2/4 flex-col gap-8 overflow-y-auto lg:flex-row">
-      {imageUrls && <ImageCarousel sources={imageUrls} />}
+    <div className="flex h-full flex-col items-center gap-8 overflow-y-auto lg:flex-row">
+      {imageUrls !== undefined && <ImageCarousel sources={imageUrls} />}
       <div
         className="flex w-full flex-col items-start justify-start gap-4 p-2 lg:w-1/3"
         id="auction-info-container"
@@ -180,7 +181,7 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
         <p className="text-xs text-neutral-800">
           {"supports "}
           <Link
-            href={`/charities/${auction.charity_id}`}
+            href={charityURL}
             className="decoration-screaminGreen hover:underline"
           >
             {charityDetails?.name}
@@ -189,16 +190,6 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
         <p className="text-sm text-neutral-800">
           Auction Status: {auction.status}
         </p>
-        <p className="text-sm text-neutral-800">
-          is bid in process (locked): {isBidLocked ? "yes" : "no"}
-        </p>
-        {isBidLocked && (
-          <p className="text-sm text-neutral-800">
-            Someone&apos;s placing a bid right now.
-          </p>
-        )}
-        <p className="text-left text-base text-neutral-800">{numberOfBids}</p>
-
         {auctionIsActive ? (
           <>
             {/*
@@ -206,7 +197,11 @@ const AuctionDetails = ({ auction }: AuctionDetailsProps) => {
               {minutesLeft}:{formattedSecondsLeft} left before this auction ends
             </p>
             */}
-            <PayPalDialog bidValue={nextBidValue} auction={auction} />
+            <PayPalDialog
+              bidValue={nextBidValue}
+              auction={auction}
+              isBidLocked={isBidLocked}
+            />
           </>
         ) : (
           <p className="text-md text-left font-black text-neutral-800">
@@ -241,7 +236,7 @@ export const AuctionDetailPage = () => {
   }
 
   return (
-    <div className="flex w-full flex-grow flex-col p-24">
+    <div className="flex w-full flex-grow flex-col p-2 lg:p-24">
       <AuctionDetails auction={auction} />
     </div>
   );

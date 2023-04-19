@@ -7,11 +7,11 @@ import {
   removeBidLockByAuctionId,
 } from "~/hooks/useAuction";
 
-import { T_AuctionModel } from "~/utils/types/auctions";
+import { Auction } from "~/utils/types/auctions";
 
 interface I_BidHandler {
   userId: string;
-  auction: T_AuctionModel;
+  auction: Auction;
   bidValue: number;
   onStartCB: Function;
   onCompleteCB: Function;
@@ -33,13 +33,12 @@ interface I_BidHandler {
  */
 export const bidHandler = async (
   userId: string,
-  auction: T_AuctionModel,
+  auction: Auction,
   bidValue: number,
   onStartCB: Function,
   onCompleteCB: Function,
   onErrorCD: Function
 ) => {
-
   // insert Start CB hook in case needed by parent
   onStartCB();
 

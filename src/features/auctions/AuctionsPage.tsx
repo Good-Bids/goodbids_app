@@ -23,11 +23,10 @@ import React from "react";
 import { DateTime } from "luxon"; // TODO: move this into utils/date or something like that
 import { useAuctionsQuery } from "~/hooks/useAuction";
 import {
-  type I_AuctionCollection,
-  type T_AuctionBid,
-  type T_AuctionModelExtended,
+  type Bid,
+  type AuctionExtended,
+  type Auction,
 } from "~/utils/types/auctions";
-import { PayPalDialog } from "./PayPalDialog";
 import Link from "next/link";
 
 /**
@@ -52,13 +51,11 @@ import Link from "next/link";
  * field along with full DateTime if needed.
  *
  */
-const getLatestBid = (
-  bids: T_AuctionBid | T_AuctionBid[] | null
-): T_AuctionBid | undefined => {
+const getLatestBid = (bids: Bid | Bid[] | null): Bid | undefined => {
   if (bids !== null) {
     if (Array.isArray(bids)) {
       const clonedBids = structuredClone(bids) as any;
-      clonedBids.sort((objA: T_AuctionBid, objB: T_AuctionBid) => {
+      clonedBids.sort((objA: Bid, objB: Bid) => {
         const dateA = DateTime.fromISO(objA.created_at);
         const dateB = DateTime.fromISO(objB.created_at);
         if (dateA > dateB) return -1;
@@ -71,17 +68,6 @@ const getLatestBid = (
 };
 
 /**
- * Tmp bid is disabled button
- */
-const DisabledBidButton = () => {
-  return (
-    <div className="inline-block border p-2 opacity-50">
-      <p className="select-none text-sm text-neutral-400">bidding is n/a</p>
-    </div>
-  );
-};
-
-/**
  * AuctionListRowView
  * Component container for the AuctionModel display
  * separated for rendering/windowing and isolated updates in
@@ -90,50 +76,36 @@ const DisabledBidButton = () => {
  */
 
 interface AuctionListRowViewProps {
-  auction: T_AuctionModelExtended;
+  auction: AuctionExtended;
 }
 
 export const AuctionListRowView = ({ auction }: AuctionListRowViewProps) => {
-  const currentHighBid: number = auction.high_bid_value ?? 0;
-  const nextBidValue: number = currentHighBid + auction.increment;
   const lastBid = getLatestBid(auction.bids);
 
   // by default
-  let isBiddingAvailable: boolean = false;
   let timeDiffAsSeconds: number = 0;
 
   // note: top_bid_duration can be null - from ts
   // auction.top_bid_duration > Date.now() - most recent bid
   if (lastBid !== undefined) {
-    const topBidDuration = auction.top_bid_duration ?? 0;
     const currentWallClock = DateTime.local();
     const lastBidDateTime = DateTime.fromISO(lastBid.created_at);
     const timeDiff = currentWallClock.diff(lastBidDateTime, "seconds");
     timeDiffAsSeconds = timeDiff.toObject().seconds ?? 0;
-
-    if (topBidDuration > timeDiffAsSeconds) {
-      isBiddingAvailable = true;
-    }
   }
+
+  const auctionId: string = auction.auction_id;
 
   return (
     <li className="flex flex-row border-b bg-neutral-50 text-neutral-800">
       <div className="flex flex-col justify-start p-2">
         <p className="pb-2 text-base font-medium">{auction.name}</p>
         <p className="pb-2 text-sm">{auction.description}</p>
-        <Link
-          className="self-start border p-2"
-          href={`/auctions/${auction.auction_id}`}
-        >
+        <Link className="self-start border p-2" href={`/auctions/${auctionId}`}>
           <p className="text-sm text-neutral-400">view auction details</p>
         </Link>
       </div>
       <div className="flex w-64 flex-shrink-0 flex-col items-center justify-center bg-slate-50 p-4">
-        {isBiddingAvailable ? (
-          <PayPalDialog bidValue={nextBidValue} auction={auction} />
-        ) : (
-          <DisabledBidButton />
-        )}
         <p className="pt-2 text-xs text-neutral-400">
           t-diff: {timeDiffAsSeconds << 0}
         </p>
@@ -147,7 +119,7 @@ export const AuctionListRowView = ({ auction }: AuctionListRowViewProps) => {
  * Container for a List view of Auctions available
  * ie: another one would be tileView or maybe a cardView
  */
-const AuctionsListView = ({ auctions }: I_AuctionCollection) => {
+const AuctionsListView = ({ auctions }: Auction[]) => {
   return (
     <ul className="flex flex-grow flex-col bg-slate-100">
       {auctions.map((auction) => (

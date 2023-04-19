@@ -34,10 +34,15 @@ import { useRouter } from "next/router";
 interface PayPalDialogProps {
   bidValue: number;
   auction: any;
+  isBidLocked: boolean;
 }
 
-export const PayPalDialog = ({ bidValue, auction }: PayPalDialogProps) => {
-  const userJWT = useUserQuery();
+export const PayPalDialog = ({
+  bidValue,
+  auction,
+  isBidLocked,
+}: PayPalDialogProps) => {
+  const { data: userData } = useUserQuery();
   const router = useRouter();
 
   // State of the Dialog
@@ -53,7 +58,10 @@ export const PayPalDialog = ({ bidValue, auction }: PayPalDialogProps) => {
   >("NOT_STARTED");
 
   // Open the bid now dialog and track its opening via google
-  const openBidDialog = () => {
+  const openBidDialog = async () => {
+    if (userData?.id === undefined) {
+      await router.push("/LogIn");
+    }
     setIsDialogOpen(true);
     // place the event tag inside the open dialog
     // otherwise you are only capturing pageLoad
@@ -76,7 +84,7 @@ export const PayPalDialog = ({ bidValue, auction }: PayPalDialogProps) => {
   useEffect(() => {
     const startProcess = async () => {
       /** typeScript fix. userId will always be defined */
-      const userIdTSFix = userJWT.data?.id ?? "";
+      const userIdTSFix = userData?.id ?? "";
       const preFlightCheckResult = await preflightValidateBidAmount(
         auction.auction_id,
         auction.increment,
@@ -123,7 +131,7 @@ export const PayPalDialog = ({ bidValue, auction }: PayPalDialogProps) => {
     // if a user Id provided is undefined
     // we can assume its not authenticated because we get
     // it from the JWT
-    if (userJWT.data?.id !== undefined) {
+    if (userData?.id !== undefined) {
       // CREATE ORDER HOOK - Fired when you click paypal button
       if (isDialogOpen && !bidLockId && paypalState === "CREATE_ORDER") {
         startProcess();
@@ -189,17 +197,23 @@ export const PayPalDialog = ({ bidValue, auction }: PayPalDialogProps) => {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <div
-          id="call-to-action"
-          className="flex min-h-fit w-fit flex-col justify-center pb-4 pt-4"
-        >
-          <button
-            className={`container rounded-full bg-bottleGreen px-8 py-4 text-xl font-bold text-hintOfGreen`}
-            onClick={openBidDialog}
+        {isBidLocked ? (
+          <p className="text-sm text-neutral-800">
+            Someone&apos;s placing a bid right now.
+          </p>
+        ) : (
+          <div
+            id="call-to-action"
+            className="fixed bottom-2 left-4 flex min-h-fit w-11/12 flex-col justify-center pb-4 pt-4 sm:relative sm:left-0 sm:w-fit"
           >
-            {`GoodBid $${bidValue} now`}
-          </button>
-        </div>
+            <button
+              className={`container rounded-full bg-bottleGreen px-8 py-4 text-xl font-bold text-hintOfGreen`}
+              onClick={openBidDialog}
+            >
+              {`GoodBid $${bidValue} now`}
+            </button>
+          </div>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
