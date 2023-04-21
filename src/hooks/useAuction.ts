@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useSupabase from "./useSupabase";
+import { Bid } from "~/utils/types/auctions";
 
 const supabaseClient = useSupabase();
 
@@ -110,10 +111,15 @@ export const getAuction = async (auctionId: string) => {
       .single()
       .throwOnError();
 
+    const sortedBids = (result?.data?.bids as Bid[]).sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
+
     return {
       status: result.status,
       statusMessage: result.statusText,
-      auction: result.data,
+      auction: { ...result.data, sortedBids },
       hasError: false,
       rawError: null,
     };
@@ -256,7 +262,7 @@ const getAuctions = async (args: {
           `
           *,
           bids: bid(*)
-        `
+          `
         )
         .eq("status", auctionStatus)
         .order("created_at", { ascending: false }) // Gets latest on top by creation date

@@ -51,7 +51,7 @@ export const AuctionDetailPage = () => {
   const { queryStatus, auction, hasError } = useAuctionQuery(auctionId);
   const { charity } = useCharityQuery(auction?.charity_id);
   const { data: auctionImages } = useStorageItemsQuery(auction?.auction_id);
-  const [auctionIsActive, setAuctionIsActive] = useState(false);
+  const [auctionIsActive, setAuctionIsActive] = useState(true);
 
   // can be set automatically AND or local set for UI snappiness
   const [isBidLocked, updateBidLock] = useState(false);
