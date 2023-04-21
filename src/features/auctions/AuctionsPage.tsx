@@ -19,7 +19,7 @@
  * backend integrations
  *
  */
-import React from "react";
+import React, { useState } from "react";
 import { DateTime } from "luxon"; // TODO: move this into utils/date or something like that
 import { useAuctionsQuery } from "~/hooks/useAuction";
 import {
@@ -28,6 +28,7 @@ import {
   type Auction,
 } from "~/utils/types/auctions";
 import Link from "next/link";
+import { AuctionTimer } from "./AuctionTimer";
 
 /**
  * QueryLoadingDisplay
@@ -96,21 +97,27 @@ export const AuctionListRowView = ({ auction }: AuctionListRowViewProps) => {
 
   const auctionId: string = auction.auction_id;
 
+  const [auctionIsActive, setAuctionIsActive] = useState(false);
+
   return (
-    <li className="flex flex-row border-b bg-neutral-50 text-neutral-800">
-      <div className="flex flex-col justify-start p-2">
-        <p className="pb-2 text-base font-medium">{auction.name}</p>
-        <p className="pb-2 text-sm">{auction.description}</p>
-        <Link className="self-start border p-2" href={`/auctions/${auctionId}`}>
-          <p className="text-sm text-neutral-400">view auction details</p>
-        </Link>
-      </div>
-      <div className="flex w-64 flex-shrink-0 flex-col items-center justify-center bg-slate-50 p-4">
-        <p className="pt-2 text-xs text-neutral-400">
-          t-diff: {timeDiffAsSeconds << 0}
-        </p>
-      </div>
-    </li>
+    <Link
+      className="w-full self-start border p-2"
+      href={`/auctions/${auctionId}`}
+    >
+      <li className="flex flex-row justify-between border-b bg-neutral-50 text-neutral-800">
+        <div className="flex flex-col justify-start p-2">
+          <p className="pb-2 text-base font-medium">{auction.name}</p>
+          <p className="pb-2 text-sm">{auction.description}</p>
+        </div>
+        <div className="flex w-64 flex-shrink-0 flex-col items-center justify-center bg-slate-50 p-4">
+          <AuctionTimer
+            auction={auction}
+            auctionIsActive={auctionIsActive}
+            onTimeUpdate={setAuctionIsActive}
+          />
+        </div>
+      </li>
+    </Link>
   );
 };
 
@@ -119,7 +126,7 @@ export const AuctionListRowView = ({ auction }: AuctionListRowViewProps) => {
  * Container for a List view of Auctions available
  * ie: another one would be tileView or maybe a cardView
  */
-const AuctionsListView = ({ auctions }: Auction[]) => {
+const AuctionsListView = ({ auctions }: { auctions: AuctionExtended[] }) => {
   return (
     <ul className="flex flex-grow flex-col bg-slate-100">
       {auctions.map((auction) => (
@@ -134,23 +141,17 @@ const AuctionsListView = ({ auctions }: Auction[]) => {
  * Main functional component responsible for rendering layout
  */
 export const AuctionsPage = () => {
-  const [query] = useAuctionsQuery("ACTIVE", 0, 25);
+  const { data: auctions } = useAuctionsQuery({
+    auctionStatus: "ACTIVE",
+    windowStart: 0,
+    windowLength: 25,
+  });
 
   return (
     <div className="flex w-full flex-grow flex-col p-24">
       <h1 className="pb-4 text-6xl font-bold text-black">Auctions</h1>
-
-      {/* temp container for testing hook query status and errors */}
-      <p className="mb-2 bg-slate-50 pb-2 pl-2 pt-2 text-xs text-neutral-800">
-        query: status: {query.queryStatus.isLoading ? "loading" : "done"}
-      </p>
-
-      {/* temp container for testing pagination windows via the ui + hook */}
-      <div className="mb-2 bg-slate-50 p-2 text-xs text-neutral-800">Page:</div>
-
-      {/* temp container for Auctions View module */}
       <div className="flex w-full flex-grow flex-col">
-        <AuctionsListView auctions={query.auctions} />
+        {auctions && <AuctionsListView auctions={auctions} />}
       </div>
     </div>
   );

@@ -1,0 +1,14 @@
+{
+  "folders": [
+	{
+		"path": "../../.."
+	},
+	{
+		"path": "../../../../goodbids_design"
+	}
+],
+  "settings": {
+    "cSpell.words": ["supabase"],
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

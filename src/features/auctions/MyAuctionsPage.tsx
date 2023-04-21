@@ -10,7 +10,7 @@
  *
  */
 import { useMyAuctionsQuery } from "~/hooks/useMyAuctions";
-import { I_AuctionCollection, AuctionExtended } from "~/utils/types/auctions";
+import { AuctionExtended } from "~/utils/types/auctions";
 import { useUserQuery } from "~/hooks/useUser";
 import Link from "next/link";
 
@@ -64,7 +64,7 @@ export const AuctionListRowView = ({ auction }: AuctionListRowViewProps) => {
  * Container for a List view of Auctions available
  * ie: another one would be tileView or maybe a cardView
  */
-const AuctionsListView = ({ auctions }: I_AuctionCollection) => {
+const AuctionsListView = ({ auctions }: { auctions: AuctionExtended[] }) => {
   return (
     <ul className="flex flex-grow flex-col bg-slate-100">
       {auctions.map((auction) => (

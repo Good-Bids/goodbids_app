@@ -1,6 +1,6 @@
 /**
  *
- * useMyAuctions - hooks and SUpabase calls
+ * useMyAuctions - hooks and Supabase calls
  *
  * auction table has auction_id & charity_id
  * charity_admin_id table has user_id & charity_id & charity_admin_id
@@ -28,7 +28,7 @@ import useSupabase from "./useSupabase";
 
 const supabaseClient = useSupabase();
 
-type T_SupabaseAdminReturnObject = {
+type SupabaseAdminReturnObject = {
   status: number;
   statusMessage: string;
   charityIdCollection: any;
@@ -47,7 +47,7 @@ type T_SupabaseAdminReturnObject = {
  */
 const getCharityUserAdministers = async (
   userId: string
-): Promise<T_SupabaseAdminReturnObject> => {
+): Promise<SupabaseAdminReturnObject> => {
   try {
     let result;
 
@@ -108,6 +108,7 @@ const getMyAuctions = async (
 
   // For now we will be assuming the spec only 1 charity_id
   const charity_id = checkAdminResults.charityIdCollection[0].charity_id;
+  console.log(checkAdminResults);
 
   try {
     let result;

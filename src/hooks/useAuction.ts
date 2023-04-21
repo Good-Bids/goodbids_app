@@ -224,58 +224,49 @@ export const useAuctionQuery = (auctionId?: string | undefined) => {
  * query and run it so we have to use an if
  *
  */
-const getAuctions = async (
-  auctionStatus = "ACTIVE",
-  windowStart = 0,
-  windowLength = 25
-) => {
+const getAuctions = async (args: {
+  auctionStatus: string;
+  charityId?: string;
+  windowStart: number;
+  windowLength: number;
+}) => {
+  const { auctionStatus, charityId, windowLength, windowStart } = args;
   try {
     let result;
-
-    if (auctionStatus === "*") {
-      result = await supabaseClient
+    if (charityId) {
+      const result = await supabaseClient
         .from("auction")
         .select(
           `
-        *,
-        bids: bid(*)
-      `
+          *,
+          bids: bid(*)
+        `
         )
-        // .returns<I_AuctionModel>()
+        .eq("status", auctionStatus)
+        .eq("charity_id", charityId)
         .order("created_at", { ascending: false }) // Gets latest on top by creation date
         .range(windowStart, windowLength)
         .throwOnError();
+
+      return result;
     } else {
-      result = await supabaseClient
+      const result = await supabaseClient
         .from("auction")
         .select(
           `
-        *,
-        bids: bid(*)
-      `
+          *,
+          bids: bid(*)
+        `
         )
-        // .returns<I_AuctionModel>()
         .eq("status", auctionStatus)
         .order("created_at", { ascending: false }) // Gets latest on top by creation date
         .range(windowStart, windowLength)
         .throwOnError();
-    }
 
-    return {
-      status: result.status,
-      statusMessage: result.statusText,
-      auctions: result.data,
-      hasError: false,
-      rawError: null,
-    };
+      return result;
+    }
   } catch (err: any) {
-    return {
-      status: err?.code ?? "5000",
-      statusMessage: err?.message ?? "unknown error type",
-      auctions: [],
-      hasError: true,
-      rawError: err,
-    };
+    throw err;
   }
 };
 
@@ -296,49 +287,32 @@ const getAuctions = async (
  *
  * return types are inferred
  */
-export const useAuctionsQuery = (
-  auctionStatus?: string | undefined,
-  windowStart = 0,
-  windowLength = 0
-) => {
+export const useAuctionsQuery = (args: {
+  auctionStatus?: string;
+  charityId?: string;
+  windowStart?: number;
+  windowLength?: number;
+}) => {
+  const { auctionStatus, charityId, windowStart, windowLength } = args;
   const [queryParameters, setQueryParameters] = useState({
-    auctionStatus: auctionStatus ?? "*",
-    windowStart: 0,
-    windowLength: 25,
+    auctionStatus: auctionStatus ?? "ACTIVE",
+    charityId: charityId,
+    windowStart: windowStart ?? 0,
+    windowLength: windowLength ?? 25,
   });
 
-  const { isLoading, isError, data, error } = useQuery({
+  const result = useQuery({
     queryKey: [
       "auctionCollectionQueryResults",
       queryParameters.auctionStatus,
+      queryParameters.charityId,
       queryParameters.windowStart,
       queryParameters.windowLength,
     ],
-    queryFn: async () => {
-      return await getAuctions(
-        queryParameters.auctionStatus,
-        queryParameters.windowStart,
-        queryParameters.windowLength
-      );
-    },
+    queryFn: async () => await getAuctions(queryParameters),
   });
 
-  return [
-    {
-      queryStatus: {
-        isLoading,
-        isError,
-      },
-      auctions: data?.auctions ?? [],
-      hasError: !!(data?.hasError || isError),
-      errorMessage:
-        data?.hasError || isError
-          ? data?.statusMessage ?? "React Query encountered an error"
-          : "",
-      errorObj: data?.hasError || isError ? data?.rawError ?? error : null,
-    },
-    setQueryParameters,
-  ] as const;
+  return { ...result, data: result.data?.data };
 };
 
 /**

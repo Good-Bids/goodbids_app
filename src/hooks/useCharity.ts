@@ -17,31 +17,33 @@ const supabaseClient = useSupabase();
  *
  * @param charityId string - uuid4 charity Id not null / undefined
  */
-const getCharity = async (charityId: string) => {
-  try {
-    const result = await supabaseClient
-      .from("charity")
-      .select()
-      .eq("charity_id", charityId)
-      .limit(1)
-      .single()
-      .throwOnError();
+const getCharity = async (charityId?: string) => {
+  if (charityId) {
+    try {
+      const result = await supabaseClient
+        .from("charity")
+        .select()
+        .eq("charity_id", charityId)
+        .limit(1)
+        .single()
+        .throwOnError();
 
-    return {
-      status: result.status,
-      statusMessage: result.statusText,
-      charity: result.data,
-      hasError: false,
-      rawError: null,
-    };
-  } catch (err: any) {
-    return {
-      status: err?.code ?? "5000",
-      statusMessage: err?.message ?? "unknown error type",
-      charity: undefined,
-      hasError: true,
-      errorObj: err,
-    };
+      return {
+        status: result.status,
+        statusMessage: result.statusText,
+        charity: result.data,
+        hasError: false,
+        rawError: null,
+      };
+    } catch (err: any) {
+      return {
+        status: err?.code ?? "5000",
+        statusMessage: err?.message ?? "unknown error type",
+        charity: undefined,
+        hasError: true,
+        errorObj: err,
+      };
+    }
   }
 };
 
@@ -66,28 +68,12 @@ const getCharity = async (charityId: string) => {
  * return types are inferred
  */
 export const useCharityQuery = (charityId?: string | undefined) => {
-  // below in temporary - short circuit
-  if (charityId === undefined) {
-    return {
-      queryStatus: {
-        isLoading: false,
-        isError: false,
-      },
-      auction: undefined,
-      hasError: true,
-      errorMessage: "Invalid charity ID",
-      errorObj: {
-        code: "5000",
-        message: "Invalid charity ID",
-      },
-    } as const;
-  }
-
   const { isLoading, isError, data, error } = useQuery({
     queryKey: ["charityQueryResults", charityId],
     queryFn: async () => {
       return await getCharity(charityId);
     },
+    enabled: Boolean(charityId),
   });
 
   return {
