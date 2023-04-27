@@ -10,12 +10,7 @@ import { Database } from "./supabase";
 /** Convenience wrapper - from supabase.ts */
 export type Auction = Database["public"]["Tables"]["auction"]["Row"];
 export type Bid = Database["public"]["Tables"]["bid"]["Row"];
-
-/**
- * Nested Types from Supabase require over rides in the return ( a cast )
- * or make a new model manually. Probably the commented out cast in the useAuction
- * getAuctions is possible.
- */
+export type BidState = Database["public"]["Tables"]["bid_state"];
 
 export interface AuctionExtended extends Auction {
   bids: Bid[] | Bid | null;

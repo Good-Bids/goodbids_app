@@ -1,10 +1,9 @@
-import { time } from "console";
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import { useInterval } from "usehooks-ts";
-import { AuctionExtended } from "~/utils/types/auctions";
+import { Auction } from "~/utils/types/auctions";
 
 interface AuctionTimerProps {
-  auction: AuctionExtended;
+  auction: Auction;
   auctionIsActive: boolean;
   onTimeUpdate: (arg0: boolean) => void;
 }
@@ -14,20 +13,18 @@ export const AuctionTimer = ({
   onTimeUpdate,
   auctionIsActive,
 }: AuctionTimerProps) => {
-  const lastBid = Array.isArray(auction?.bids)
-    ? auction?.bids[0]
-    : auction?.bids;
-
   const [timeLeft, setTimeLeft] = useState<number>();
   useInterval(() => {
-    const lastBidTimestamp = new Date(Date.parse(lastBid?.created_at ?? ""));
+    const lastBidTimestamp = new Date(
+      Date.parse(auction.latest_bid_timestamptz ?? "")
+    );
     const expirationTime = (auction?.top_bid_duration ?? 0) * 1000;
     const expirationTimeStamp = lastBidTimestamp.setTime(
       lastBidTimestamp.getTime() + expirationTime
     );
     setTimeLeft((expirationTimeStamp - new Date().getTime()) / 1000);
     onTimeUpdate(auction?.status === "ACTIVE" && (timeLeft ?? 0) > 0);
-  }, 1000);
+  }, 100);
 
   if (timeLeft !== undefined) {
     const hoursLeft = Math.floor(timeLeft / 3600);

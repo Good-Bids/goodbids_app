@@ -17,9 +17,10 @@ export interface Database {
           charity_id: string
           created_at: string | null
           description: string
-          high_bid_value: number | null
+          high_bid_value: number
           increment: number
           item_id: string | null
+          latest_bid_timestamptz: string | null
           minimum_bids: number | null
           name: string
           opening_bid_value: number
@@ -29,7 +30,7 @@ export interface Database {
           over_bid_good_time_often_fee: number | null
           over_bid_good_time_threshold_field: Json | null
           status: string
-          top_bid_duration: number | null
+          top_bid_duration: number
           type: string
         }
         Insert: {
@@ -39,9 +40,10 @@ export interface Database {
           charity_id: string
           created_at?: string | null
           description: string
-          high_bid_value?: number | null
+          high_bid_value: number
           increment?: number
           item_id?: string | null
+          latest_bid_timestamptz?: string | null
           minimum_bids?: number | null
           name: string
           opening_bid_value: number
@@ -51,7 +53,7 @@ export interface Database {
           over_bid_good_time_often_fee?: number | null
           over_bid_good_time_threshold_field?: Json | null
           status?: string
-          top_bid_duration?: number | null
+          top_bid_duration?: number
           type?: string
         }
         Update: {
@@ -61,9 +63,10 @@ export interface Database {
           charity_id?: string
           created_at?: string | null
           description?: string
-          high_bid_value?: number | null
+          high_bid_value?: number
           increment?: number
           item_id?: string | null
+          latest_bid_timestamptz?: string | null
           minimum_bids?: number | null
           name?: string
           opening_bid_value?: number
@@ -73,34 +76,34 @@ export interface Database {
           over_bid_good_time_often_fee?: number | null
           over_bid_good_time_threshold_field?: Json | null
           status?: string
-          top_bid_duration?: number | null
+          top_bid_duration?: number
           type?: string
         }
       }
       bid: {
         Row: {
-          amount: number
           auction_id: string
           bid_id: string
           bid_status: string
+          bid_value: number
           bidder_id: string
           charity_id: string
           created_at: string
         }
         Insert: {
-          amount: number
           auction_id: string
           bid_id?: string
           bid_status?: string
+          bid_value: number
           bidder_id: string
           charity_id: string
           created_at?: string
         }
         Update: {
-          amount?: number
           auction_id?: string
           bid_id?: string
           bid_status?: string
+          bid_value?: number
           bidder_id?: string
           charity_id?: string
           created_at?: string
@@ -267,7 +270,10 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      update_auction_sql: {
+        Args: Record<PropertyKey, never>
+        Returns: string[]
+      }
     }
     Enums: {
       [_ in never]: never
