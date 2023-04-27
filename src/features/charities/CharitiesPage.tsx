@@ -14,7 +14,7 @@
  *
  */
 import { useCharitiesQuery } from "~/hooks/useCharity";
-import { I_CharityCollection, I_CharityModel } from "~/utils/types/charities";
+import { Charity } from "~/utils/types/charities";
 import Link from "next/link";
 
 /**
@@ -35,7 +35,11 @@ const QueryErrorDisplay = () => {};
  * separated for rendering/windowing and isolated updates in
  * the future ( if a row gets expensive can memo it )
  */
-const CharityListRow = ({ charity }: I_CharityModel) => {
+interface CharityListRowProps {
+  charity: Charity;
+}
+
+const CharityListRow = ({ charity }: CharityListRowProps) => {
   return (
     <li className="border-b bg-neutral-50 p-2 text-neutral-800">
       <Link href={`/charities/${charity.charity_id}`}>
@@ -51,7 +55,11 @@ const CharityListRow = ({ charity }: I_CharityModel) => {
  * Container for a List view of Charities available
  * ie: another one would be tileView or maybe a cardView
  */
-const CharitiesListView = ({ charities }: I_CharityCollection) => {
+interface CharityListViewProps {
+  charities: Charity[];
+}
+
+const CharitiesListView = ({ charities }: CharityListViewProps) => {
   return (
     <ul className="flex flex-grow flex-col bg-slate-100">
       {charities.map((charity) => (

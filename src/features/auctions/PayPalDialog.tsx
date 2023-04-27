@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
-import {
+import type {
   CreateOrderData,
   CreateOrderActions,
   OnApproveData,
@@ -18,42 +18,38 @@ import {
   DialogDescription,
 } from "src/components/Dialog";
 
-import {
-  preflightValidateBidAmount,
-  addBidLock,
-  addBid,
-  updateAuctionWithBid,
-  updateBidCompleteStatus,
-  removeBidLockByAuctionId,
-} from "~/hooks/useAuction";
+import { useBidMutation } from "~/hooks/useAuction";
 
 import * as ga from "../../lib/ga";
 import { useUserQuery } from "~/hooks/useUser";
 import { useRouter } from "next/router";
+import { Auction } from "~/utils/types/auctions";
 
 interface PayPalDialogProps {
   bidValue: number;
-  auction: any;
+  auction: Auction;
+  isBidLocked: boolean;
 }
 
-export const PayPalDialog = ({ bidValue, auction }: PayPalDialogProps) => {
-  const userJWT = useUserQuery();
+export const PayPalDialog = ({
+  bidValue,
+  auction,
+  isBidLocked,
+}: PayPalDialogProps) => {
+  const { data: userData } = useUserQuery();
   const router = useRouter();
 
-  // State of the Dialog
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  // When the paypal button is clicked it signals to locks the
-  // bidding for everyone and saves the lockId here
-  const [bidLockId, setBidLockId] = useState<string>();
-
-  // Track paypal calls
-  const [paypalState, setPaypalState] = useState<
-    "COMPLETED" | "CANCELLED" | "CREATE_ORDER" | "NOT_STARTED" | "ERROR"
-  >("NOT_STARTED");
+  const [bidId, setBidId] = useState<string>();
+  const [bidState, setBidState] = useState<
+    "PENDING" | "COMPLETE" | "CANCELLED" | "INACTIVE"
+  >("INACTIVE");
 
   // Open the bid now dialog and track its opening via google
-  const openBidDialog = () => {
+  const openBidDialog = async () => {
+    if (userData?.id === undefined) {
+      await router.push("/LogIn");
+    }
     setIsDialogOpen(true);
     // place the event tag inside the open dialog
     // otherwise you are only capturing pageLoad
@@ -62,98 +58,50 @@ export const PayPalDialog = ({ bidValue, auction }: PayPalDialogProps) => {
       action: "button_click",
       params: { label: "Bid now", value: bidValue },
     });
+    setBidState("PENDING");
   };
 
-  // Sync the open/closed state of the Dialog
-  // to this component
-  // TODO: cancel and reset everything if user
-  //       mistakenly hits the close via the
-  //       dialog background
-  useEffect(() => {}, [isDialogOpen]);
-
-  // Rough state control flow for synchronizing the
-  // paypal 3rd party system to the supabase system
-  useEffect(() => {
-    const startProcess = async () => {
-      /** typeScript fix. userId will always be defined */
-      let userIdTSFix = userJWT.data?.id ?? "";
-      const preFlightCheckResult = await preflightValidateBidAmount(
-        auction.auction_id,
-        auction.increment,
-        bidValue
-      );
-      const bidLockedResult = await addBidLock(auction.auction_id);
-
-      const updateBidTableResults = await addBid(
-        auction.auction_id,
-        auction.charity_id,
-        userIdTSFix,
-        bidValue
-      );
-
-      setBidLockId(updateBidTableResults.bid[0].bid_id);
-
-      // Check all three calls to make sure things are smooth
-      // then update the component. We really need a "cancel"
-      // paypal flow surfaced from the 3rd party component here
-    };
-
-    const completeBidProcess = async () => {
-      /** typeScript fix. bidLockId will always be defined here */
-      let bidLockIdTSFix = bidLockId ?? "";
-      const updateAuctionResults = await updateAuctionWithBid(
-        auction.auction_id,
-        bidValue
-      );
-      const bidCompletedResults = await updateBidCompleteStatus(bidLockIdTSFix);
-      const unlockBidResults = await removeBidLockByAuctionId(
-        auction.auction_id
-      );
-
-      // Check all three calls to make sure things are smooth
-      // then update the component. We really need a "cancel"
-      // paypal flow surfaced from the 3rd party component here
-      setBidLockId(undefined);
-
-      // on complete, close the dialog and refresh the page to show the new amount on the button
-      setIsDialogOpen(false);
-      router.reload();
-    };
-
-    // if a user Id provided is undefined
-    // we can assume its not authenticated because we get
-    // it from the JWT
-    if (userJWT.data?.id !== undefined) {
-      // CREATE ORDER HOOK - Fired when you click paypal button
-      if (isDialogOpen && !bidLockId && paypalState === "CREATE_ORDER") {
-        startProcess();
-      }
-      // COMPLETES HOOK - Not sure when
-      if (isDialogOpen && bidLockId && paypalState === "COMPLETED") {
-        completeBidProcess();
-      }
-    }
-
-    return () => {
-      // clean up
-    };
-  }, [isDialogOpen, bidLockId, paypalState]);
+  const pendingBidCreation = useBidMutation({
+    auctionId: auction.auction_id,
+    userId: userData?.id ?? "",
+    bidAmount: bidValue,
+    bidState: "PENDING",
+  });
+  const bidConfirmation = useBidMutation({
+    auctionId: auction.auction_id,
+    userId: userData?.id ?? "",
+    bidAmount: bidValue,
+    bidState: "COMPLETE",
+    bidId,
+  });
+  const bidCancellation = useBidMutation({
+    auctionId: auction.auction_id,
+    userId: userData?.id ?? "",
+    bidAmount: bidValue,
+    bidState: "CANCELLED",
+    bidId,
+  });
 
   // paypal specific method
   const handleCreateOrder = async (
     data: CreateOrderData,
     actions: CreateOrderActions
   ) => {
-    setPaypalState("CREATE_ORDER");
-    return await actions.order?.create({
-      purchase_units: [
-        {
-          amount: {
-            value: bidValue.toString(10),
+    try {
+      const pendingGoodBid = await pendingBidCreation.mutateAsync();
+      setBidId(pendingGoodBid?.bidId);
+      return await actions.order?.create({
+        purchase_units: [
+          {
+            amount: {
+              value: bidValue.toString(10),
+            },
           },
-        },
-      ],
-    });
+        ],
+      });
+    } catch (err) {
+      throw err;
+    }
   };
 
   // paypal specific method
@@ -161,12 +109,17 @@ export const PayPalDialog = ({ bidValue, auction }: PayPalDialogProps) => {
     data: OnApproveData,
     actions: OnApproveActions
   ) => {
-    setPaypalState("COMPLETED");
-    const details = await actions.order?.capture();
-    const name = details?.payer?.name?.given_name ?? ""; // because capture() can be promise | undefined
+    try {
+      const details = await actions.order?.capture();
+      const confirmation = await bidConfirmation.mutateAsync();
+      setIsDialogOpen(false);
+      router.reload();
+      const name = details?.payer?.name?.given_name ?? ""; // because capture() can be promise | undefined
 
-    // this is where we'll do more with supabase on success
-    alert(`GoodBid confirmed, thank you${name ? ` ${name}` : ""}!`);
+      alert(`GoodBid confirmed, thank you${name ? ` ${name}` : ""}!`);
+    } catch (err) {
+      throw err;
+    }
   };
 
   // paypal specific method
@@ -174,39 +127,56 @@ export const PayPalDialog = ({ bidValue, auction }: PayPalDialogProps) => {
     data: Record<string, unknown>,
     actions: OnCancelledActions
   ) => {
-    // this is where we'll update bid state to cancelled
-    setPaypalState("CANCELLED");
-    console.log("PP: cancel triggered", data);
+    const cancellation = await bidCancellation.mutateAsync();
   };
 
   // paypal specific method
   const handleError = async (error: Record<string, unknown>) => {
-    // this is where we'll update bid state to error
-    setPaypalState("ERROR");
-    console.log("PP: error triggered", error);
+    const cancellation = await bidCancellation.mutateAsync();
+  };
+
+  const handleOpenChange = async (openChangeTo: boolean) => {
+    if (openChangeTo) {
+      setIsDialogOpen(openChangeTo);
+    } else {
+      setIsDialogOpen(openChangeTo);
+      setBidState("CANCELLED");
+      await bidCancellation.mutateAsync();
+      setBidId("");
+      console.log({ openChangeTo, bidId, bidState });
+    }
   };
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <div
-          id="call-to-action"
-          className="flex min-h-fit w-fit flex-col justify-center pb-4 pt-4"
-        >
+        {isBidLocked ? (
           <button
-            className={`container rounded-full bg-bottleGreen px-8 py-4 text-xl font-bold text-hintOfGreen`}
-            onClick={openBidDialog}
+            className={`container rounded-full bg-outerSpace-200 px-8 py-4 text-sm font-bold text-bottleGreen`}
+            disabled
           >
-            {`GoodBid $${bidValue} now`}
+            {`Someone else is placing a bid right now`}.
           </button>
-        </div>
+        ) : (
+          <div
+            id="call-to-action"
+            className="fixed bottom-2 left-4 flex min-h-fit w-11/12 flex-col justify-center pb-4 pt-4 sm:relative sm:left-0 sm:w-fit"
+          >
+            <button
+              className={`container rounded-full bg-bottleGreen px-8 py-4 text-xl font-bold text-hintOfGreen`}
+              onClick={openBidDialog}
+            >
+              {`GoodBid $${bidValue} now`}
+            </button>
+          </div>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Goodbid ${bidValue}</DialogTitle>
+          <DialogTitle>GoodBid ${bidValue}</DialogTitle>
           <DialogDescription>
-            Don't worry, this is still just a test. You won't be charged, I
-            promise.
+            Don&apos;t worry, this is still just a test. You won&apos;t be
+            charged, I promise.
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col">

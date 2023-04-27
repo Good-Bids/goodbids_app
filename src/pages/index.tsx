@@ -58,7 +58,7 @@ const Home: NextPage = () => {
       return (
         <>
           <span className="text-7xl font-black text-bottleGreen">
-            Welcome back, {userFirstName}
+            Welcome back, {userFirstName}.
           </span>
           <span className="text-2xl font-medium text-bottleGreen">
             we're glad you're here.
@@ -98,44 +98,6 @@ const Home: NextPage = () => {
                 </Link>
               </span>
             </>
-          )}
-        </>
-      );
-    if (isLoggedInBidder)
-      return (
-        <>
-          <span className="text-7xl font-black text-bottleGreen">
-            Welcome back, {userFirstName}
-          </span>
-          <span className="text-2xl font-medium text-bottleGreen">
-            we're glad you're here.
-          </span>
-        </>
-      );
-    if (isLoggedInCharity)
-      return (
-        <>
-          <span className="text-7xl font-black text-bottleGreen">
-            Welcome charity admin, we're glad you're here
-          </span>
-          {!charityIsCreated ? (
-            <span className="text-4xl font-black text-bottleGreen">
-              <Link
-                href="/charities/create"
-                className="decoration-screaminGreen hover:underline"
-              >
-                Register your goodCharity today
-              </Link>
-            </span>
-          ) : (
-            <span className="text-4xl font-black text-bottleGreen">
-              <Link
-                href={`/charities/${charityId}`}
-                className="decoration-screaminGreen hover:underline"
-              >
-                Your Charity Page
-              </Link>
-            </span>
           )}
         </>
       );

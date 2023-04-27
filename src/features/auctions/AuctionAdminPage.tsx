@@ -16,7 +16,7 @@
  * to make this work
  *
  */
-
+import React from "react";
 import { UpdateAuctionStateForm } from "~/components/AuctionUpdateStateForm";
 import { UpdateAuctionForm } from "~/components/AuctionUpdateForm";
 

@@ -21,11 +21,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useCharityQuery } from "../../hooks/useCharity";
 import { useAuctionsQuery } from "~/hooks/useAuction";
-import {
-  I_AuctionCollection,
-  T_AuctionModelExtended,
-} from "~/utils/types/auctions";
-import { I_CharityModel } from "~/utils/types/charities";
+import { Auction } from "~/utils/types/auctions";
+import { Charity } from "~/utils/types/charities";
+import Link from "next/link";
 
 /**
  * QueryLoadingDisplay
@@ -51,27 +49,23 @@ const QueryErrorDisplay = () => {
  */
 
 interface LimitedAuctionListRowViewProps {
-  auction: T_AuctionModelExtended;
+  auction: Auction;
 }
 
 export const LimitedAuctionListRowView = ({
   auction,
 }: LimitedAuctionListRowViewProps) => {
   return (
-    <li className="border-b bg-neutral-50 p-2 text-neutral-800">
-      <p className="text-base font-medium">{auction.name}</p>
-      <p className="font-regular text-xs text-neutral-500">
-        auction is currently in: {auction.status} mode
-      </p>
-      <p className="pb-2 pt-2 text-sm">{auction.description}</p>
-      <div
-        id={"view-bids-" + auction.auction_id}
-        data-auction-id={auction.auction_id}
-        className="p2 inline-block cursor-pointer border"
-      >
-        <p className="select-none p-2 text-sm">view bids</p>
-      </div>
-    </li>
+    <Link href={`/auctions/${auction.auction_id}`}>
+      <li className="border-b bg-neutral-50 p-2 text-neutral-800">
+        <p className="text-base font-medium">{auction.name}</p>
+        <p className="font-regular text-xs text-neutral-500">
+          auction is currently in: {auction.status} mode
+        </p>
+
+        <p className="pb-2 pt-2 text-sm">{auction.description}</p>
+      </li>
+    </Link>
   );
 };
 
@@ -80,7 +74,7 @@ export const LimitedAuctionListRowView = ({
  * Auctions Stubbed in with the full Auctions call
  * TODO: will
  */
-const AuctionsMiniListView = ({ auctions }: I_AuctionCollection) => {
+const AuctionsMiniListView = ({ auctions }: { auctions: Auction[] }) => {
   return (
     <div className="flex w-full flex-col pt-2">
       <ul className="flex flex-grow flex-col bg-slate-100">
@@ -108,8 +102,14 @@ const AuctionsMiniListView = ({ auctions }: I_AuctionCollection) => {
  * <p>Auction history</p>
  *
  */
-const CharityDetails = ({ charity }: I_CharityModel) => {
-  const [auctionQuery, updateAuctionPagination] = useAuctionsQuery();
+const CharityDetails = ({ charity }: { charity: Charity }) => {
+  const {
+    data: auctionsQuery,
+    isLoading,
+    isError,
+  } = useAuctionsQuery({
+    charityId: charity.charity_id,
+  });
   const [selectedAuction, setSelectedAuction] = useState<string>("");
 
   const memberSinceDate = new Date(charity.created_at ?? "");
@@ -123,13 +123,13 @@ const CharityDetails = ({ charity }: I_CharityModel) => {
   // Skip the loading displays here to show the component prior to auctions request
   // TODO: push down the auctionQuery.queryStatus into the child component to render
   //       loading/error/isEmpty - this would make it look like partials
-  if (
-    !auctionQuery.queryStatus.isLoading &&
-    !auctionQuery.queryStatus.isError &&
-    auctionQuery.auctions !== undefined
-  ) {
-    totalRaised = 26000;
-    totalAuctions = auctionQuery.auctions.length;
+  if (!isLoading && !isError && auctionsQuery !== undefined) {
+    totalRaised =
+      auctionsQuery?.reduce(
+        (prior, current) => (prior += current.high_bid_value ?? 0),
+        0
+      ) ?? 0;
+    totalAuctions = auctionsQuery?.length ?? 0;
   }
 
   // If we have auctions or a change in auctions
@@ -168,9 +168,6 @@ const CharityDetails = ({ charity }: I_CharityModel) => {
     };
   }, [totalAuctions]);
 
-  // Total Raised Math
-  // const totalRaised = charity.auctions.reduce((prior, current) => prior += current.high_bid_value ?? 0, 0)
-
   return (
     <div className="flex flex-grow flex-col bg-slate-50">
       <div className="flex w-full flex-col border-b p-2">
@@ -193,17 +190,9 @@ const CharityDetails = ({ charity }: I_CharityModel) => {
             </p>
             <p className="pt-1 text-xs text-neutral-800">
               Auctions [{totalAuctions}] Raised by all auctions [${totalRaised}]
-              - fake value{" "}
             </p>
           </div>
-          <AuctionsMiniListView auctions={auctionQuery.auctions} />
-        </div>
-        {/* Right col */}
-        <div className="flex w-full flex-shrink-0 flex-grow flex-col p-2 md:w-1/2">
-          {/* AUCTION BID HISTORY GOES HERE ( possibly )*/}
-          <p className="pt-1 text-xs text-neutral-800">
-            Auction Id selected: {selectedAuction || "none"}
-          </p>
+          {auctionsQuery && <AuctionsMiniListView auctions={auctionsQuery} />}
         </div>
       </div>
     </div>

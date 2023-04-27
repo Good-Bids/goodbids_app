@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { updateCharityAdmin } from "./useCharityAdmin";
 import useSupabase from "./useSupabase";
-import { T_NewCharityModel } from "~/utils/types/charities";
+import { CharityInsert } from "~/utils/types/charities";
 
 const supabaseClient = useSupabase();
 
@@ -17,31 +17,33 @@ const supabaseClient = useSupabase();
  *
  * @param charityId string - uuid4 charity Id not null / undefined
  */
-const getCharity = async (charityId: string) => {
-  try {
-    const result = await supabaseClient
-      .from("charity")
-      .select()
-      .eq("charity_id", charityId)
-      .limit(1)
-      .single()
-      .throwOnError();
+const getCharity = async (charityId?: string) => {
+  if (charityId) {
+    try {
+      const result = await supabaseClient
+        .from("charity")
+        .select()
+        .eq("charity_id", charityId)
+        .limit(1)
+        .single()
+        .throwOnError();
 
-    return {
-      status: result.status,
-      statusMessage: result.statusText,
-      charity: result.data,
-      hasError: false,
-      rawError: null,
-    };
-  } catch (err: any) {
-    return {
-      status: err?.code ?? "5000",
-      statusMessage: err?.message ?? "unknown error type",
-      charity: undefined,
-      hasError: true,
-      errorObj: err,
-    };
+      return {
+        status: result.status,
+        statusMessage: result.statusText,
+        charity: result.data,
+        hasError: false,
+        rawError: null,
+      };
+    } catch (err: any) {
+      return {
+        status: err?.code ?? "5000",
+        statusMessage: err?.message ?? "unknown error type",
+        charity: undefined,
+        hasError: true,
+        errorObj: err,
+      };
+    }
   }
 };
 
@@ -66,28 +68,12 @@ const getCharity = async (charityId: string) => {
  * return types are inferred
  */
 export const useCharityQuery = (charityId?: string | undefined) => {
-  // below in temporary - short circuit
-  if (charityId === undefined) {
-    return {
-      queryStatus: {
-        isLoading: false,
-        isError: false,
-      },
-      auction: undefined,
-      hasError: true,
-      errorMessage: "Invalid charity ID",
-      errorObj: {
-        code: "5000",
-        message: "Invalid charity ID",
-      },
-    } as const;
-  }
-
   const { isLoading, isError, data, error } = useQuery({
     queryKey: ["charityQueryResults", charityId],
     queryFn: async () => {
       return await getCharity(charityId);
     },
+    enabled: Boolean(charityId),
   });
 
   return {
@@ -112,7 +98,7 @@ export const useCharityQuery = (charityId?: string | undefined) => {
   */
 };
 
-const createCharity = async (data: T_NewCharityModel) => {
+const createCharity = async (data: CharityInsert) => {
   const { data: charityData, error } = await supabaseClient
     .from("charity")
     .insert({ email: data.email, ein: data.ein, name: data.name })
@@ -127,9 +113,7 @@ const createCharity = async (data: T_NewCharityModel) => {
   }
 };
 
-export const useCreateCharity = (
-  data: T_NewCharityModel & { adminId: string }
-) => {
+export const useCreateCharity = (data: CharityInsert & { adminId: string }) => {
   return useMutation(() => createCharity(data), {
     onSuccess: async (charityData) => {
       const updateData = updateCharityAdmin(

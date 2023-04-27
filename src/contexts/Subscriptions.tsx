@@ -9,65 +9,54 @@
  *
  */
 
-import { useState, useEffect, useRef, createContext, useContext } from "react";
+import React, { useState, useEffect, createContext, useContext } from "react";
 import useSupabase from "../hooks/useSupabase";
-import { RealtimeChannel } from "@supabase/supabase-js";
+import type {
+  RealtimeChannel,
+  RealtimePostgresInsertPayload,
+  RealtimePostgresUpdatePayload,
+} from "@supabase/supabase-js";
 
 // TODO: fix this
 import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
+import { Auction, BidState } from "~/utils/types/auctions";
+import { Database } from "~/utils/types/supabase";
 
-type T_MessageBusProviderProps = {
-  children: JSX.Element; // Only accepts FC not class ( basically wrap a single element )
-};
-
-type T_MessageBusValues = {
-  isInitialized: boolean;
-  subscriptions: RealtimeChannel[];
-  lastBidLockMessage?: any; // <- RealtimePostgresInsertPayload ???
-  lastAuctionUpdateMessage?: any;
-};
-
-interface I_MessageBusContext {
-  mbus: T_MessageBusValues;
+interface MessageBusProviderProps {
+  children: JSX.Element;
 }
 
-const MessageBusContext = createContext<I_MessageBusContext | null>(null);
-
-// Should be -> RealtimePostgresInsertPayload 
-const transformBidLockInsertMsg = (payload: any) => {
-  return {
-    dateTime: payload.commit_timestamp, // Note: Supabase wrong, its dateTime not timestamp
-    errors: payload.errors,
-    ttl: payload.new.ttl,
-    auctionId: payload.new.auction_id,
-    eventType: payload.eventType
+interface MessageBusValues {
+  isInitialized: boolean;
+  subscriptions: RealtimeChannel[];
+  lastBidLockMessage?: RealtimePostgresInsertPayload<BidState["Insert"]>;
+  lastAuctionUpdateMessage?: RealtimePostgresUpdatePayload<Auction> & {
+    auction: Auction;
   };
-};
+}
 
-// Should be -> RealtimePostgresUpdatePayload 
-const transformBidLockDeleteMsg = (payload: any) => {
-  return {
-    dateTime: payload.commit_timestamp, // Note: Supabase wrong, its dateTime not timestamp
-    errors: payload.errors,
-    ttl: payload.new.ttl,
-    auctionId: payload.old.auction_id,
-    eventType: payload.eventType
-  };
-};
+interface MessageBusContextArgs {
+  messageBus: MessageBusValues;
+}
 
-const transformAuctionUpdateMsg = (payload: any) => {
+const MessageBusContext = createContext<MessageBusContextArgs | null>(null);
+
+const transformAuctionUpdateMsg = (
+  payload: RealtimePostgresUpdatePayload<Auction>
+) => {
   return {
+    ...payload,
     dateTime: payload.commit_timestamp, // Note: Supabase wrong, its dateTime not timestamp
     errors: payload.errors,
     auction: payload.new, // returns the Auction ROW
-    eventType: payload.eventType
+    eventType: payload.eventType,
   };
 };
 
-const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
+const MessageBusProvider = ({ children }: MessageBusProviderProps) => {
   const supabaseClient = useSupabase();
 
-  const [mbus, updateMBus] = useState<T_MessageBusValues>({
+  const [mBus, setMBus] = useState<MessageBusValues>({
     isInitialized: false,
     subscriptions: [],
     lastBidLockMessage: undefined,
@@ -75,47 +64,14 @@ const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
   });
 
   useEffect(() => {
-    const bidStateInsert: RealtimeChannel = supabaseClient
-      .channel("custom-insert-channel")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "bid_state" },
-        (payload) => {
-          // RaceCondition between Callback and state
-          updateMBus({
-            ...mbus,
-            isInitialized: true,
-            lastBidLockMessage: transformBidLockInsertMsg(payload),
-          });
-        }
-      )
-      .subscribe();
-
-    const bidStateDelete: RealtimeChannel = supabaseClient
-      .channel("custom-delete-channel")
-      .on(
-        "postgres_changes",
-        { event: "DELETE", schema: "public", table: "bid_state" },
-        (payload) => {
-          // RaceCondition between Callback and state
-          updateMBus({
-            ...mbus,
-            isInitialized: true,
-            lastBidLockMessage: transformBidLockDeleteMsg(payload),
-          });
-        }
-      )
-      .subscribe();
-
     const auctionUpdate: RealtimeChannel = supabaseClient
       .channel("custom-update-channel")
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "auction" },
-        (payload) => {
-          // transformAuctionUpdateMsg
-          updateMBus({
-            ...mbus,
+        (payload: RealtimePostgresUpdatePayload<Auction>) => {
+          setMBus({
+            ...mBus,
             isInitialized: true,
             lastAuctionUpdateMessage: transformAuctionUpdateMsg(payload),
           });
@@ -123,25 +79,23 @@ const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
       )
       .subscribe();
 
-    updateMBus((prevState) => {
+    setMBus((prevState) => {
       return {
         isInitialized: true,
-        subscriptions: [bidStateInsert, bidStateDelete, auctionUpdate],
+        subscriptions: [auctionUpdate],
         lastMessage: undefined,
         lastAuctionUpdateMessage: undefined,
       };
     });
 
     // cleanup
-    return () => {
-      bidStateInsert.unsubscribe();
-      bidStateDelete.unsubscribe();
-      auctionUpdate.unsubscribe();
-    };
+    // return async () => {
+    //   await auctionUpdate.unsubscribe();
+    // };
   }, []);
 
   return (
-    <MessageBusContext.Provider value={{ mbus }}>
+    <MessageBusContext.Provider value={{ messageBus: mBus }}>
       {children}
     </MessageBusContext.Provider>
   );
@@ -149,7 +103,7 @@ const MessageBusProvider = ({ children }: T_MessageBusProviderProps) => {
 
 const useMessageBus = () => {
   const context = useContext(MessageBusContext);
-  if (!context) {
+  if (context == null) {
     throw new Error("useMessageBus must be used within a MessageBusProvider");
   }
   return context;
