@@ -54,7 +54,7 @@ export const UpdateAuctionForm = () => {
 
   // note is not capture all the result object, UI will be missing error
   // notifications that can be useful for display
-  const { queryStatus, auction, hasError } = useAuctionQuery(auctionId);
+  const { isLoading, data: auction, isError } = useAuctionQuery(auctionId);
 
   const {
     register,
@@ -64,7 +64,7 @@ export const UpdateAuctionForm = () => {
   } = useForm<AuctionFormValues>();
 
   useEffect(() => {
-    if (auction !== undefined) {
+    if (auction) {
       // reset FORM with auction details
       console.log("RESET and UPDATE form", auction);
       // casting feels wrong.
@@ -80,7 +80,6 @@ export const UpdateAuctionForm = () => {
         status: auction.status as string,
         minimum_bids: auction.minimum_bids as number,
         bid_currency: auction.bid_currency as string,
-        allowed_free_bid: auction.allowed_free_bids,
         over_bid_good_time_active: auction.over_bid_good_time_active as boolean,
         over_bid_good_time_early_fee:
           auction.over_bid_good_time_early_fee as number,
@@ -125,12 +124,12 @@ export const UpdateAuctionForm = () => {
   };
 
   // ReactQuery Status -> loading
-  if (queryStatus.isLoading && queryStatus.isError === false) {
+  if (isLoading && isError === false) {
     return <QueryLoadingDisplay />;
   }
 
   // ReactQuery SubQuery or auctionId Validation -> error
-  if (!queryStatus.isLoading === false && hasError) {
+  if (!isLoading && isError) {
     return <QueryErrorDisplay />;
   }
 

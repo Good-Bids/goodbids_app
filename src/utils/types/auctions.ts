@@ -11,7 +11,3 @@ import { Database } from "./supabase";
 export type Auction = Database["public"]["Tables"]["auction"]["Row"];
 export type Bid = Database["public"]["Tables"]["bid"]["Row"];
 export type BidState = Database["public"]["Tables"]["bid_state"];
-
-export interface AuctionExtended extends Auction {
-  bids: Bid[] | Bid | null;
-}

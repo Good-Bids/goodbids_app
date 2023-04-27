@@ -21,7 +21,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useCharityQuery } from "../../hooks/useCharity";
 import { useAuctionsQuery } from "~/hooks/useAuction";
-import { AuctionExtended } from "~/utils/types/auctions";
+import { Auction } from "~/utils/types/auctions";
 import { Charity } from "~/utils/types/charities";
 import Link from "next/link";
 
@@ -49,7 +49,7 @@ const QueryErrorDisplay = () => {
  */
 
 interface LimitedAuctionListRowViewProps {
-  auction: AuctionExtended;
+  auction: Auction;
 }
 
 export const LimitedAuctionListRowView = ({
@@ -74,11 +74,7 @@ export const LimitedAuctionListRowView = ({
  * Auctions Stubbed in with the full Auctions call
  * TODO: will
  */
-const AuctionsMiniListView = ({
-  auctions,
-}: {
-  auctions: AuctionExtended[];
-}) => {
+const AuctionsMiniListView = ({ auctions }: { auctions: Auction[] }) => {
   return (
     <div className="flex w-full flex-col pt-2">
       <ul className="flex flex-grow flex-col bg-slate-100">

@@ -1,30 +1,9 @@
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import useSupabase from "./useSupabase";
-import { AuctionExtended, Bid } from "~/utils/types/auctions";
+import { Auction } from "~/utils/types/auctions";
 
 const supabaseClient = useSupabase();
-
-// interface SupabaseBaseReturnObject {
-//   status: number;
-//   statusMessage: string;
-//   hasError: boolean;
-//   rawError: any | null;
-// }
-
-// interface BidStatusModel {
-//   bidStatus: any;
-// }
-
-// type SupabaseBidStatusReturnObject = SupabaseBaseReturnObject & BidStatusModel;
-
-// interface SupabaseBidReturnObject {
-//   status: number;
-//   statusMessage: string;
-//   bid: any;
-//   hasError: boolean;
-//   rawError: any | null;
-// }
 
 interface SupabaseAuctionReturnObject {
   status: number;
@@ -33,22 +12,6 @@ interface SupabaseAuctionReturnObject {
   hasError: boolean;
   rawError: any | null;
 }
-
-// interface SupabaseBidVariables {
-//   auctionId: string;
-//   charityId: string;
-//   userId: string;
-//   amount: number;
-// }
-
-// interface I_SupabaseAuctionBidVariables {
-//   auctionId: string;
-//   newBidValue: number;
-// }
-
-// interface I_SupabaseUpdateBidVariables {
-//   bidId: string;
-// }
 
 export const updateAuctionStatus = async (
   auctionId: string,
@@ -106,7 +69,7 @@ export const getAuction = async (auctionId: string) => {
       .single()
       .throwOnError();
 
-    return result;
+    return result.data;
   } catch (err) {
     throw err;
   }
@@ -170,12 +133,16 @@ const getAuctions = async (args: {
 };
 
 const getBidsByAuction = async (auctionId: string) => {
-  const result = await supabaseClient
-    .from("bid")
-    .select("*")
-    .eq("auction_id", auctionId)
-    .order("created_at", { ascending: false });
-  return result;
+  try {
+    const result = await supabaseClient
+      .from("bid")
+      .select("*")
+      .eq("auction_id", auctionId)
+      .order("created_at", { ascending: false });
+    return result.data;
+  } catch (err) {
+    throw err;
+  }
 };
 
 /**
@@ -207,10 +174,19 @@ export const useAuctionQuery = (auctionId: string) => {
     enabled: auctionId !== "",
   });
 
-  return {
-    ...result,
-    data: result.data?.data,
-  };
+  return result;
+};
+
+export const useBidsByAuction = (auctionId: string) => {
+  const result = useQuery({
+    queryKey: ["bidsByAuction", auctionId],
+    queryFn: async () => {
+      return await getBidsByAuction(auctionId);
+    },
+    enabled: auctionId !== "",
+  });
+
+  return result;
 };
 
 /**

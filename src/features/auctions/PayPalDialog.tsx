@@ -146,10 +146,9 @@ export const PayPalDialog = ({
       console.log({ openChangeTo, bidId, bidState });
     }
   };
-  console.log({ isDialogOpen, bidId, bidState });
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         {isBidLocked ? (
           <button

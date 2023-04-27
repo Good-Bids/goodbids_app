@@ -7,19 +7,18 @@ import Link from "next/link";
 // React Query hooks
 import { useAuctionQuery } from "~/hooks/useAuction";
 import { useCharityQuery } from "~/hooks/useCharity";
+import { useMessageBus } from "~/contexts/Subscriptions";
 
 // Components
+import { AuctionTimer } from "./AuctionTimer";
 import { PayPalDialog } from "./PayPalDialog";
 import { ImageCarousel } from "~/components/ImageCarousel";
 import { useStorageItemsQuery } from "~/hooks/useStorage";
 
-// Types
-import { Auction, type AuctionExtended } from "~/utils/types/auctions";
-import useSupabase from "~/hooks/useSupabase";
+// Types & constants
+import { Auction } from "~/utils/types/auctions";
 import { fileStoragePath } from "~/utils/constants";
-import { AuctionTimer } from "./AuctionTimer";
-import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
-import { useMessageBus } from "~/contexts/Subscriptions";
+
 interface AuctionDetailsProps {
   auction: Auction;
 }
@@ -44,18 +43,14 @@ export const AuctionDetailPage = () => {
   const router = useRouter();
   const subscription = useMessageBus();
 
-  // https://nextjs.org/docs/api-reference/next/router always an object or empty object
-  // but they have typed it as string | string[] | undefined
   const auctionId = !Array.isArray(router.query?.auctionId)
     ? router.query?.auctionId ?? ""
     : "";
-  const { isLoading, data: auctionData, isError } = useAuctionQuery(auctionId);
-  const { charity } = useCharityQuery(auctionData?.charity_id);
-  const { data: auctionImages } = useStorageItemsQuery(auctionData?.auction_id);
+  const { isLoading, data: auction, isError } = useAuctionQuery(auctionId);
+  const { charity } = useCharityQuery(auction?.charity_id);
+  const { data: auctionImages } = useStorageItemsQuery(auction?.auction_id);
   const [auctionIsActive, setAuctionIsActive] = useState(true);
 
-  const [isBidLocked, setIsBidLocked] = useState(false);
-  const [auction, setAuction] = useState<Auction>();
   const [nextBidValue, setNextBidValue] = useState(0);
 
   const charityURL = `/charities/${auction?.charity_id}`;
@@ -64,11 +59,12 @@ export const AuctionDetailPage = () => {
   );
 
   useEffect(() => {
-    if (auctionData && auctionData !== undefined) {
-      setAuction(auctionData);
-      setNextBidValue(auctionData.high_bid_value + auctionData.increment);
+    if (auction) {
+      if (auction.high_bid_value && auction.increment) {
+        setNextBidValue(auction.high_bid_value + auction.increment);
+      }
     }
-  }, [auctionData]);
+  }, [auction]);
 
   useEffect(() => {
     if (!subscription.messageBus.isInitialized) return;
@@ -78,7 +74,6 @@ export const AuctionDetailPage = () => {
         subscription.messageBus.lastAuctionUpdateMessage;
       if (updatedAuction.auction_id === auction?.auction_id) {
         if (eventType === "UPDATE") {
-          setAuction(updatedAuction);
           setNextBidValue(
             updatedAuction.high_bid_value + updatedAuction.increment
           );
@@ -91,7 +86,7 @@ export const AuctionDetailPage = () => {
     subscription.messageBus.lastAuctionUpdateMessage,
   ]);
 
-  if (auction !== undefined) {
+  if (auction) {
     return (
       <div className="flex w-full flex-grow flex-col p-2">
         <div

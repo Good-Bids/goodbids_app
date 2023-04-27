@@ -3,18 +3,18 @@
  *
  * once a user has the 'charityAdmin' role,
  * they can create auctions for their charity.
- * 
+ *
  * The page requires a CHARITY_ID to be provided
- * 
+ *
  * TODO: need to get a validation lib
  * and proper error correction and display
- * 
+ *
  * #note: the policy in the auctions table designates
- * that the charity admin id matches the auth id. In the 
+ * that the charity admin id matches the auth id. In the
  * charity admin table this is not the case.
  * I manually altered my charity admin id to match my user id
  * to make this work
- * 
+ *
  */
 
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -32,8 +32,7 @@ type T_FormValues = {
 const supabaseClient = useSupabase();
 
 export const CreateNewAuctionPage = () => {
-
-  // TODO: Verify Authenticated before 
+  // TODO: Verify Authenticated before
   // submit form
   const userJWT = useUserQuery();
 
@@ -53,6 +52,7 @@ export const CreateNewAuctionPage = () => {
             name: data.name,
             description: data.description,
             opening_bid_value: data.opening_bid_value,
+            high_bid_value: 0,
             increment: data.increment,
             top_bid_duration: data.top_bid_duration,
           },
@@ -65,11 +65,11 @@ export const CreateNewAuctionPage = () => {
   };
 
   return (
-    <div className="flex flex-col w-full p-6 border rounded-md bg-slate-50">
+    <div className="flex w-full flex-col rounded-md border bg-slate-50 p-6">
       <form className="w-96" onSubmit={handleSubmit(onSubmit)}>
         <label
           htmlFor="name"
-          className="block mb-2 text-sm font-medium text-gray-900"
+          className="mb-2 block text-sm font-medium text-gray-900"
         >
           Auction Name
         </label>
@@ -81,7 +81,7 @@ export const CreateNewAuctionPage = () => {
         />
         <label
           htmlFor="description"
-          className="block mb-2 text-sm font-medium text-gray-900"
+          className="mb-2 block text-sm font-medium text-gray-900"
         >
           Auction description
         </label>
@@ -97,7 +97,7 @@ export const CreateNewAuctionPage = () => {
         />
         <label
           htmlFor="opening_bid_value"
-          className="block mb-2 text-sm font-medium text-gray-900"
+          className="mb-2 block text-sm font-medium text-gray-900"
         >
           Opening bid value
         </label>
@@ -113,7 +113,7 @@ export const CreateNewAuctionPage = () => {
         />
         <label
           htmlFor="increment"
-          className="block mb-2 text-sm font-medium text-gray-900"
+          className="mb-2 block text-sm font-medium text-gray-900"
         >
           Bid increment
         </label>
@@ -125,7 +125,7 @@ export const CreateNewAuctionPage = () => {
         />
         <label
           htmlFor="top_bid_duration"
-          className="block mb-2 text-sm font-medium text-gray-900"
+          className="mb-2 block text-sm font-medium text-gray-900"
         >
           Top bid duration
         </label>

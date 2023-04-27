@@ -54,7 +54,7 @@ export const UpdateAuctionStateForm = () => {
 
   // note is not capture all the result object, UI will be missing error
   // notifications that can be useful for display
-  const { queryStatus, auction, hasError } = useAuctionQuery(auctionId);
+  const { isLoading, data: auction, isError } = useAuctionQuery(auctionId);
 
   const {
     register,
@@ -64,7 +64,7 @@ export const UpdateAuctionStateForm = () => {
   } = useForm<T_FormValues>();
 
   useEffect(() => {
-    if (auction !== undefined) {
+    if (auction) {
       // reset FORM with auction details
       console.log("RESET and UPDATE form", auction);
       // casting feels wrong.
@@ -96,12 +96,12 @@ export const UpdateAuctionStateForm = () => {
   };
 
   // ReactQuery Status -> loading
-  if (queryStatus.isLoading && queryStatus.isError === false) {
+  if (isLoading && isError === false) {
     return <QueryLoadingDisplay />;
   }
 
   // ReactQuery SubQuery or auctionId Validation -> error
-  if (!queryStatus.isLoading === false && hasError) {
+  if (!isLoading && isError) {
     return <QueryErrorDisplay />;
   }
 
@@ -111,14 +111,14 @@ export const UpdateAuctionStateForm = () => {
 
   return (
     <form
-      className="flex flex-col w-full border rounded-md bg-slate-50"
+      className="flex w-full flex-col rounded-md border bg-slate-50"
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="flex flex-row p-4">
-        <div className="flex flex-col flex-shrink-0 w-96">
+        <div className="flex w-96 flex-shrink-0 flex-col">
           <label
             htmlFor="status"
-            className="block mb-2 text-sm font-medium text-gray-900"
+            className="mb-2 block text-sm font-medium text-gray-900"
           >
             Auction Status
           </label>
@@ -128,8 +128,8 @@ export const UpdateAuctionStateForm = () => {
             placeholder="DRAFT"
             {...register("status", { required: true, max: 10 })}
           />
-          <div className="flex flex-row w-full border-t">
-            <div className="flex items-center flex-grow pl-4">
+          <div className="flex w-full flex-row border-t">
+            <div className="flex flex-grow items-center pl-4">
               <p className="text-sm text-neutral-300">
                 {updatesResult === undefined
                   ? "form status/errors info here"

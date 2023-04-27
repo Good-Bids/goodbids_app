@@ -45,6 +45,7 @@ const transformAuctionUpdateMsg = (
   payload: RealtimePostgresUpdatePayload<Auction>
 ) => {
   return {
+    ...payload,
     dateTime: payload.commit_timestamp, // Note: Supabase wrong, its dateTime not timestamp
     errors: payload.errors,
     auction: payload.new, // returns the Auction ROW
@@ -68,7 +69,7 @@ const MessageBusProvider = ({ children }: MessageBusProviderProps) => {
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "auction" },
-        (payload) => {
+        (payload: RealtimePostgresUpdatePayload<Auction>) => {
           setMBus({
             ...mBus,
             isInitialized: true,

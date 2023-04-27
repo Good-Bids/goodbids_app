@@ -21,12 +21,8 @@
  */
 import React, { useState } from "react";
 import { DateTime } from "luxon"; // TODO: move this into utils/date or something like that
-import { useAuctionsQuery } from "~/hooks/useAuction";
-import {
-  type Bid,
-  type AuctionExtended,
-  type Auction,
-} from "~/utils/types/auctions";
+import { useAuctionsQuery, useBidsByAuction } from "~/hooks/useAuction";
+import { type Bid, type Auction } from "~/utils/types/auctions";
 import Link from "next/link";
 import { AuctionTimer } from "./AuctionTimer";
 
@@ -52,7 +48,7 @@ import { AuctionTimer } from "./AuctionTimer";
  * field along with full DateTime if needed.
  *
  */
-const getLatestBid = (bids: Bid | Bid[] | null): Bid | undefined => {
+const getLatestBid = (bids: Bid[]): Bid | undefined => {
   if (bids !== null) {
     if (Array.isArray(bids)) {
       const clonedBids = structuredClone(bids) as any;
@@ -77,11 +73,13 @@ const getLatestBid = (bids: Bid | Bid[] | null): Bid | undefined => {
  */
 
 interface AuctionListRowViewProps {
-  auction: AuctionExtended;
+  auction: Auction;
 }
 
 export const AuctionListRowView = ({ auction }: AuctionListRowViewProps) => {
-  const lastBid = getLatestBid(auction.bids);
+  const { data: bids } = useBidsByAuction(auction.auction_id);
+  console.log(bids);
+  const lastBid = bids ? getLatestBid(bids) : undefined;
 
   // by default
   let timeDiffAsSeconds: number = 0;
@@ -126,7 +124,7 @@ export const AuctionListRowView = ({ auction }: AuctionListRowViewProps) => {
  * Container for a List view of Auctions available
  * ie: another one would be tileView or maybe a cardView
  */
-const AuctionsListView = ({ auctions }: { auctions: AuctionExtended[] }) => {
+const AuctionsListView = ({ auctions }: { auctions: Auction[] }) => {
   return (
     <ul className="flex flex-grow flex-col bg-slate-100">
       {auctions.map((auction) => (

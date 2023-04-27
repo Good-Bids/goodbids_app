@@ -11,7 +11,6 @@ export interface Database {
     Tables: {
       auction: {
         Row: {
-          allowed_free_bids: string[] | null
           auction_id: string
           bid_currency: string | null
           charity_id: string
@@ -34,7 +33,6 @@ export interface Database {
           type: string
         }
         Insert: {
-          allowed_free_bids?: string[] | null
           auction_id?: string
           bid_currency?: string | null
           charity_id: string
@@ -57,7 +55,6 @@ export interface Database {
           type?: string
         }
         Update: {
-          allowed_free_bids?: string[] | null
           auction_id?: string
           bid_currency?: string | null
           charity_id?: string
