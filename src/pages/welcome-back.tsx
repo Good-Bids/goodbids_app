@@ -1,3 +1,3 @@
-import { WelcomeBackPage } from "~/features/auth/WelcomeBackPage";
+import { WelcomeBackPage } from "~/features/auth";
 
 export default WelcomeBackPage;
