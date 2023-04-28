@@ -1,5 +1,3 @@
-import { AuthPage } from "~/features/auth/AuthPage";
+import { SignupPage } from "~/features/auth/SignupPage";
 
-//TODO replace with the more custom Sign Up Page when time allows
-
-export default AuthPage;
+export default SignupPage;
