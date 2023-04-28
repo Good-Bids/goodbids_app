@@ -83,9 +83,6 @@ export const AuthPage = ({ method }: AuthPageProps) => {
             <p className="block text-sm font-bold text-slate-700">
               {`${actionString} with email`}
             </p>
-            <p>FOR TESTING ONLY - {process?.env?.NEXT_PUBLIC_VERCEL_URL}</p>
-            <p>FOR TESTING ONLY - {process?.env?.NEXT_PUBLIC_SITE_URL}</p>
-            <p>FOR TESTING ONLY (getURL response) {getURL()}</p>
             <input
               type={"email"}
               name={"email"}
