@@ -14,6 +14,7 @@ import * as ga from "../lib/ga";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { initialOptions } from "~/utils/constants";
 import { GoogleAnalyticsScript } from "~/lib/GoogleAnalyticsScript";
+import { Analytics } from "@vercel/analytics/react";
 import Head from "next/head";
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
@@ -63,6 +64,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         </UserContextProvider>
         <ReactQueryDevtools />
       </QueryClientProvider>
+      <Analytics />
     </>
   );
 };
