@@ -57,14 +57,15 @@ export const AuctionDetailPage = () => {
   const imageUrls: string[] | undefined = auctionImages?.map(
     (item) => `${fileStoragePath}/${auction?.auction_id}/${item.name}`
   );
+  const [displayAuction,setDisplayAuction] = useState(auction)
 
   useEffect(() => {
-    if (auction) {
-      if (auction.high_bid_value && auction.increment) {
-        setNextBidValue(auction.high_bid_value + auction.increment);
+    if (displayAuction) {
+      if (displayAuction.high_bid_value && displayAuction.increment) {
+        setNextBidValue(displayAuction.high_bid_value + displayAuction.increment);
       }
     }
-  }, [auction]);
+  }, [displayAuction]);
 
   useEffect(() => {
     if (!subscription.messageBus.isInitialized) return;
@@ -72,11 +73,19 @@ export const AuctionDetailPage = () => {
     if (subscription.messageBus.lastAuctionUpdateMessage) {
       const { auction: updatedAuction, eventType } =
         subscription.messageBus.lastAuctionUpdateMessage;
-      if (updatedAuction.auction_id === auction?.auction_id) {
-        if (eventType === "UPDATE") {
-          setNextBidValue(
-            updatedAuction.high_bid_value + updatedAuction.increment
-          );
+        if (updatedAuction.auction_id === auction?.auction_id) {
+          if (eventType === "UPDATE") {
+            setDisplayAuction(updatedAuction)
+            // console.log(updatedAuction)
+            // if (updatedAuction.status === 'ACTIVE'){
+            //   setNextBidValue(
+            //     updatedAuction.high_bid_value + updatedAuction.increment
+            //   );
+            //   setAuctionIsActive(true)
+            // }
+            // if (updatedAuction.status === 'PENDING'){
+            //   setAuctionIsActive(false)
+            // } 
         }
       }
     }
@@ -86,21 +95,21 @@ export const AuctionDetailPage = () => {
     subscription.messageBus.lastAuctionUpdateMessage,
   ]);
 
-  if (auction) {
+  if (displayAuction) {
     return (
-      <div className="flex w-full flex-grow flex-col p-2">
+      <div className="flex w-full h-full flex-grow flex-col p-0">
         <div
-          className="mb-4 flex h-full flex-col items-center gap-8 overflow-y-auto md:flex-row"
-          id="auction-detailpage-container"
+          className="mb-4 flex h-full flex-col items-center gap-8 overflow-y-auto md:flex-row md:h-fit"
+          id="auction-detailPage-container"
         >
           {imageUrls !== undefined && <ImageCarousel sources={imageUrls} />}
           <div
             className="flex w-full flex-col items-start justify-start gap-4 p-2 md:w-1/3"
             id="auction-info-container"
           >
-            <p className="text-3xl font-black text-black">{auction.name}</p>
+            <p className="text-3xl font-black text-black">{displayAuction.name}</p>
             <p className="text-left text-base text-neutral-800">
-              {auction.description}
+              {displayAuction.description}
             </p>
             <p className="text-xs text-neutral-800">
               {"supports "}
@@ -112,13 +121,13 @@ export const AuctionDetailPage = () => {
               </Link>
             </p>
             <AuctionTimer
-              auction={auction}
+              auction={displayAuction}
               onTimeUpdate={setAuctionIsActive}
               auctionIsActive={auctionIsActive}
             />
             <PayPalDialog
               bidValue={nextBidValue}
-              auction={auction}
+              auction={displayAuction}
               isBidLocked={!auctionIsActive}
             />
           </div>

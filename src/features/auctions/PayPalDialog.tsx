@@ -9,6 +9,8 @@ import type {
 } from "@paypal/paypal-js";
 import { PayPalButtons } from "@paypal/react-paypal-js";
 
+import { toast } from "react-toastify";
+
 import {
   Dialog,
   DialogTrigger,
@@ -100,7 +102,9 @@ export const PayPalDialog = ({
         ],
       });
     } catch (err) {
-      throw err;
+      if (err instanceof Error){
+        toast.error(err.message)
+      } else toast.error(err.toString())
     }
   };
 
@@ -118,7 +122,8 @@ export const PayPalDialog = ({
 
       alert(`GoodBid confirmed, thank you${name ? ` ${name}` : ""}!`);
     } catch (err) {
-      throw err;
+      if (err instanceof Error){
+      }
     }
   };
 
@@ -127,6 +132,7 @@ export const PayPalDialog = ({
     data: Record<string, unknown>,
     actions: OnCancelledActions
   ) => {
+    console.log('cancelled')
     const cancellation = await bidCancellation.mutateAsync();
   };
 
@@ -135,24 +141,27 @@ export const PayPalDialog = ({
     const cancellation = await bidCancellation.mutateAsync();
   };
 
-  const handleOpenChange = async (openChangeTo: boolean) => {
-    if (openChangeTo) {
-      setIsDialogOpen(openChangeTo);
-    } else {
-      setIsDialogOpen(openChangeTo);
-      setBidState("CANCELLED");
-      await bidCancellation.mutateAsync();
-      setBidId("");
-      console.log({ openChangeTo, bidId, bidState });
-    }
-  };
+  const handleOpenChange = async (changeIsOpenTo: boolean) => {
+    switch (changeIsOpenTo){
+      case true:{
+        setIsDialogOpen(changeIsOpenTo)
+        console.log({ openChangeTo: changeIsOpenTo, bidId, bidState, action:'open' });
+      } break;
+      case false:{
+        setIsDialogOpen(changeIsOpenTo);
+        setBidState("CANCELLED");
+        await bidCancellation.mutateAsync();
+        setBidId("");
+      }
+    }  
+      };
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+    <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {isBidLocked ? (
           <button
-            className={`container rounded-full bg-outerSpace-200 px-8 py-4 text-sm font-bold text-bottleGreen`}
+            className={`container rounded-full bg-bottleGreen px-8 py-4 text-sm font-bold text-hintOfGreen opacity-10`}
             disabled
           >
             {`Someone else is placing a bid right now`}.

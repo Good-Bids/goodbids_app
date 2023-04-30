@@ -9,9 +9,9 @@ export const ImageCarousel = ({ sources }: ImageCarouselProps) => {
   const [mainPhoto, setMainPhoto] = useState(sources[0]);
 
   return (
-    <div className="flex aspect-square w-11/12 flex-col gap-2 md:w-2/3">
+    <div className="flex h-fit w-11/12 flex-col gap-2 md:w-2/3">
       {mainPhoto !== undefined && (
-        <div className="relative mb-0 h-4/6 w-full overflow-hidden rounded-xl p-2">
+        <div className="flex relative mb-0 aspect-square w-full overflow-hidden rounded-xl p-2 md:w-10/12">
           <Image
             src={mainPhoto}
             alt="the primary image of the prize to be won"

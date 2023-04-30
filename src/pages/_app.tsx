@@ -1,21 +1,21 @@
 import { AppProps } from "next/app";
-
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import React from "react";
+import { ToastContainer } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
+import { Analytics } from "@vercel/analytics/react";
+import * as ga from "../lib/ga";
+import { GoogleAnalyticsScript } from "~/lib/GoogleAnalyticsScript";
+
 import "~/styles/globals.css";
-import { AppLayoutWrapper } from "~/shared/components/layout/AppLayoutWrapper";
 import { UserContextProvider } from "~/contexts/UserContextProvider";
 import { MessageBusProvider } from "~/contexts/Subscriptions";
-
-import React from "react";
-import { useRouter } from "next/router";
-import * as ga from "../lib/ga";
-import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { AppLayoutWrapper } from "~/shared/components/layout/AppLayoutWrapper";
 import { initialOptions } from "~/utils/constants";
-import { GoogleAnalyticsScript } from "~/lib/GoogleAnalyticsScript";
-import { Analytics } from "@vercel/analytics/react";
-import Head from "next/head";
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
