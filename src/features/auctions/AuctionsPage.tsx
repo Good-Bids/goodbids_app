@@ -77,21 +77,7 @@ interface AuctionListRowViewProps {
 }
 
 export const AuctionListRowView = ({ auction }: AuctionListRowViewProps) => {
-  const { data: bids } = useBidsByAuction(auction.auction_id);
-  console.log(bids);
-  const lastBid = bids ? getLatestBid(bids) : undefined;
 
-  // by default
-  let timeDiffAsSeconds: number = 0;
-
-  // note: top_bid_duration can be null - from ts
-  // auction.top_bid_duration > Date.now() - most recent bid
-  if (lastBid !== undefined) {
-    const currentWallClock = DateTime.local();
-    const lastBidDateTime = DateTime.fromISO(lastBid.created_at);
-    const timeDiff = currentWallClock.diff(lastBidDateTime, "seconds");
-    timeDiffAsSeconds = timeDiff.toObject().seconds ?? 0;
-  }
 
   const auctionId: string = auction.auction_id;
 
