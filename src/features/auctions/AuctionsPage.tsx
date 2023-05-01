@@ -77,8 +77,6 @@ interface AuctionListRowViewProps {
 }
 
 export const AuctionListRowView = ({ auction }: AuctionListRowViewProps) => {
-
-
   const auctionId: string = auction.auction_id;
 
   const [auctionIsActive, setAuctionIsActive] = useState(false);
@@ -91,7 +89,9 @@ export const AuctionListRowView = ({ auction }: AuctionListRowViewProps) => {
       <li className="flex flex-row justify-between border-b bg-neutral-50 text-neutral-800">
         <div className="flex flex-col justify-start p-2">
           <p className="pb-2 text-base font-medium">{auction.name}</p>
-          <p className="pb-2 text-sm">{auction.description}</p>
+          <p className="pb-2 text-sm">
+            {auction.description.split("<br/>")[0]}
+          </p>
         </div>
         <div className="flex w-64 flex-shrink-0 flex-col items-center justify-center bg-slate-50 p-4">
           <AuctionTimer
