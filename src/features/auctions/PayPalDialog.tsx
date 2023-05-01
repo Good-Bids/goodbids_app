@@ -157,12 +157,6 @@ export const PayPalDialog = ({
       case true:
         {
           setIsDialogOpen(changeIsOpenTo);
-          console.log({
-            openChangeTo: changeIsOpenTo,
-            bidId,
-            bidState,
-            action: "open",
-          });
         }
         break;
       case false: {
