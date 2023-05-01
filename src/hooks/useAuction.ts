@@ -244,7 +244,6 @@ export const updateBidTable = async (args: {
   const { auctionId, userId, bidAmount, bidState, bidId } = args;
   switch (bidState) {
     case "PENDING": {
-      console.log("insert!");
       try {
         let isValidBidAmount: boolean;
         let isValidBid: boolean;
