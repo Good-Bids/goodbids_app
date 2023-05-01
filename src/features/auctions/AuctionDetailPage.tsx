@@ -158,7 +158,9 @@ export const AuctionDetailPage = () => {
                     />
                   </svg>
 
-                  {`${attendance?.length ?? 0} watchers`}
+                  {`${attendance?.length ?? 0} watcher${
+                    attendance?.length === 1 ? "" : "s"
+                  }`}
                 </div>
                 <div
                   className="flex border-collapse flex-row justify-start gap-2 border-y border-y-outerSpace-100 py-3"

@@ -91,7 +91,7 @@ export const PayPalDialog = ({
     try {
       const pendingGoodBid = await pendingBidCreation.mutateAsync();
       setBidId(pendingGoodBid?.bidId);
-      await actions.order?.create({
+      const create = await actions.order?.create({
         purchase_units: [
           {
             amount: {
@@ -100,6 +100,7 @@ export const PayPalDialog = ({
           },
         ],
       });
+      return create;
     } catch (err) {
       if (err instanceof Error) {
         setErrorState(err);
@@ -149,7 +150,10 @@ export const PayPalDialog = ({
 
   // paypal specific method
   const handleError = async (error: Record<string, unknown>) => {
-    const cancellation = await bidCancellation.mutateAsync();
+    setErrorState({
+      name: error["name"]?.toString() ?? "paypal error",
+      message: error["message"]?.toString() ?? "there was an error with paypal",
+    });
   };
 
   const handleOpenChange = async (changeIsOpenTo: boolean) => {
@@ -160,10 +164,14 @@ export const PayPalDialog = ({
         }
         break;
       case false: {
+        console.log("closing");
         setIsDialogOpen(changeIsOpenTo);
-        setBidState("CANCELLED");
-        await bidCancellation.mutateAsync();
-        setBidId("");
+        if (bidState !== "COMPLETE") {
+          console.log("cancelling!");
+          setBidState("CANCELLED");
+          await bidCancellation.mutateAsync();
+          setBidId("");
+        }
       }
     }
   };
