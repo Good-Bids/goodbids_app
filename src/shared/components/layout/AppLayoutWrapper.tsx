@@ -46,7 +46,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
       </div>
       <main
         id="appLayoutWrapperMain"
-        className="fixed left-0 right-0 top-20 z-0 m-2 flex h-full flex-col items-center justify-start overflow-y-auto md:mx-24 md:my-20"
+        className="fixed left-0 right-0 top-20 z-0 m-2 flex h-full flex-col items-center justify-start overflow-y-auto md:px-24 md:py-20"
       >
         {children}
       </main>

@@ -9,15 +9,15 @@ export const ImageCarousel = ({ sources }: ImageCarouselProps) => {
   const [mainPhoto, setMainPhoto] = useState(sources[0]);
 
   return (
-    <div className="flex h-fit w-11/12 flex-col gap-2 md:w-2/3">
+    <div className="flex w-11/12 flex-col gap-2 md:w-2/3 items-center">
       {mainPhoto !== undefined && (
-        <div className="flex relative mb-0 aspect-square w-full overflow-hidden rounded-xl p-2 md:w-10/12">
+        <div className="flex aspect-square relative mb-0 h-full w-4/6 overflow-hidden rounded-xl">
           <Image
             src={mainPhoto}
             alt="the primary image of the prize to be won"
             priority={true}
             fill
-            style={{ objectFit: "cover" }}
+            style={{ objectFit: "contain" }}
           />
         </div>
       )}
@@ -25,7 +25,7 @@ export const ImageCarousel = ({ sources }: ImageCarouselProps) => {
         <div className="flex h-1/6 w-full flex-row justify-center gap-1">
           {sources.map((imageSource) => (
             <div
-              className="relative aspect-square w-1/6 overflow-hidden rounded-md p-2"
+              className="relative aspect-square w-1/6 overflow-hidden rounded-xl p-2"
               key={imageSource}
             >
               <Image
@@ -36,7 +36,7 @@ export const ImageCarousel = ({ sources }: ImageCarouselProps) => {
                 }}
                 priority={false}
                 fill
-                style={{ objectFit: "cover", cursor: "pointer" }}
+                style={{ objectFit: "contain", cursor: "pointer" }}
               />
             </div>
           ))}

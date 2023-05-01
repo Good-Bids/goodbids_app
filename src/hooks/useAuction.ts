@@ -247,6 +247,7 @@ export const updateBidTable = async (args: {
       console.log("insert!");
       try {
         let isValidBidAmount: boolean;
+        let isValidBid: boolean;
         const auctionBids = await supabaseClient
           .from("bid")
           .select("*")
@@ -265,6 +266,7 @@ export const updateBidTable = async (args: {
             isValidBidAmount =
               bidAmount ===
               auction.data.high_bid_value + auction.data.increment;
+            isValidBid = isValidBidAmount;
           } else {
             const sortedBids = auctionBids.data.sort(
               (a, b) =>
@@ -275,19 +277,23 @@ export const updateBidTable = async (args: {
               (bid) => bid.bid_status === "COMPLETE"
             );
             const latestBidIsPending = latestBid?.bid_status === "PENDING";
+            const latestBidIsNotThisOne = latestBid?.bid_id !== bidId;
             if (latestBidIsPending) {
-              if (latestBid?.bid_id !== bidId)
+              if (latestBidIsNotThisOne)
                 throw Error(
                   `auction currently has a pending bid - please try again shortly`
                 );
             }
             isValidBidAmount =
-              !latestBidIsPending &&
               bidAmount > Number(latestCompleteBid?.bid_value) &&
               bidAmount ===
                 auction.data.high_bid_value + auction.data?.increment;
+            isValidBid =
+              isValidBidAmount &&
+              (!latestBidIsPending ||
+                (latestBidIsPending && !latestBidIsNotThisOne));
           }
-          if (isValidBidAmount) {
+          if (isValidBid) {
             const insert = await supabaseClient.from("bid").insert({
               bid_value: bidAmount,
               auction_id: auctionId,

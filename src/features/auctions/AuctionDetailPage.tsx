@@ -68,6 +68,9 @@ export const AuctionDetailPage = () => {
   }, [displayAuction]);
 
   useEffect(() => {
+    if (auction){
+      setDisplayAuction(auction)
+    }
     if (!subscription.messageBus.isInitialized) return;
     // Listen for auction update messages
     if (subscription.messageBus.lastAuctionUpdateMessage) {
@@ -76,16 +79,6 @@ export const AuctionDetailPage = () => {
         if (updatedAuction.auction_id === auction?.auction_id) {
           if (eventType === "UPDATE") {
             setDisplayAuction(updatedAuction)
-            // console.log(updatedAuction)
-            // if (updatedAuction.status === 'ACTIVE'){
-            //   setNextBidValue(
-            //     updatedAuction.high_bid_value + updatedAuction.increment
-            //   );
-            //   setAuctionIsActive(true)
-            // }
-            // if (updatedAuction.status === 'PENDING'){
-            //   setAuctionIsActive(false)
-            // } 
         }
       }
     }
@@ -96,27 +89,33 @@ export const AuctionDetailPage = () => {
   ]);
 
   if (displayAuction) {
+    const displayText = displayAuction.description.split('<br/>')
     return (
-      <div className="flex w-full h-full flex-grow flex-col p-0">
+      <div className="flex w-full flex-grow flex-col p-0 h-[calc(100%_-_40em)]">
         <div
-          className="mb-4 flex h-full flex-col items-center gap-8 overflow-y-auto md:flex-row md:h-fit"
+          className="mb-4 flex h-full flex-col items-center gap-8 overflow-y-auto md:flex-row md:h-full"
           id="auction-detailPage-container"
         >
           {imageUrls !== undefined && <ImageCarousel sources={imageUrls} />}
           <div
-            className="flex w-full flex-col items-start justify-start gap-4 p-2 md:w-1/3"
+            className="flex w-full flex-col items-start justify-start gap-4 p-2 md:w-1/3 md:h-full"
             id="auction-info-container"
           >
+            <div className="flex w-full h-4/6 flex-col gap-2 overflow-y-auto">
             <p className="text-3xl font-black text-black">{displayAuction.name}</p>
-            <p className="text-left text-base text-neutral-800">
-              {displayAuction.description}
+            {displayText.map(item=>
+            <p className="text-left text-base text-neutral-800 my-2" key={item}>
+              {item}
             </p>
+              )}
+              </div>
+              <div className="h-2/6 flex flex-col">
             <p className="text-xs text-neutral-800">
               {"supports "}
               <Link
                 href={charityURL}
                 className="decoration-screaminGreen hover:underline"
-              >
+                >
                 {charity?.name}
               </Link>
             </p>
@@ -130,6 +129,7 @@ export const AuctionDetailPage = () => {
               auction={displayAuction}
               isBidLocked={!auctionIsActive}
             />
+            </div>
           </div>
         </div>
       </div>

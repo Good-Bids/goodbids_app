@@ -104,7 +104,7 @@ export const PayPalDialog = ({
     } catch (err) {
       if (err instanceof Error){
         toast.error(err.message)
-      } else toast.error(err.toString())
+      } else toast.error('unknown error. Please try again.')
     }
   };
 
@@ -123,7 +123,8 @@ export const PayPalDialog = ({
       alert(`GoodBid confirmed, thank you${name ? ` ${name}` : ""}!`);
     } catch (err) {
       if (err instanceof Error){
-      }
+        toast.error(err.message)
+      } else toast.error('unknown error. Please try again.')
     }
   };
 
@@ -156,15 +157,19 @@ export const PayPalDialog = ({
     }  
       };
 
+  const isLatestBidder = auction.latest_bidder_id === userData?.id
+  
+  const canBid = !isBidLocked && !isLatestBidder
+
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        {isBidLocked ? (
+        {!canBid ? (
           <button
-            className={`container rounded-full bg-bottleGreen px-8 py-4 text-sm font-bold text-hintOfGreen opacity-10`}
+            className={`container rounded-full bg-bottleGreen px-8 py-4 text-sm font-bold text-hintOfGreen opacity-40`}
             disabled
           >
-            {`Someone else is placing a bid right now`}.
+            {isLatestBidder ? 'Thanks for your bid!': `Someone else is placing a bid right now`}.
           </button>
         ) : (
           <div
