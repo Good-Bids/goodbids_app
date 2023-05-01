@@ -20,6 +20,7 @@ export interface Database {
           increment: number
           item_id: string | null
           latest_bid_timestamptz: string | null
+          latest_bidder_id: string | null
           minimum_bids: number | null
           name: string
           opening_bid_value: number
@@ -42,6 +43,7 @@ export interface Database {
           increment?: number
           item_id?: string | null
           latest_bid_timestamptz?: string | null
+          latest_bidder_id?: string | null
           minimum_bids?: number | null
           name: string
           opening_bid_value: number
@@ -64,6 +66,7 @@ export interface Database {
           increment?: number
           item_id?: string | null
           latest_bid_timestamptz?: string | null
+          latest_bidder_id?: string | null
           minimum_bids?: number | null
           name?: string
           opening_bid_value?: number
@@ -162,6 +165,8 @@ export interface Database {
         Row: {
           charity_id: string
           created_at: string | null
+          description_body: string
+          description_header: string
           ein: string
           email: string
           name: string
@@ -170,6 +175,8 @@ export interface Database {
         Insert: {
           charity_id?: string
           created_at?: string | null
+          description_body?: string
+          description_header?: string
           ein: string
           email: string
           name: string
@@ -178,6 +185,8 @@ export interface Database {
         Update: {
           charity_id?: string
           created_at?: string | null
+          description_body?: string
+          description_header?: string
           ein?: string
           email?: string
           name?: string

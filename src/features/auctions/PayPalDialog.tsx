@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import type {
   CreateOrderData,
@@ -41,6 +41,7 @@ export const PayPalDialog = ({
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [bidId, setBidId] = useState<string>();
+  const [errorState, setErrorState] = useState<Error>();
   const [bidState, setBidState] = useState<
     "PENDING" | "COMPLETE" | "CANCELLED" | "INACTIVE"
   >("INACTIVE");
@@ -90,7 +91,7 @@ export const PayPalDialog = ({
     try {
       const pendingGoodBid = await pendingBidCreation.mutateAsync();
       setBidId(pendingGoodBid?.bidId);
-      return await actions.order?.create({
+      await actions.order?.create({
         purchase_units: [
           {
             amount: {
@@ -100,8 +101,16 @@ export const PayPalDialog = ({
         ],
       });
     } catch (err) {
-      throw err;
+      if (err instanceof Error) {
+        setErrorState(err);
+      } else
+        setErrorState({
+          name: "orderCreationError",
+          message:
+            "Sorry! there was an error in order creation. Please try again.",
+        });
     }
+    return "ok";
   };
 
   // paypal specific method
@@ -118,7 +127,14 @@ export const PayPalDialog = ({
 
       alert(`GoodBid confirmed, thank you${name ? ` ${name}` : ""}!`);
     } catch (err) {
-      throw err;
+      if (err instanceof Error) {
+        setErrorState(err);
+      } else
+        setErrorState({
+          name: "orderCreationError",
+          message:
+            "Sorry! there was an error in order creation. Please try again.",
+        });
     }
   };
 
@@ -127,6 +143,7 @@ export const PayPalDialog = ({
     data: Record<string, unknown>,
     actions: OnCancelledActions
   ) => {
+    console.log("cancelled");
     const cancellation = await bidCancellation.mutateAsync();
   };
 
@@ -135,27 +152,55 @@ export const PayPalDialog = ({
     const cancellation = await bidCancellation.mutateAsync();
   };
 
-  const handleOpenChange = async (openChangeTo: boolean) => {
-    if (openChangeTo) {
-      setIsDialogOpen(openChangeTo);
-    } else {
-      setIsDialogOpen(openChangeTo);
-      setBidState("CANCELLED");
-      await bidCancellation.mutateAsync();
-      setBidId("");
-      console.log({ openChangeTo, bidId, bidState });
+  const handleOpenChange = async (changeIsOpenTo: boolean) => {
+    switch (changeIsOpenTo) {
+      case true:
+        {
+          setIsDialogOpen(changeIsOpenTo);
+          console.log({
+            openChangeTo: changeIsOpenTo,
+            bidId,
+            bidState,
+            action: "open",
+          });
+        }
+        break;
+      case false: {
+        setIsDialogOpen(changeIsOpenTo);
+        setBidState("CANCELLED");
+        await bidCancellation.mutateAsync();
+        setBidId("");
+      }
     }
   };
 
+  const isLatestBidder = auction.latest_bidder_id === userData?.id;
+
+  const canBid = !isBidLocked && !isLatestBidder;
+
   return (
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+    <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        {isBidLocked ? (
+        {errorState && (
+          <div className=" bg-cornflowerLilac text-pompadour">
+            <p>{errorState.message}</p>
+            <button
+              className="rounded-full border-black"
+              onClick={() => setErrorState(undefined)}
+            >
+              okay
+            </button>
+          </div>
+        )}
+        {!canBid ? (
           <button
-            className={`container rounded-full bg-outerSpace-200 px-8 py-4 text-sm font-bold text-bottleGreen`}
+            className={`container rounded-full bg-bottleGreen px-8 py-4 text-sm font-bold text-hintOfGreen opacity-40`}
             disabled
           >
-            {`Someone else is placing a bid right now`}.
+            {isLatestBidder
+              ? "Thanks for your bid!"
+              : `Someone else is placing a bid right now`}
+            .
           </button>
         ) : (
           <div

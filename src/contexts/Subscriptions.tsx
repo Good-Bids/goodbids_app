@@ -17,10 +17,8 @@ import type {
   RealtimePostgresUpdatePayload,
 } from "@supabase/supabase-js";
 
-// TODO: fix this
-import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import { Auction, BidState } from "~/utils/types/auctions";
-import { Database } from "~/utils/types/supabase";
+import { useUserQuery } from "~/hooks/useUser";
 
 interface MessageBusProviderProps {
   children: JSX.Element;
@@ -87,11 +85,6 @@ const MessageBusProvider = ({ children }: MessageBusProviderProps) => {
         lastAuctionUpdateMessage: undefined,
       };
     });
-
-    // cleanup
-    // return async () => {
-    //   await auctionUpdate.unsubscribe();
-    // };
   }, []);
 
   return (
