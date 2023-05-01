@@ -180,18 +180,18 @@ export const PayPalDialog = ({
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
+      {errorState && (
+        <div className=" bg-cornflowerLilac text-pompadour">
+          <p>{errorState.message}</p>
+          <button
+            className="rounded-full border-black"
+            onClick={() => setErrorState(undefined)}
+          >
+            okay
+          </button>
+        </div>
+      )}
       <DialogTrigger asChild>
-        {errorState && (
-          <div className=" bg-cornflowerLilac text-pompadour">
-            <p>{errorState.message}</p>
-            <button
-              className="rounded-full border-black"
-              onClick={() => setErrorState(undefined)}
-            >
-              okay
-            </button>
-          </div>
-        )}
         {!canBid ? (
           <button
             className={`container rounded-full bg-bottleGreen px-8 py-4 text-sm font-bold text-hintOfGreen opacity-40`}
