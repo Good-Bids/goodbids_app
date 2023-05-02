@@ -3,10 +3,13 @@ import Link from "next/link";
 import { useAdminCheckQuery } from "~/hooks/useCharityAdmin";
 import { useUserQuery } from "~/hooks/useUser";
 import * as ga from "../lib/ga";
+import { useAuctionsQuery } from "~/hooks/useAuction";
+import { AuctionTile } from "~/components/AuctionTile";
 
 const Home: NextPage = () => {
   const { data: user, isLoading: isUserQueryLoading } = useUserQuery();
   const { data: adminCheck } = useAdminCheckQuery();
+  const { data: auctionsQuery } = useAuctionsQuery();
   const isLoggedIn = Boolean(user);
   const isCharityAdmin = adminCheck?.isCharityAdmin ?? false;
   const charityId = adminCheck?.charityId;
@@ -41,15 +44,7 @@ const Home: NextPage = () => {
               onClick={handleClick}
               className="decoration-screaminGreen hover:underline"
             >
-              Sign up today.{" "}
-            </Link>
-          </span>
-          <span className="text-4xl font-black text-bottleGreen">
-            <Link
-              href="/auctions"
-              className="decoration-screaminGreen hover:underline"
-            >
-              View active auctions
+              Sign up today
             </Link>
           </span>
         </>
@@ -105,15 +100,18 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center gap-2">
-        {getGreeting(isPublic, isLoggedInBidder, isLoggedInCharity)}
-        {isLoggedInBidder && (
-          <Link href={"/auctions"}>
-            <span className="font-bold text-cornflowerLilac">
-              View active Auctions
-            </span>
-          </Link>
-        )}
+      <div className="flex h-screen flex-col items-center gap-8">
+        <div className="flex flex-col items-center gap-2">
+          {getGreeting(isPublic, isLoggedInBidder, isLoggedInCharity)}
+        </div>
+        <h2 className="text-2xl font-medium text-bottleGreen">
+          Active Auctions
+        </h2>
+        <div className="flex flex-col gap-4 md:flex-row">
+          {auctionsQuery?.map((auction) => (
+            <AuctionTile auction={auction} />
+          ))}
+        </div>
       </div>
     </>
   );

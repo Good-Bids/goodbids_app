@@ -206,18 +206,17 @@ export const useBidsByAuction = (auctionId: string) => {
  *
  * return types are inferred
  */
-export const useAuctionsQuery = (args: {
+export const useAuctionsQuery = (args?: {
   auctionStatus?: string;
   charityId?: string;
   windowStart?: number;
   windowLength?: number;
 }) => {
-  const { auctionStatus, charityId, windowStart, windowLength } = args;
   const [queryParameters, setQueryParameters] = useState({
-    auctionStatus: auctionStatus ?? "ACTIVE",
-    charityId: charityId,
-    windowStart: windowStart ?? 0,
-    windowLength: windowLength ?? 25,
+    auctionStatus: args?.auctionStatus ?? "ACTIVE",
+    charityId: args?.charityId,
+    windowStart: args?.windowStart ?? 0,
+    windowLength: args?.windowLength ?? 25,
   });
 
   const result = useQuery({
