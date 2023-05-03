@@ -7,6 +7,7 @@ import Link from "next/link";
 // React Query hooks
 import {
   useAuctionPresence,
+  // useAuctionPresence,
   useAuctionQuery,
   useBidsByAuction,
 } from "~/hooks/useAuction";
@@ -116,7 +117,8 @@ export const AuctionDetailPage = () => {
 
   const userId = userData?.id ?? "unknown";
 
-  const attendance = useAuctionPresence(auctionId, userId);
+  // const attendance = useAuctionPresence(auctionId, userId);
+  const attendance = new Array(42).fill("yoob");
 
   const { string: timeLeft } = useAuctionTimer({
     auction: displayAuction as Auction,

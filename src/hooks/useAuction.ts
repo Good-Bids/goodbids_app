@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import useSupabase from "./useSupabase";
 import { Auction } from "~/utils/types/auctions";
@@ -370,27 +370,29 @@ export const useAuctionPresence = (auctionId: string, userId: string) => {
   ]);
   const auctionChannel = supabaseClient.channel(auctionId);
 
-  const insertUser = async () => await auctionChannel.track(thisUserAttendance);
+  // const insertUser = async () => await auctionChannel.track(thisUserAttendance);
 
-  if (auctionChannel.joinedOnce) {
-    insertUser();
-  } else {
-    auctionChannel.subscribe(async (status) => {
-      if (status === "SUBSCRIBED") {
-        // insert current user into attendance
-        insertUser();
-      }
-    });
-  }
-  auctionChannel.on("presence", { event: "sync" }, () => {
-    const state = auctionChannel.presenceState<Attendance>();
-    const attendees = Object.entries(state);
-    const updatedAttendance: Attendance[] = attendees.map((entry) => ({
-      userId: entry[1][0]?.userId ?? "unknown",
-      online_at: entry[1][0]?.online_at ?? "unknown",
-      presence_ref: entry[1][0]?.presence_ref ?? "unknown",
-    }));
-    setAttendance(updatedAttendance);
-  });
+  auctionChannel
+    .on("presence", { event: "sync" }, () => {
+      const state = auctionChannel.presenceState<Attendance>();
+      const attendees = Object.values(state);
+      const updatedAttendance: Attendance[] = attendees.map((attendee) => ({
+        userId: attendee[0]?.userId ?? "unknown",
+        online_at: attendee[0]?.online_at ?? "unknown",
+        presence_ref: attendee[0]?.presence_ref ?? "unknown",
+      }));
+
+      console.log(state);
+      // setAttendance(updatedAttendance);
+    })
+    .subscribe();
+
+  // if (!attendance.includes(thisUserAttendance)) {
+  //   console.log("insert!");
+  //   insertUser();
+  // }
+
+  auctionChannel.untrack().then((status) => console.log(status));
+
   return attendance;
 };
