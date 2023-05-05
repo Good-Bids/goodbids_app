@@ -355,44 +355,51 @@ export const useBidMutation = (args: {
 };
 
 interface Attendance {
-  userId: string;
-  online_at: string;
-  presence_ref?: string;
+  [auctionId: string]: {
+    online_at: string;
+    presence_ref?: string;
+    userId: string;
+  }[];
 }
 
 export const useAuctionPresence = (auctionId: string, userId: string) => {
-  const thisUserAttendance: Attendance = {
-    userId,
-    online_at: new Date().toISOString(),
-  };
-  const [attendance, setAttendance] = useState<Attendance[]>([
-    thisUserAttendance,
-  ]);
-  const auctionChannel = supabaseClient.channel(auctionId);
+  const [attendance, setAttendance] = useState<Attendance[]>([]);
 
-  // const insertUser = async () => await auctionChannel.track(thisUserAttendance);
+  useEffect(() => {
+    const auctionChannel = supabaseClient.channel(auctionId, {
+      config: { presence: { key: auctionId } },
+    });
 
-  auctionChannel
-    .on("presence", { event: "sync" }, () => {
-      const state = auctionChannel.presenceState<Attendance>();
-      const attendees = Object.values(state);
-      const updatedAttendance: Attendance[] = attendees.map((attendee) => ({
-        userId: attendee[0]?.userId ?? "unknown",
-        online_at: attendee[0]?.online_at ?? "unknown",
-        presence_ref: attendee[0]?.presence_ref ?? "unknown",
-      }));
+    auctionChannel.on("presence", { event: "sync" }, () => {
+      console.info("Online users: ", auctionChannel.presenceState());
+      const presence = auctionChannel.presenceState<Attendance>();
+      const thisAuctionPresence = presence[auctionId];
+      if (thisAuctionPresence) {
+        setAttendance(thisAuctionPresence);
+      }
+    });
 
-      console.log(state);
-      // setAttendance(updatedAttendance);
-    })
-    .subscribe();
+    auctionChannel.on("presence", { event: "join" }, ({ newPresences }) => {
+      console.info("New users have joined: ", newPresences);
+    });
 
-  // if (!attendance.includes(thisUserAttendance)) {
-  //   console.log("insert!");
-  //   insertUser();
-  // }
+    auctionChannel.on("presence", { event: "leave" }, ({ leftPresences }) => {
+      console.info("Users have left: ", leftPresences);
+    });
 
-  auctionChannel.untrack().then((status) => console.log(status));
+    auctionChannel.subscribe(async (status) => {
+      if (status === "SUBSCRIBED") {
+        const status = await auctionChannel.track({
+          online_at: new Date().toISOString(),
+          userId,
+        });
+        console.log(status);
+      }
+    });
+    return () => {
+      auctionChannel.unsubscribe();
+    };
+  }, [auctionId, userId]);
 
   return attendance;
 };

@@ -14,7 +14,7 @@ export const AuctionTile = (props: { auction: Auction }) => {
   const { data: images } = useStorageItemsQuery(auction.auction_id);
   const { data: bids } = useBidsByAuction(auction.auction_id);
 
-  const [heroImage, setHeroImage] = useState<string>("");
+  const [heroImage, setHeroImage] = useState<string>();
 
   useEffect(() => {
     if (images) {
@@ -38,13 +38,15 @@ export const AuctionTile = (props: { auction: Auction }) => {
         id={`auction-${auction.auction_id}-tile`}
       >
         <div className="relative aspect-video w-full overflow-clip rounded-xl">
-          <Image
-            src={heroImage}
-            alt={`main photo for auction with name ${auction.name}`}
-            priority={true}
-            fill
-            style={{ objectFit: "cover" }}
-          />
+          {heroImage && (
+            <Image
+              src={heroImage}
+              alt={`main photo for auction with name ${auction.name}`}
+              priority={true}
+              fill
+              style={{ objectFit: "cover" }}
+            />
+          )}
         </div>
         <h3 className="text-xl font-bold ">{auction.name}</h3>
         <div className="flex w-full flex-row justify-between gap-1">
