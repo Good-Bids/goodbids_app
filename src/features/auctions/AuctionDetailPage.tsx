@@ -7,6 +7,7 @@ import Link from "next/link";
 // React Query hooks
 import {
   useAuctionPresence,
+  // useAuctionPresence,
   useAuctionQuery,
   useBidsByAuction,
 } from "~/hooks/useAuction";
