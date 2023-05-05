@@ -66,6 +66,8 @@ export const AuctionDetailPage = () => {
   const [nextBidValue, setNextBidValue] = useState(0);
   const [displayAuction, setDisplayAuction] = useState(auction);
 
+  const [userId, setUserId] = useState<string>("unauthenticated");
+
   const charityURL = `/charities/${auction?.charity_id}`;
   const imageUrls: string[] | undefined = auctionImages?.map(
     (item) => `${fileStoragePath}/${auction?.auction_id}/${item.name}`
@@ -115,10 +117,22 @@ export const AuctionDetailPage = () => {
         ?.reduce((acc, curr) => acc + curr.bid_value, 0) ?? 0,
   };
 
-  const userId = userData?.id ?? "unknown";
+  useEffect(() => {
+    if (userData) {
+      setUserId(userData.id);
+    }
+  }, [userData]);
 
-  // const attendance = useAuctionPresence(auctionId, userId);
-  const attendance = new Array(42).fill("yoob");
+  const attendance = useAuctionPresence(auctionId, userId);
+  const attendanceString = () => {
+    const otherCount = attendance.length - 1;
+    if (otherCount == 0) {
+      return `You're the only one here. Now's your chance!`;
+    } else
+      return `${otherCount} other ${
+        otherCount == 1 ? "person is" : "people are"
+      } looking at this auction right now.`;
+  };
 
   const { string: timeLeft } = useAuctionTimer({
     auction: displayAuction as Auction,
@@ -160,9 +174,7 @@ export const AuctionDetailPage = () => {
                     />
                   </svg>
 
-                  {`${attendance?.length ?? 0} watcher${
-                    attendance?.length === 1 ? "" : "s"
-                  }`}
+                  {attendanceString()}
                 </div>
                 <div
                   className="flex border-collapse flex-row justify-start gap-2 border-y border-y-outerSpace-100 py-3"
