@@ -8,8 +8,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { Analytics } from "@vercel/analytics/react";
-import * as ga from "../lib/ga";
-import { GoogleAnalyticsScript } from "~/lib/GoogleAnalyticsScript";
+import * as ga from "../analytics/ga";
+import { GoogleAnalyticsScript } from "~/analytics/GoogleAnalyticsScript";
 
 import "~/styles/globals.css";
 import { UserContextProvider } from "~/contexts/UserContextProvider";
