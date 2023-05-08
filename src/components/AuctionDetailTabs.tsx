@@ -27,7 +27,7 @@ export const AuctionDetailsTab = ({
           className="flex h-11 flex-1 select-none items-center justify-center bg-white px-5 py-0 first:rounded-tl-md last:rounded-tr-md hover:bg-screaminGreen hover:bg-opacity-40 focus:relative focus:shadow-sm"
           value="tab2"
         >
-          <p className="text-l font-bold text-bottleGreen">Cause</p>
+          <p className="text-l font-bold text-bottleGreen">The Cause</p>
         </Tabs.Trigger>
         <Tabs.Trigger
           className="flex h-11 flex-1 select-none items-center justify-center bg-white px-5 py-0 first:rounded-tl-md last:rounded-tr-md hover:bg-screaminGreen hover:bg-opacity-40 focus:relative focus:shadow-sm"

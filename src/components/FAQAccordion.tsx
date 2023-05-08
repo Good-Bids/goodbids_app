@@ -11,7 +11,7 @@ export const FAQAccordion = () => (
     </p>
     {faq.map((faqSubject) => (
       <>
-        <p className="text-2xl font-bold text-bottleGreen">
+        <p className="mt-2 text-2xl font-bold text-bottleGreen">
           {faqSubject.subject}
         </p>
         <Accordion.Root

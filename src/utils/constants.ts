@@ -67,55 +67,72 @@ Goodbids doesn't charge charities for auctions that receive fewer than the minim
     ],
   },
   {
-    subject: "WHO ARE YOUR CHARITY PARTNERS?",
-    questions: [{ question: "", answer: "" }],
+    subject: "SIGNING UP",
+    questions: [
+      {
+        question: "How do I sign up to become a Goodbidder?",
+        answer: `It's really simple! click on "Sign in" or "Sign up" above, and either enter your email or sign up with your google account. 
+        If you sign up with your email, you won't need to come up with a password - we'll send you a secure link for verification.`,
+      },
+      {
+        question:
+          "What’s the minimum age requirement for a Goodbids membership?",
+        answer:
+          "Because Goodbids auctions involve online transactions, we require all our members to be 18 years of age or older. This protects our charity participants as well as Goodbidders and underage users.",
+      },
+      {
+        question:
+          "Can I let a child under the age of 18 use my Goodbids account?",
+        answer:
+          "Yes, a person under 18 can use your account with your permission. But you are responsible for Goodbids made with your account as the account holder.",
+      },
+      {
+        question: "Do I have to give you my credit card to sign up?",
+        answer:
+          "No. However, Goodbids must be made using PayPal, either through a PayPal account or through paying with a credit card through PayPal. Whenever you Goodbid, you’ll be taken to PayPal to submit your payment information, and then redirected to Goodbids after your transaction is completed.",
+      },
+    ],
+  },
+  {
+    subject: "GOODBIDDING ON AUCTION ITEMS",
+    questions: [
+      {
+        question: "How do I place a Goodbid?",
+        answer: `On the live auction page, you'll usually see a dark green button, saying what the current GoodBid amount is. 
+    Clicking that button will open up a screen offering you a few different methods to pay via paypal. Choose one, fill out your payment info, and once your payment is confirmed, congratulations! 
+    You are the current high GoodBidder.`,
+      },
+      {
+        question: "Can I place multiple GoodBids in a row?",
+        answer:
+          "You are not able to place multiple GoodBids in a row - you have to wait for someone\
+       else to place a GoodBid after you before you can place another one.",
+      },
+      {
+        question: "What are the bidding increments?",
+        answer: "The bidding increment for all auctions is $10.",
+      },
+      {
+        question: "Can I retract my Goodbids?",
+        answer:
+          "No, all Goodbids are legal and binding donations to the charity auction host.",
+      },
+      {
+        question: "What currency am I bidding in?",
+        answer: "Goodbids are set to U.S. dollars by default.",
+      },
+    ],
+  },
+  {
+    subject: "PRIVACY POLICY",
+    questions: [
+      {
+        question: "Will you sell my information or track data relating to me?",
+        answer: "No. Full-stop. We will never sell your information",
+      },
+    ],
   },
 ];
-
-// What kind of charities are on Goodbids?
-// Goodbids currently only works with U.S.-based charities that are designated 501(c)(3) nonprofits by the IRS. This ensures that every Goodbid made is a tax-deductible charitable contribution.
-// How can I find out more about a Charity Partner?
-// In the main Goodbids menu, scroll down to Charities and click to go to the Charities page. There, you’ll find a complete list of our Charity Partners. If you click on a charity’s name, you’ll get sent to its Charity Profile page.
-// Does a charity have to be a registered 501(c)(3) nonprofit?
-// Yes. Goodbids requires this IRS designation so that every Goodbid you make is a tax- deductible charitable contribution.
-// Does it cost anything for my charity to join Goodbids?
-// No, it costs nothing for a charity to join Goodbids.
-
-// SIGNING UP
-// How do I sign up to become a Goodbidder?
-// TKTK.
-// What’s the minimum age requirement for a Goodbids membership?
-
-// Because Goodbids auctions involve TKWHAT, we require all our members to be 18 years of age or older. This protects our charity participants as well as Goodbidders and underage users.
-
-// Can I let a child under the age of 18 use my Goodbids account?
-
-// Yes, a person under 18 can use your account with your permission. But you are responsible for Goodbids made with your account as the account holder.
-
-// Do I have to give you my credit card to sign up?
-
-// No. However, Goodbids must be made using PayPal, either through a PayPal account or through paying with a credit card through PayPal. Whenever you Goodbid, you’ll be taken to PayPal for payment information [OR TK ACTUAL PROCESS INSTRUCTIONS], and then redirected to Goodbids after your transaction is completed.
-
-// PRIVACY POLICY
-// Will you sell my information or track data relating to me?
-// BOILERPLATE ABOUT NEVER SELLING ANYONE'S INFORMATION.
-
-// HOW TO GOODBID ON AUCTION ITEMS
-// How do I place a Goodbid?
-// Click here to see a Quick Start Tutorial for Goodbidders.
-// TKTK written instructions for Goodbidding on an auction items.
-// What are free bids and how do I get one?
-// [We have to figure out the mechanics of free bids.]
-// I’m not in the U.S. Can I place bids?
-// Currently, only Goodbidders in the [TK COUNTRIES] can place bids. Goodbids is working to expand into [TK TERRITORIES].
-
-// What currency am I bidding in?
-
-// Goodbids are set to U.S. dollars by default.
-// Can I retract my Goodbids?
-// No, all Goodbids are legal and binding donations to the charity auction host.
-// What are the bidding increments?
-// Bidding increments for all auctions is $10.
 
 // How do I calculate how much I've spent during one auction?
 
