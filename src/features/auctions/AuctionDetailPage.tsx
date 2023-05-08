@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
+import * as Tabs from "@radix-ui/react-tabs";
 
 // Routing and links
 import { useRouter } from "next/router";
-import Link from "next/link";
 
 // React Query hooks
 import {
   useAuctionPresence,
-  // useAuctionPresence,
   useAuctionQuery,
   useBidsByAuction,
 } from "~/hooks/useAuction";
 import { useCharityQuery } from "~/hooks/useCharity";
+import { useItemQuery } from "~/hooks/useItem";
+import { useUserQuery } from "~/hooks/useUser";
 import { useMessageBus } from "~/contexts/Subscriptions";
 
 // Components
@@ -23,10 +24,8 @@ import { useStorageItemsQuery } from "~/hooks/useStorage";
 // Types & constants
 import { Auction } from "~/utils/types/auctions";
 import { fileStoragePath } from "~/utils/constants";
-import { useUserQuery } from "~/hooks/useUser";
-import useSupabase from "~/hooks/useSupabase";
-import { useItemQuery } from "~/hooks/useItem";
 import { useAuctionTimer } from "~/hooks/useAuctionTimer";
+import { AuctionDetailsTab } from "~/components/AuctionDetailTabs";
 
 interface AuctionDetailsProps {
   auction: Auction;
@@ -142,10 +141,12 @@ export const AuctionDetailPage = () => {
   if (displayAuction) {
     const displayText = displayAuction.description.split("<br/>");
     const summaryText = displayText.shift();
+    const charityDescriptionHeader = charity?.description_header;
+    const charityDescriptionBody = charity?.description_body.split("</br>");
     return (
-      <div className="flex h-[calc(100%_-_40em)] w-full flex-grow flex-col overflow-y-auto p-0">
+      <div className="flex h-[calc(100%_-_40em)] w-full flex-grow flex-col items-center overflow-y-auto pb-24 md:p-0">
         <div
-          className="mb-4 flex h-fit flex-col items-center gap-8 md:h-full md:flex-row"
+          className="mb-4 flex h-fit flex-col items-center gap-8 md:h-full md:flex-row md:justify-center"
           id="auction-detailPage-container"
         >
           {imageUrls !== undefined && <ImageCarousel sources={imageUrls} />}
@@ -206,8 +207,8 @@ export const AuctionDetailPage = () => {
                   <div className="w-1/5">
                     {`Est value: $${itemData?.value?.toLocaleString()}`}
                   </div>
-                  <div className="w-1/5">
-                    {`Last Bid: $${displayAuction.high_bid_value.toLocaleString()}`}
+                  <div className="w-1/4">
+                    {`Total Raised: $${auctionStats.totalRaised.toLocaleString()}`}
                   </div>
                   <div className="w-1/5">
                     {`Your total: $${auctionStats.myContribution.toLocaleString()}`}
@@ -219,25 +220,66 @@ export const AuctionDetailPage = () => {
                 auction={displayAuction}
                 isBidLocked={!auctionIsActive}
               />
-              <p className="text-xl font-black text-neutral-800">
-                {`We've raised $${auctionStats.totalRaised.toLocaleString()} in support of `}
-                <Link
-                  href={charityURL}
-                  className="decoration-screaminGreen hover:underline"
-                >
-                  {charity?.name}
-                </Link>
-              </p>
             </div>
           </div>
         </div>
-        <div>
-          {displayText.map((item) => (
-            <p className="my-2 text-left text-base text-neutral-800" key={item}>
-              {item}
-            </p>
-          ))}
-        </div>
+        <Tabs.Root
+          className="flex w-full flex-col shadow-md md:w-4/6"
+          defaultValue="tab1"
+        >
+          <Tabs.List
+            className="flex flex-shrink-0 border-b-2 border-pompadour"
+            aria-label="Find out more"
+          >
+            <Tabs.Trigger
+              className="flex h-11 flex-1 select-none items-center justify-center bg-white px-5 py-0 first:rounded-tl-md last:rounded-tr-md hover:bg-screaminGreen hover:bg-opacity-40 focus:relative focus:shadow-sm"
+              value="tab2"
+            >
+              <p className="text-l font-bold text-bottleGreen">Cause</p>
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              className="flex h-11 flex-1 select-none items-center justify-center bg-white px-5 py-0 first:rounded-tl-md last:rounded-tr-md hover:bg-screaminGreen hover:bg-opacity-40 focus:relative focus:shadow-sm"
+              value="tab1"
+            >
+              <p className="text-l font-bold text-bottleGreen">
+                Auction Details
+              </p>
+            </Tabs.Trigger>
+          </Tabs.List>
+          <Tabs.Content
+            className="flex flex-grow rounded-b-md bg-white p-5 outline-none focus:shadow-sm"
+            value="tab1"
+          >
+            <div className="flex h-full w-full flex-col gap-4 overflow-y-auto">
+              {displayText.map((text) => (
+                <p>{text}</p>
+              ))}
+            </div>
+          </Tabs.Content>
+          <Tabs.Content
+            className="flex flex-grow rounded-b-md bg-white p-5 outline-none focus:shadow-sm"
+            value="tab2"
+          >
+            <div className="flex h-full w-full flex-col gap-4 overflow-y-auto">
+              <div className="flex h-80 w-full flex-col items-center md:h-96">
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src="https://www.youtube.com/embed/gP6p7_Sd3MU"
+                  title="YouTube video player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
+
+              <p className="text-3xl font-black">{charityDescriptionHeader}</p>
+              {charityDescriptionBody?.map((text) => (
+                <p>{text}</p>
+              ))}
+            </div>
+          </Tabs.Content>
+        </Tabs.Root>
       </div>
     );
   } else {

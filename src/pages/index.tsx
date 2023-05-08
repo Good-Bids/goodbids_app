@@ -2,9 +2,10 @@ import { type NextPage } from "next";
 import Link from "next/link";
 import { useAdminCheckQuery } from "~/hooks/useCharityAdmin";
 import { useUserQuery } from "~/hooks/useUser";
-import * as ga from "../lib/ga";
+import * as ga from "../analytics/ga";
 import { useAuctionsQuery } from "~/hooks/useAuction";
 import { AuctionTile } from "~/components/AuctionTile";
+import { FAQAccordion } from "~/components/FAQAccordion";
 
 const Home: NextPage = () => {
   const { data: user, isLoading: isUserQueryLoading } = useUserQuery();
@@ -109,9 +110,10 @@ const Home: NextPage = () => {
         </h2>
         <div className="flex flex-col gap-4 md:flex-row">
           {auctionsQuery?.map((auction) => (
-            <AuctionTile auction={auction} />
+            <AuctionTile auction={auction} key={auction.auction_id} />
           ))}
         </div>
+        <FAQAccordion />
       </div>
     </>
   );

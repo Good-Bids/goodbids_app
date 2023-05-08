@@ -44,6 +44,7 @@ export const AuctionTile = (props: { auction: Auction }) => {
               alt={`main photo for auction with name ${auction.name}`}
               priority={true}
               fill
+              sizes="320px"
               style={{ objectFit: "cover" }}
             />
           )}

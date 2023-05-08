@@ -20,7 +20,7 @@ import {
 
 import { useBidMutation } from "~/hooks/useAuction";
 
-import * as ga from "../../lib/ga";
+import * as ga from "../../analytics/ga";
 import { useUserQuery } from "~/hooks/useUser";
 import { useRouter } from "next/router";
 import { Auction } from "~/utils/types/auctions";
@@ -120,13 +120,9 @@ export const PayPalDialog = ({
     actions: OnApproveActions
   ) => {
     try {
-      const details = await actions.order?.capture();
       const confirmation = await bidConfirmation.mutateAsync();
       setIsDialogOpen(false);
       router.reload();
-      const name = details?.payer?.name?.given_name ?? ""; // because capture() can be promise | undefined
-
-      alert(`GoodBid confirmed, thank you${name ? ` ${name}` : ""}!`);
     } catch (err) {
       if (err instanceof Error) {
         setErrorState(err);
@@ -144,7 +140,6 @@ export const PayPalDialog = ({
     data: Record<string, unknown>,
     actions: OnCancelledActions
   ) => {
-    console.log("cancelled");
     const cancellation = await bidCancellation.mutateAsync();
   };
 
@@ -207,7 +202,7 @@ export const PayPalDialog = ({
         ) : (
           <div
             id="call-to-action"
-            className="fixed bottom-2 left-4 flex min-h-fit w-11/12 flex-col justify-center pb-4 pt-4 sm:relative sm:left-0 sm:w-fit"
+            className="fixed bottom-2 left-4 flex min-h-fit w-11/12 justify-center gap-2 pb-4 pt-4 sm:relative sm:left-0 sm:w-fit sm:flex-col md:flex-row"
           >
             <button
               className={`container rounded-full bg-bottleGreen px-8 py-4 text-xl font-bold text-hintOfGreen`}
@@ -215,6 +210,11 @@ export const PayPalDialog = ({
             >
               {`GoodBid $${bidValue} now`}
             </button>
+            <div className="text-wrap flex w-fit items-center">
+              <p className="text-sm font-normal text-outerSpace-900 md:visible">
+                Every GoodBid is a donation.
+              </p>
+            </div>
           </div>
         )}
       </DialogTrigger>
