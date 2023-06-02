@@ -108,7 +108,6 @@ const getMyAuctions = async (
 
   // For now we will be assuming the spec only 1 charity_id
   const charity_id = checkAdminResults.charityIdCollection[0].charity_id;
-  console.log(checkAdminResults);
 
   try {
     let result;

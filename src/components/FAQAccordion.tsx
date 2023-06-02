@@ -21,7 +21,7 @@ export const FAQAccordion = () => (
           collapsible
         >
           {faqSubject.questions.map((question, index) => (
-            <AccordionItem value={`value-${index + 1}`}>
+            <AccordionItem value={`value-${index + 1}`} key={question.question}>
               <AccordionTrigger>{question.question}</AccordionTrigger>
               <AccordionContent className="w-full">
                 {question.answer}

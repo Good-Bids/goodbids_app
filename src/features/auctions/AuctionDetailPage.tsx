@@ -26,6 +26,7 @@ import { Auction } from "~/utils/types/auctions";
 import { fileStoragePath } from "~/utils/constants";
 import { useAuctionTimer } from "~/hooks/useAuctionTimer";
 import { AuctionDetailsTab } from "~/components/AuctionDetailTabs";
+import { ChatContainer } from "../chat/ChatContainer";
 
 interface AuctionDetailsProps {
   auction: Auction;
@@ -47,8 +48,10 @@ const QueryErrorDisplay = () => {
   return <p>ERROR</p>;
 };
 
-export const AuctionDetailPage = () => {
+export const AuctionDetailPage = (props: { chatToken: string }) => {
+  const { chatToken } = props;
   const router = useRouter();
+  const { pathname, query } = router;
   const subscription = useMessageBus();
 
   const auctionId = !Array.isArray(router.query?.auctionId)
@@ -71,6 +74,16 @@ export const AuctionDetailPage = () => {
   const imageUrls: string[] | undefined = auctionImages?.map(
     (item) => `${fileStoragePath}/${auction?.auction_id}/${item.name}`
   );
+
+  // useEffect(() => {
+  //   if (query && router && Object.keys(query).includes("id")) {
+  //     const params = new URLSearchParams(query);
+  //     params.delete("id");
+  //     router.replace({ pathname, query: params.toString() }, undefined, {
+  //       shallow: true,
+  //     });
+  //   }
+  // }, [query]);
 
   useEffect(() => {
     if (displayAuction) {
@@ -144,9 +157,9 @@ export const AuctionDetailPage = () => {
     const charityDescriptionHeader = charity?.description_header;
     const charityDescriptionBody = charity?.description_body.split("</br>");
     return (
-      <div className="flex h-[calc(100%_-_40em)] w-full flex-grow flex-col items-center overflow-y-auto pb-24 md:p-0">
+      <div className="flex h-[calc(100%_-_40em)] w-full flex-grow flex-col items-center pb-24 md:p-0">
         <div
-          className="mb-4 flex h-fit flex-col items-center gap-8 md:h-full md:flex-row md:justify-center"
+          className="mb-4 flex flex-col items-start gap-8 md:h-full md:flex-row md:justify-center"
           id="auction-detailPage-container"
         >
           {imageUrls !== undefined && <ImageCarousel sources={imageUrls} />}
@@ -222,6 +235,7 @@ export const AuctionDetailPage = () => {
               />
             </div>
           </div>
+          <ChatContainer auction={displayAuction} chatToken={chatToken} />
         </div>
         <Tabs.Root
           className="flex w-full flex-col shadow-md md:w-4/6"
@@ -252,7 +266,7 @@ export const AuctionDetailPage = () => {
           >
             <div className="flex h-full w-full flex-col gap-4 overflow-y-auto">
               {displayText.map((text) => (
-                <p>{text}</p>
+                <p key={text}>{text}</p>
               ))}
             </div>
           </Tabs.Content>
@@ -275,7 +289,7 @@ export const AuctionDetailPage = () => {
 
               <p className="text-3xl font-black">{charityDescriptionHeader}</p>
               {charityDescriptionBody?.map((text) => (
-                <p>{text}</p>
+                <p key={text}>{text}</p>
               ))}
             </div>
           </Tabs.Content>

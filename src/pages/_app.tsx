@@ -3,7 +3,6 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import React from "react";
-import { ToastContainer } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
@@ -12,6 +11,9 @@ import * as ga from "../analytics/ga";
 import { GoogleAnalyticsScript } from "~/analytics/GoogleAnalyticsScript";
 
 import "~/styles/globals.css";
+import "~/styles/chatStyles.css";
+// import "~/styles/customChatMessage.scss";
+
 import { UserContextProvider } from "~/contexts/UserContextProvider";
 import { MessageBusProvider } from "~/contexts/Subscriptions";
 import { AppLayoutWrapper } from "~/shared/components/layout/AppLayoutWrapper";

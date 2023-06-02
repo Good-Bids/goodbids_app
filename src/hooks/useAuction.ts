@@ -370,7 +370,6 @@ export const useAuctionPresence = (auctionId: string, userId: string) => {
       config: { presence: { key: auctionId } },
     });
 
-
     auctionChannel.on("presence", { event: "sync" }, () => {
       console.info("Online users: ", auctionChannel.presenceState());
       const presence = auctionChannel.presenceState<Attendance>();
@@ -394,7 +393,7 @@ export const useAuctionPresence = (auctionId: string, userId: string) => {
           online_at: new Date().toISOString(),
           userId,
         });
-        console.log(status);
+        console.info(status);
       }
     });
     return () => {

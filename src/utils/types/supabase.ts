@@ -245,6 +245,32 @@ export interface Database {
           value?: number | null
         }
       }
+      messages: {
+        Row: {
+          auction: string
+          created_at: string
+          id: number
+          message_id: string
+          text: string
+          user: string
+        }
+        Insert: {
+          auction: string
+          created_at?: string
+          id?: number
+          message_id?: string
+          text: string
+          user: string
+        }
+        Update: {
+          auction?: string
+          created_at?: string
+          id?: number
+          message_id?: string
+          text?: string
+          user?: string
+        }
+      }
       user: {
         Row: {
           auth_id: string

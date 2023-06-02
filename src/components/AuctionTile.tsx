@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Url } from "url";
 import { useBidsByAuction } from "~/hooks/useAuction";
 import { useAuctionTimer } from "~/hooks/useAuctionTimer";
 
 import { useStorageItemsQuery } from "~/hooks/useStorage";
+import { useUserQuery } from "~/hooks/useUser";
+import { useUserName } from "~/hooks/useUserName";
 import { fileStoragePath } from "~/utils/constants";
 import { Auction } from "~/utils/types/auctions";
 
@@ -13,6 +14,7 @@ export const AuctionTile = (props: { auction: Auction }) => {
   const { auction } = props;
   const { data: images } = useStorageItemsQuery(auction.auction_id);
   const { data: bids } = useBidsByAuction(auction.auction_id);
+  const userData = useUserName();
 
   const [heroImage, setHeroImage] = useState<string>();
 
@@ -32,7 +34,12 @@ export const AuctionTile = (props: { auction: Auction }) => {
   });
 
   return (
-    <Link href={`/auctions/${auction.auction_id}`}>
+    <Link
+      href={{
+        pathname: `/auctions/${auction.auction_id}`,
+        query: { id: userData?.id },
+      }}
+    >
       <div
         className="flex h-fit w-80 cursor-pointer flex-col gap-4"
         id={`auction-${auction.auction_id}-tile`}

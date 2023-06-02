@@ -14,6 +14,9 @@ export const createSupabaseClient = () => {
           eventsPerSecond: 5,
         },
       },
+      auth: {
+        persistSession: true,
+      },
     }
   );
 };

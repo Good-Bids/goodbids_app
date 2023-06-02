@@ -9,8 +9,6 @@ export const WelcomeBackPage = () => {
         : "/"
       : "/";
 
-  console.log(router);
-
   return (
     <div className="gap- w-11/12 flex-col">
       <h1 className="text-3xl font-black text-outerSpace-900">Welcome Back</h1>
