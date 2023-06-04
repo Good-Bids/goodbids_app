@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Attachment,
   Avatar,
   messageHasReactions,
   MessageOptions,
@@ -12,7 +11,6 @@ import {
   SimpleReactionsList,
   useMessageContext,
 } from "stream-chat-react";
-import { useUserQuery } from "~/hooks/useUser";
 
 export const CustomChatMessage = () => {
   const {
@@ -21,14 +19,10 @@ export const CustomChatMessage = () => {
     reactionSelectorRef,
     showDetailedReactions,
   } = useMessageContext();
-  const [user, setUser] = useState<string>();
 
   const messageWrapperRef = useRef(null);
 
   const hasReactions = messageHasReactions(message);
-  const hasAttachments = message.attachments && message.attachments.length > 0;
-
-  const { data: userData } = useUserQuery();
 
   return (
     <div className="flex w-full flex-col items-start">
@@ -37,7 +31,7 @@ export const CustomChatMessage = () => {
         <MessageOptions messageWrapperRef={messageWrapperRef} />
         <div className="flex">
           <div className="font-weight-500 h-5 text-base text-outerSpace-400">
-            {user}
+            {message.user?.name}
           </div>
           <div className="font-weight-500 ml-2 h-5 text-base text-outerSpace-400">
             <MessageTimestamp />
@@ -48,7 +42,6 @@ export const CustomChatMessage = () => {
         )}
         <MessageText />
         <MessageStatus />
-        {hasAttachments && <Attachment attachments={message.attachments} />}
         {hasReactions && !showDetailedReactions && isReactionEnabled && (
           <SimpleReactionsList />
         )}

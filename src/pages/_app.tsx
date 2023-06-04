@@ -14,7 +14,6 @@ import "~/styles/globals.css";
 import "~/styles/chatStyles.css";
 // import "~/styles/customChatMessage.scss";
 
-import { UserContextProvider } from "~/contexts/UserContextProvider";
 import { MessageBusProvider } from "~/contexts/Subscriptions";
 import { AppLayoutWrapper } from "~/shared/components/layout/AppLayoutWrapper";
 import { initialOptions } from "~/utils/constants";
@@ -55,15 +54,13 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       </Head>
       <GoogleAnalyticsScript />
       <QueryClientProvider client={queryClient.current}>
-        <UserContextProvider>
-          <PayPalScriptProvider options={initialOptions}>
-            <MessageBusProvider>
-              <AppLayoutWrapper>
-                <Component {...pageProps} />
-              </AppLayoutWrapper>
-            </MessageBusProvider>
-          </PayPalScriptProvider>
-        </UserContextProvider>
+        <PayPalScriptProvider options={initialOptions}>
+          <MessageBusProvider>
+            <AppLayoutWrapper>
+              <Component {...pageProps} />
+            </AppLayoutWrapper>
+          </MessageBusProvider>
+        </PayPalScriptProvider>
         <ReactQueryDevtools />
       </QueryClientProvider>
       <Analytics />
