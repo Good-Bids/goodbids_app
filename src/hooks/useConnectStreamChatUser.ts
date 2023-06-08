@@ -36,7 +36,7 @@ export const useConnectStreamChatUser = <
     // provide a new StreamChat instance to the consumers of this hook.
     let didUserConnectInterrupt = false;
     const connectUser =
-      userToConnect.name === "anonymous"
+      userToConnect.id === "anonymous"
         ? client
             .connectAnonymousUser()
             .catch((e) => {

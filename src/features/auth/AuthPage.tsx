@@ -33,8 +33,6 @@ export const AuthPage = ({ method }: AuthPageProps) => {
 
   const url = getURL();
 
-  console.log(url);
-
   const handleChange = (e: { target: { value: string; name: string } }) => {
     const target = e.target.name;
     const newValue = e.target.value;

@@ -33,10 +33,16 @@ export const ChatContainer = (props: ChatContainerProps) => {
 
   useEffect(() => {
     if (client && userData && chatToken) {
-      const auctionChannel = client.channel("livestream", auction.auction_id, {
-        name: auction.name,
-      });
-      setChannel(auctionChannel);
+      if (client._hasConnectionID()) {
+        const auctionChannel = client.channel(
+          "livestream",
+          auction.auction_id,
+          {
+            name: auction.name,
+          }
+        );
+        setChannel(auctionChannel);
+      }
     }
   }, [client, userData]);
 
