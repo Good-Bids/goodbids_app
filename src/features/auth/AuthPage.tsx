@@ -31,6 +31,10 @@ export const AuthPage = ({ method }: AuthPageProps) => {
     return url;
   };
 
+  const url = getURL();
+
+  console.log(url);
+
   const handleChange = (e: { target: { value: string; name: string } }) => {
     const target = e.target.name;
     const newValue = e.target.value;
@@ -42,7 +46,7 @@ export const AuthPage = ({ method }: AuthPageProps) => {
       await supabaseClient.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: getURL(),
+          redirectTo: url,
         },
       });
     } catch (error) {
@@ -55,7 +59,7 @@ export const AuthPage = ({ method }: AuthPageProps) => {
       await supabaseClient.auth.signInWithOtp({
         email: loginData.email,
         options: {
-          emailRedirectTo: getURL(),
+          emailRedirectTo: url,
         },
       });
       setHasSubmittedEmail(true);
