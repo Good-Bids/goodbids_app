@@ -35,16 +35,28 @@ export const useConnectStreamChatUser = <
     // whether a "disconnectUser" operation has been requested before we
     // provide a new StreamChat instance to the consumers of this hook.
     let didUserConnectInterrupt = false;
-    const connectUser = client
-      .connectUser(userToConnect, userTokenOrProvider)
-      .catch((e) => {
-        console.error(`Failed to connect user`, e);
-      })
-      .then(() => {
-        if (!didUserConnectInterrupt) {
-          setChatClient(client);
-        }
-      });
+    const connectUser =
+      userToConnect.name === "anonymous"
+        ? client
+            .connectAnonymousUser()
+            .catch((e) => {
+              console.error(`Failed to connect user`, e);
+            })
+            .then(() => {
+              if (!didUserConnectInterrupt) {
+                setChatClient(client);
+              }
+            })
+        : client
+            .connectUser(userToConnect, userTokenOrProvider)
+            .catch((e) => {
+              console.error(`Failed to connect user`, e);
+            })
+            .then(() => {
+              if (!didUserConnectInterrupt) {
+                setChatClient(client);
+              }
+            });
 
     return () => {
       didUserConnectInterrupt = true;

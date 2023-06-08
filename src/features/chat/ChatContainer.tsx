@@ -21,7 +21,6 @@ interface ChatContainerProps {
 
 export const ChatContainer = (props: ChatContainerProps) => {
   const { auction, chatToken } = props;
-  // const [client, setClient] = useState<StreamChat>();
   const [channel, setChannel] = useState<ChannelType>();
 
   const userData = useUserName();
@@ -33,13 +32,13 @@ export const ChatContainer = (props: ChatContainerProps) => {
   );
 
   useEffect(() => {
-    if (client) {
+    if (client && userData && chatToken) {
       const auctionChannel = client.channel("livestream", auction.auction_id, {
         name: auction.name,
       });
       setChannel(auctionChannel);
     }
-  }, [client]);
+  }, [client, userData]);
 
   if (!client) return null;
 
@@ -47,7 +46,7 @@ export const ChatContainer = (props: ChatContainerProps) => {
 
   return (
     client && (
-      <div className="h-full w-full md:w-1/3">
+      <div className="h-full w-full">
         <Chat client={client}>
           <Channel channel={channel}>
             <Window>

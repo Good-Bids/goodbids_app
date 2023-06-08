@@ -28,7 +28,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
         className="fixed left-0 right-0 top-0 z-10 flex h-20 flex-row items-center justify-between bg-outerSpace-100 p-2"
       >
         <Link href="/">
-          <LogoWithText color="#0a3624" showText />
+          <p className="text-2xl font-black">ACME co. auctions</p>
         </Link>
         {user == null ? (
           <Link href="/LogIn">

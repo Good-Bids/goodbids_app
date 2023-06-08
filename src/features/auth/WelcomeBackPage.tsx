@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { useUserQuery } from "~/hooks/useUser";
 
 export const WelcomeBackPage = () => {
   const router = useRouter();

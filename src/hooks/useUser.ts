@@ -3,7 +3,7 @@ import { createSupabaseClient } from "~/queries/supabase";
 
 const supabase = createSupabaseClient();
 
-const getUser = async () => {
+export const getUser = async () => {
   const { data, error } = await supabase.auth.getUser();
   if (error) {
     throw error;
