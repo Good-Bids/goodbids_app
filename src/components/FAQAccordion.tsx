@@ -6,12 +6,12 @@ import { faq } from "~/utils/constants";
 
 export const FAQAccordion = () => (
   <div className="mt-4 flex w-full flex-col items-stretch gap-1">
-    <p className="text-4xl font-black text-bottleGreen">
+    <p className="text-4xl font-black text-cw-blue">
       Frequently Asked Questions
     </p>
     {faq.map((faqSubject) => (
       <>
-        <p className="mt-2 text-2xl font-bold text-bottleGreen">
+        <p className="mt-2 text-2xl font-bold text-cw-blue">
           {faqSubject.subject}
         </p>
         <Accordion.Root
@@ -65,7 +65,7 @@ const AccordionTrigger = React.forwardRef<{}, AccordionTriggerProps>(
     <Accordion.Header className="flex w-full">
       <Accordion.Trigger
         className={classNames(
-          "hover:bg-mauve2 group flex h-[45px] min-h-[45px] w-full flex-1 cursor-default items-center justify-between bg-white px-5 text-[15px] leading-none text-bottleGreen shadow-[0_1px_0] shadow-pompadour outline-none",
+          "hover:bg-mauve2 group flex h-[45px] min-h-[45px] w-full flex-1 cursor-default items-center justify-between bg-white px-5 text-[15px] leading-none text-cw-blue shadow-[0_1px_0] shadow-pompadour outline-none",
           className
         )}
         {...props}

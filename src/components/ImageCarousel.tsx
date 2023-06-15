@@ -8,10 +8,12 @@ interface ImageCarouselProps {
 export const ImageCarousel = ({ sources }: ImageCarouselProps) => {
   const [mainPhoto, setMainPhoto] = useState(sources[0]);
 
+  const isMobile = window && window.innerWidth <= 767;
+
   return (
-    <div className="flex w-11/12 flex-col items-center gap-2 md:w-1/3">
+    <div className="flex w-full flex-col items-center gap-2 md:w-2/3">
       {mainPhoto !== undefined && (
-        <div className="relative mb-0 flex aspect-square w-full overflow-hidden rounded-xl  bg-outerSpace-50">
+        <div className="relative mb-0 flex aspect-square w-screen overflow-hidden md:w-full">
           <Image
             src={mainPhoto}
             alt="the primary image of the prize to be won"
@@ -19,28 +21,32 @@ export const ImageCarousel = ({ sources }: ImageCarouselProps) => {
             fill
             sizes="(max-width: 767px) 91.67%,
             (min-width: 768px) 33%"
-            style={{ objectFit: "contain" }}
+            style={{ objectFit: "fill" }}
           />
         </div>
       )}
       {sources.length > 1 ? (
-        <div className="flex h-1/6 w-full flex-row justify-center gap-1 rounded-xl bg-outerSpace-50">
+        <div className="flex h-1/6 w-full flex-row justify-center gap-1">
           {sources.map((imageSource) => (
             <div
-              className="relative aspect-square w-1/6 overflow-hidden rounded-xl p-2"
+              className={`relative h-[12px] w-[12px] rounded-md  
+              ${imageSource === mainPhoto ? "bg-cw-blue" : "bg-outerSpace-200"} 
+            md:aspect-square md:h-[unset] md:w-full md:overflow-hidden md:rounded-xl md:p-2`}
               key={imageSource}
+              onMouseOver={() => {
+                setMainPhoto(imageSource);
+              }}
             >
-              <Image
-                src={imageSource}
-                alt="a secondary image of the prize to be won"
-                onMouseOver={() => {
-                  setMainPhoto(imageSource);
-                }}
-                priority={false}
-                fill
-                sizes="100%"
-                style={{ objectFit: "contain", cursor: "pointer" }}
-              />
+              {!isMobile && (
+                <Image
+                  src={imageSource}
+                  alt="a secondary image of the prize to be won"
+                  priority={false}
+                  fill
+                  sizes="100%"
+                  style={{ objectFit: "contain", cursor: "pointer" }}
+                />
+              )}
             </div>
           ))}
         </div>

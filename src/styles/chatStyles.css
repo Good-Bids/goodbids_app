@@ -1730,6 +1730,8 @@ stream-icon-placeholder {
   .str-chat__message-inner
   .str-chat__message-bubble
   .str-chat__message-text {
+    /* background-color: #fff;
+    border-radius: 8px; */
   padding: var(--str-chat__spacing-2) var(--str-chat__spacing-4);
 }
 .str-chat__message
@@ -2299,6 +2301,7 @@ stream-icon-placeholder {
 }
 .str-chat__list .str-chat__message-list-scroll {
   padding: 0 var(--str-chat__spacing-2);
+  background-color: #00336610;
 }
 .str-chat__list .str-chat__message-list-scroll .str-chat__li {
   margin-inline: calc(-1 * var(--str-chat__spacing-2));
@@ -2719,6 +2722,8 @@ stream-icon-placeholder {
   --str-chat__outerSpace-100: #d3d4d4;
   --str-chat__outerSpace-50: #e9eae9;
   --str-chat__bottleGreen: #0a3624;
+  --str-chat__cwBlue:#003366
+  --str-chat__cwBlueSecondary:#00336633
   --str-chat__screaminGreen: #70ff8f;
   --str-chat__hintOfGreen: #d9ffd2;
   --str-chat__pompadour: #68004b;
@@ -2799,17 +2804,17 @@ stream-icon-placeholder {
 }
 .str-chat,
 .str-chat__theme-light {
-  --str-chat__primary-color: var(--str-chat__bottleGreen);
-  --str-chat__primary-overlay-color: var(--str-chat__bottleGreen);
-  --str-chat__primary-color-low-emphasis: var(--str-chat__hintOfGreen);
+  --str-chat__primary-color: var(--str-chat__cwBlue);
+  --str-chat__primary-overlay-color: var(--str-chat__cwBlue);
+  --str-chat__primary-color-low-emphasis: var(--str-chat__cwBlueSecondary);
   --str-chat__active-primary-color: var(--str-chat__screaminGreen);
-  --str-chat__on-primary-color: var(--str-chat__grey50);
+  --str-chat__on-primary-color: var(--str-chat__cwBlue);
   --str-chat__background-color: var(--str-chat__grey50);
   --str-chat__secondary-background-color: var(--str-chat__grey50);
-  --str-chat__primary-surface-color: var(--str-chat__hintOfGreen);
+  --str-chat__primary-surface-color: var(--str-chat__cwBlue);
   --str-chat__primary-surface-color-low-emphasis: var(--str-chat__blue50);
   --str-chat__surface-color: var(--str-chat__grey300);
-  --str-chat__secondary-surface-color: var(--str-chat__grey200);
+  --str-chat__secondary-surface-color: white;
   --str-chat__tertiary-surface-color: var(--str-chat__grey100);
   --str-chat__text-color: var(--str-chat__grey950);
   --str-chat__text-low-emphasis-color: var(--str-chat__grey500);
@@ -5169,7 +5174,7 @@ stream-icon-placeholder {
 }
 .str-chat__message.str-chat__message--me .str-chat__message-bubble {
   color: var(--str-chat__own-message-bubble-color);
-  background-color: var(--str-chat__own-message-bubble-background-color);
+  background-color: #00336640;
 }
 .str-chat__message
   .str-chat__message-options

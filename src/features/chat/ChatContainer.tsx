@@ -57,10 +57,10 @@ export const ChatContainer = (props: ChatContainerProps) => {
           <Channel channel={channel}>
             <Window>
               <ChannelHeader />
-              <MessageList />
               {!disabledChat && (
                 <MessageInput disabled={disabledChat} noFiles />
               )}
+              <MessageList />
             </Window>
           </Channel>
         </Chat>

@@ -191,7 +191,7 @@ export const PayPalDialog = ({
       <DialogTrigger asChild>
         {!canBid ? (
           <button
-            className={`container rounded-full bg-bottleGreen px-8 py-4 text-sm font-bold text-hintOfGreen opacity-40`}
+            className={`container rounded-[4px] bg-cw-blue py-4 text-base font-bold text-white opacity-40`}
             disabled
           >
             {isLatestBidder
@@ -202,19 +202,19 @@ export const PayPalDialog = ({
         ) : (
           <div
             id="call-to-action"
-            className="fixed bottom-2 left-4 flex min-h-fit w-11/12 justify-center gap-2 pb-4 pt-4 sm:relative sm:left-0 sm:w-fit sm:flex-col md:flex-row"
+            className="mx-4 flex  min-h-fit w-11/12 flex-col justify-center gap-2 pb-4 pt-4 sm:relative sm:left-0 sm:w-fit sm:flex-col md:flex-row"
           >
             <button
-              className={`container rounded-full bg-bottleGreen px-8 py-4 text-xl font-bold text-hintOfGreen`}
+              className={`container rounded-[4px] border-2 border-cw-blue bg-cw-blue py-3 text-xl font-bold text-white`}
               onClick={openBidDialog}
             >
-              {`GoodBid $${bidValue} now`}
-            </button>
-            <div className="text-wrap flex w-fit items-center">
-              <p className="text-sm font-normal text-outerSpace-900 md:visible">
-                Every GoodBid is a donation.
+              <p className="text-xl font-bold text-white">
+                {`GoodBid $${bidValue} now`}
               </p>
-            </div>
+            </button>
+            <button className="rounded-[4px] border-2 border-solid border-black border-opacity-30 py-3">
+              <p className="text-xl font-bold text-cw-blue">Place Free Bid</p>
+            </button>
           </div>
         )}
       </DialogTrigger>

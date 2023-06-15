@@ -10,6 +10,8 @@ export const initialOptions = {
 export const fileStoragePath: string =
   "https://imjsqwufoypzctthvxmr.supabase.co/storage/v1/object/public/auction-assets";
 
+export const charityWaterAuctionId = "6b2300f1-33d9-4210-8ae2-0d80d1cf931a";
+
 export const faq: {
   subject: string;
   questions: { question: string; answer: string }[];

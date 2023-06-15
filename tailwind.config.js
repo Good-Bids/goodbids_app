@@ -24,6 +24,8 @@ const config = {
         pompadour: "#68004B",
         cornflowerLilac: "#FFB3B3",
         fairPink: "#FFE7EF",
+        "cw-blue": "#003366",
+        "bo-red": "#CC2126",
       },
       fontFamily: {
         sans: ["Inter var", ...defaultTheme.fontFamily.sans],
