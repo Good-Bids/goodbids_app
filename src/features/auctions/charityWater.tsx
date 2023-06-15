@@ -65,6 +65,7 @@ export const CharityWater = () => {
     subscription.messageBus.isInitialized,
     subscription.messageBus.lastAuctionUpdateMessage,
     userData,
+    auctionData,
   ]);
 
   useEffect(() => {
@@ -73,18 +74,18 @@ export const CharityWater = () => {
     }
   }, [userData]);
 
-  return auctionData ? (
+  return displayAuction ? (
     <div className="h-full w-full">
       {imageUrls && <ImageCarousel sources={imageUrls} />}
       <AuctionData
         auctionId={auctionId}
-        auction={auctionData}
+        auction={displayAuction}
         userId={userId}
         setAuctionIsActive={setAuctionIsActive}
       />
       <PayPalDialog
         bidValue={nextBidValue}
-        auction={auctionData}
+        auction={displayAuction}
         isBidLocked={!auctionIsActive}
       />
       <div
@@ -201,7 +202,7 @@ export const CharityWater = () => {
         </p>
       </div>
       {chatToken && (
-        <ChatContainer auction={auctionData} chatToken={chatToken} />
+        <ChatContainer auction={displayAuction} chatToken={chatToken} />
       )}
     </div>
   ) : (

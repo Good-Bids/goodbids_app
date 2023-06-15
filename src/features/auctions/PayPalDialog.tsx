@@ -171,6 +171,14 @@ export const PayPalDialog = ({
     }
   };
 
+  const handleShippingChange = async (data, actions) => {
+    if (data.shipping_address.country_code !== "US") {
+      return actions.reject();
+    }
+
+    return actions.resolve();
+  };
+
   const isLatestBidder = auction.latest_bidder_id === userData?.id;
 
   const canBid = !isBidLocked && !isLatestBidder;
@@ -232,6 +240,7 @@ export const PayPalDialog = ({
             onApprove={handleApprove}
             onCancel={handleCancel}
             onError={handleError}
+            onShippingChange={handleShippingChange}
           />
         </div>
       </DialogContent>
