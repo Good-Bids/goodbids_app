@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { TouchEventHandler, useEffect, useState } from "react";
 
 interface ImageCarouselProps {
   sources: string[];
@@ -7,8 +7,38 @@ interface ImageCarouselProps {
 
 export const ImageCarousel = ({ sources }: ImageCarouselProps) => {
   const [mainPhoto, setMainPhoto] = useState(sources[0]);
+  const [lastTouchX, setLastTouchX] = useState<number>(400);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const isMobile = window && window.innerWidth <= 767;
+
+  const handleTouch: TouchEventHandler<HTMLImageElement> = (e) => {
+    if (e.type === "touchstart") {
+      if (e.touches[0]) {
+        const thisTouch = e.touches[0];
+        setLastTouchX(thisTouch.screenX);
+      }
+    }
+    if (e.type === "touchend") {
+      if (e.changedTouches[0]) {
+        const thisTouch = e.changedTouches[0];
+        const { screenX } = thisTouch;
+        if (screenX > lastTouchX) {
+          setCurrentIndex((prior) =>
+            prior > 0 ? prior - 1 : sources.length - 1
+          );
+        } else {
+          setCurrentIndex((prior) =>
+            prior < sources.length - 1 ? prior + 1 : 0
+          );
+        }
+        setLastTouchX(window ? window.innerWidth / 2 : 400);
+      }
+    }
+  };
+  useEffect(() => {
+    setMainPhoto(sources[currentIndex]);
+  }, [currentIndex]);
 
   return (
     <div className="flex w-full flex-col items-center gap-2 md:w-2/3">
@@ -22,19 +52,21 @@ export const ImageCarousel = ({ sources }: ImageCarouselProps) => {
             sizes="(max-width: 767px) 91.67%,
             (min-width: 768px) 33%"
             style={{ objectFit: "fill" }}
+            onTouchStart={handleTouch}
+            onTouchEnd={handleTouch}
           />
         </div>
       )}
       {sources.length > 1 ? (
         <div className="flex h-1/6 w-full flex-row justify-center gap-1">
-          {sources.map((imageSource) => (
+          {sources.map((imageSource, index) => (
             <div
               className={`relative h-[12px] w-[12px] rounded-md  
               ${imageSource === mainPhoto ? "bg-cw-blue" : "bg-outerSpace-200"} 
             md:aspect-square md:h-[unset] md:w-full md:overflow-hidden md:rounded-xl md:p-2`}
               key={imageSource}
               onMouseOver={() => {
-                setMainPhoto(imageSource);
+                setMainPhoto(sources[index]);
               }}
             >
               {!isMobile && (

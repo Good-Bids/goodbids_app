@@ -46,18 +46,9 @@ export const CharityWater = () => {
   }, [userId]);
 
   useEffect(() => {
-    if (displayAuction) {
-      if (displayAuction.high_bid_value && displayAuction.increment) {
-        setNextBidValue(
-          displayAuction.high_bid_value + displayAuction.increment
-        );
-      }
-    }
-  }, [displayAuction]);
-
-  useEffect(() => {
     if (auctionData) {
       setDisplayAuction(auctionData);
+      setNextBidValue(auctionData.high_bid_value + auctionData.increment);
     }
     if (!subscription.messageBus.isInitialized) return;
     // Listen for auction update messages
