@@ -6,6 +6,8 @@ import type {
   OnApproveData,
   OnApproveActions,
   OnCancelledActions,
+  OnShippingChangeActions,
+  OnShippingChangeData,
 } from "@paypal/paypal-js";
 import { PayPalButtons } from "@paypal/react-paypal-js";
 
@@ -140,7 +142,8 @@ export const PayPalDialog = ({
     data: Record<string, unknown>,
     actions: OnCancelledActions
   ) => {
-    const cancellation = await bidCancellation.mutateAsync();
+    actions.redirect();
+    return await bidCancellation.mutateAsync();
   };
 
   // paypal specific method
@@ -171,8 +174,11 @@ export const PayPalDialog = ({
     }
   };
 
-  const handleShippingChange = async (data, actions) => {
-    if (data.shipping_address.country_code !== "US") {
+  const handleShippingChange = async (
+    data: OnShippingChangeData,
+    actions: OnShippingChangeActions
+  ) => {
+    if (data.shipping_address?.country_code !== "US") {
       return actions.reject();
     }
 
@@ -204,8 +210,7 @@ export const PayPalDialog = ({
           >
             {isLatestBidder
               ? "Thanks for your bid!"
-              : `Someone else is placing a bid right now`}
-            .
+              : `Someone else is placing a bid right now.`}
           </button>
         ) : (
           <div

@@ -48,8 +48,7 @@ const QueryErrorDisplay = () => {
   return <p>ERROR</p>;
 };
 
-export const AuctionDetailPage = (props: { chatToken: string }) => {
-  const { chatToken } = props;
+export const AuctionDetailPage = () => {
   const router = useRouter();
   const { pathname, query } = router;
   const subscription = useMessageBus();
@@ -235,7 +234,6 @@ export const AuctionDetailPage = (props: { chatToken: string }) => {
               />
             </div>
           </div>
-          <ChatContainer auction={displayAuction} chatToken={chatToken} />
         </div>
         <Tabs.Root
           className="flex w-full flex-col shadow-md md:w-4/6"

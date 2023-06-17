@@ -79,6 +79,69 @@ export interface Database {
           top_bid_duration?: number
           type?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "auction_charity_id_fkey"
+            columns: ["charity_id"]
+            referencedRelation: "charity"
+            referencedColumns: ["charity_id"]
+          },
+          {
+            foreignKeyName: "auction_item_id_fkey"
+            columns: ["item_id"]
+            referencedRelation: "item"
+            referencedColumns: ["item_id"]
+          },
+          {
+            foreignKeyName: "auction_latest_bidder_id_fkey"
+            columns: ["latest_bidder_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      auction_comment: {
+        Row: {
+          auction: string
+          created_at: string
+          id: number
+          message_id: string
+          text: string
+          user: string
+          user_name: string
+        }
+        Insert: {
+          auction: string
+          created_at?: string
+          id?: number
+          message_id?: string
+          text: string
+          user: string
+          user_name?: string
+        }
+        Update: {
+          auction?: string
+          created_at?: string
+          id?: number
+          message_id?: string
+          text?: string
+          user?: string
+          user_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auction_comment_auction_fkey"
+            columns: ["auction"]
+            referencedRelation: "auction"
+            referencedColumns: ["auction_id"]
+          },
+          {
+            foreignKeyName: "auction_comment_user_fkey"
+            columns: ["user"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       bid: {
         Row: {
@@ -108,6 +171,26 @@ export interface Database {
           charity_id?: string
           created_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "bid_auction_id_fkey"
+            columns: ["auction_id"]
+            referencedRelation: "auction"
+            referencedColumns: ["auction_id"]
+          },
+          {
+            foreignKeyName: "bid_bidder_id_fkey"
+            columns: ["bidder_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bid_charity_id_fkey"
+            columns: ["charity_id"]
+            referencedRelation: "charity"
+            referencedColumns: ["charity_id"]
+          }
+        ]
       }
       bid_state: {
         Row: {
@@ -128,6 +211,7 @@ export interface Database {
           status?: string
           ttl?: number
         }
+        Relationships: []
       }
       bidder_auction_status: {
         Row: {
@@ -160,6 +244,14 @@ export interface Database {
           partner_free_bid?: boolean
           status_id?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "bidder_auction_status_bidder_id_fkey"
+            columns: ["bidder_id"]
+            referencedRelation: "user"
+            referencedColumns: ["bidder_id"]
+          }
+        ]
       }
       charity: {
         Row: {
@@ -192,6 +284,7 @@ export interface Database {
           name?: string
           status?: string
         }
+        Relationships: []
       }
       charity_admin: {
         Row: {
@@ -215,6 +308,20 @@ export interface Database {
           is_charity_admin?: boolean | null
           user_id?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "charity_admin_charity_id_fkey"
+            columns: ["charity_id"]
+            referencedRelation: "charity"
+            referencedColumns: ["charity_id"]
+          },
+          {
+            foreignKeyName: "charity_admin_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       item: {
         Row: {
@@ -244,32 +351,20 @@ export interface Database {
           name?: string
           value?: number | null
         }
-      }
-      messages: {
-        Row: {
-          auction: string
-          created_at: string
-          id: number
-          message_id: string
-          text: string
-          user: string
-        }
-        Insert: {
-          auction: string
-          created_at?: string
-          id?: number
-          message_id?: string
-          text: string
-          user: string
-        }
-        Update: {
-          auction?: string
-          created_at?: string
-          id?: number
-          message_id?: string
-          text?: string
-          user?: string
-        }
+        Relationships: [
+          {
+            foreignKeyName: "item_auction_id_fkey"
+            columns: ["auction_id"]
+            referencedRelation: "auction"
+            referencedColumns: ["auction_id"]
+          },
+          {
+            foreignKeyName: "item_charity_id_fkey"
+            columns: ["charity_id"]
+            referencedRelation: "charity"
+            referencedColumns: ["charity_id"]
+          }
+        ]
       }
       user: {
         Row: {
@@ -296,6 +391,14 @@ export interface Database {
           is_charity_admin?: boolean
           name?: string | null
         }
+        Relationships: [
+          {
+            foreignKeyName: "bidder_auth_id_fkey"
+            columns: ["auth_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {
