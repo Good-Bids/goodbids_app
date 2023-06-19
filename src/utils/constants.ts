@@ -74,7 +74,7 @@ Goodbids doesn't charge charities for auctions that receive fewer than the minim
     questions: [
       {
         question: "How do I sign up to become a Goodbidder?",
-        answer: `It's really simple! click on "Sign in" or "Sign up" above, and either enter your email or sign up with your google account. 
+        answer: `It's really simple! click on "Log in" or "Sign up" above, and either enter your email or sign up with your google account. 
         If you sign up with your email, you won't need to come up with a password - we'll send you a secure link for verification.`,
       },
       {

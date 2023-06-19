@@ -4,11 +4,11 @@ import useSupabase from "~/hooks/useSupabase";
 import { useInterval } from "usehooks-ts";
 
 interface AuthPageProps {
-  method: "Login" | "Signup";
+  method: "logIn" | "signUp";
 }
 
 export const AuthPage = ({ method }: AuthPageProps) => {
-  const actionString = method === "Login" ? "Log in" : "Sign up";
+  const actionString = method === "logIn" ? "Log in" : "Sign up";
 
   const router = useRouter();
   const [loginData, setLoginData] = useState<{ email: string }>({
@@ -77,7 +77,7 @@ export const AuthPage = ({ method }: AuthPageProps) => {
   return (
     <div className="my-12 flex w-11/12 flex-col justify-center gap-4 overflow-scroll">
       <h1 className="text-3xl font-black text-outerSpace-900">
-        {method === "Login" ? "Welcome Back" : "Sign up"}
+        {method === "logIn" ? "Welcome Back" : "Sign up"}
       </h1>
       {!hasSubmittedEmail ? (
         <>

@@ -1,4 +1,4 @@
 import React from "react";
 import { AuthPage } from "./AuthPage";
 
-export const SignupPage = () => <AuthPage method="Signup" />;
+export const SignUpPage = () => <AuthPage method="signUp" />;

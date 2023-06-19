@@ -15,6 +15,10 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
   const { data: user } = useUserQuery();
   const router = useRouter();
 
+  const isIntroPage = router.pathname.includes("intro");
+
+  const userIsNotSignedIn = user == null;
+
   const handleLogoutClick = async () => {
     await supabaseClient.auth.signOut().then(() => {
       router.reload();
@@ -25,33 +29,38 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
     <>
       <div
         id="appLayoutWrapperHead"
-        className="fixed left-0 right-0 top-0 z-10 flex h-20 flex-row items-center justify-between bg-white p-2"
+        className="fixed left-0 right-0 top-0 z-10 flex h-[72px] flex-row items-center justify-between bg-white px-4"
       >
         <Link href="/">
           <Image
             src="/charityWaterLogo.png"
             alt="Charity Water Logo"
-            width="275"
-            height="60"
+            width="165"
+            height="36"
           />
         </Link>
-        {user == null ? (
-          <Link href="/LogIn">
-            <p className="text-right font-bold text-cw-blue">Sign in</p>
-          </Link>
-        ) : (
+        {!isIntroPage && (
           <div className="flex flex-row gap-4">
-            <button onClick={handleLogoutClick}>
-              <span className="text-right font-bold text-cw-blue">
-                Sign out
-              </span>
-            </button>
+            <Link href="/intro">
+              <p className="text-right font-bold text-cw-blue">About</p>
+            </Link>
+            {userIsNotSignedIn ? (
+              <Link href="/LogIn">
+                <p className="text-right font-bold text-cw-blue">Log in</p>
+              </Link>
+            ) : (
+              <button onClick={handleLogoutClick}>
+                <span className="text-right font-bold text-cw-blue">
+                  Sign out
+                </span>
+              </button>
+            )}
           </div>
         )}
       </div>
       <main
         id="appLayoutWrapperMain"
-        className="fixed left-0 right-0 top-20 z-0 mx-0 mt-2 flex h-[calc(100vh_-_6rem)] flex-col items-center justify-start overflow-y-auto md:px-24 md:py-20"
+        className="fixed left-0 right-0 top-[72px] z-0 mx-0 flex h-[calc(100vh_-_72px)] flex-col items-center justify-start overflow-y-auto md:px-24 md:py-20"
       >
         {children}
       </main>

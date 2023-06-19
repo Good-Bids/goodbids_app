@@ -189,6 +189,8 @@ export const PayPalDialog = ({
 
   const canBid = !isBidLocked && !isLatestBidder;
 
+  const hasFreeBids = false;
+
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
       {errorState && (
@@ -203,33 +205,39 @@ export const PayPalDialog = ({
         </div>
       )}
       <DialogTrigger asChild>
-        {!canBid ? (
-          <button
-            className={`container rounded-[4px] bg-cw-blue py-4 text-base font-bold text-white opacity-40`}
-            disabled
-          >
-            {isLatestBidder
-              ? "Thanks for your bid!"
-              : `Someone else is placing a bid right now.`}
-          </button>
-        ) : (
-          <div
-            id="call-to-action"
-            className="mx-4 flex  min-h-fit w-11/12 flex-col justify-center gap-2 pb-4 pt-4 sm:relative sm:left-0 sm:w-fit sm:flex-col md:flex-row"
-          >
+        <div
+          id="call-to-action"
+          className="mx-4 flex  min-h-fit w-11/12 flex-col justify-center gap-2 pb-4 pt-4 sm:relative sm:left-0 sm:w-fit sm:flex-col md:flex-row"
+        >
+          {!canBid ? (
             <button
-              className={`container rounded-[4px] border-2 border-cw-blue bg-cw-blue py-3 text-xl font-bold text-white`}
-              onClick={openBidDialog}
+              className={`container rounded border-2 border-cw-blue bg-cw-blue py-3 text-xl font-bold text-white opacity-40`}
+              disabled
             >
-              <p className="text-xl font-bold text-white">
-                {`GoodBid $${bidValue} now`}
-              </p>
+              {isLatestBidder
+                ? "Thanks for your bid!"
+                : `Someone else is placing a bid right now.`}
             </button>
-            <button className="rounded-[4px] border-2 border-solid border-black border-opacity-30 py-3">
-              <p className="text-xl font-bold text-cw-blue">Place Free Bid</p>
-            </button>
-          </div>
-        )}
+          ) : (
+            <>
+              <button
+                className={`container rounded border-2 border-cw-blue bg-cw-blue py-3 text-xl font-bold text-white`}
+                onClick={openBidDialog}
+              >
+                <p className="text-xl font-bold text-white">
+                  {`GoodBid $${bidValue} now`}
+                </p>
+              </button>
+              {hasFreeBids && (
+                <button className="rounded border-2 border-solid border-black border-opacity-30 py-3">
+                  <p className="text-xl font-bold text-cw-blue">
+                    Place Free Bid
+                  </p>
+                </button>
+              )}
+            </>
+          )}
+        </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

@@ -15,7 +15,7 @@ export const WelcomeBackPage = () => {
       <h1 className="text-3xl font-black text-outerSpace-900">Welcome Back</h1>
       <a href={supabaseAuthLink}>
         <button className=" w-full rounded-full bg-cw-blue px-4 py-2 text-white">
-          <p className="font-bold">click here to sign in</p>
+          <p className="font-bold">click here to log in</p>
         </button>
       </a>
     </div>

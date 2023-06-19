@@ -8,7 +8,6 @@ export const CommentInput = (props: { auctionId: string }) => {
   const { auctionId } = props;
   const router = useRouter();
   const { name: userName, id: userId } = useUserName();
-  console.log(userName);
   const [message, setMessage] = useState<string>();
 
   const { register, handleSubmit } = useForm();

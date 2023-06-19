@@ -3,6 +3,7 @@ import { ImageCarousel } from "~/components/ImageCarousel";
 import { useMessageBus } from "~/contexts/Subscriptions";
 import { PayPalDialog } from "~/features/auctions/PayPalDialog";
 import { useAuctionQuery } from "~/hooks/useAuction";
+import { useIntroRedirect } from "~/hooks/useIntroRedirect";
 import { useStorageItemsQuery } from "~/hooks/useStorage";
 import { useUserQuery } from "~/hooks/useUser";
 import { charityWaterAuctionId, fileStoragePath } from "~/utils/constants";
@@ -28,6 +29,9 @@ export const CharityWater = () => {
   const imageUrls: string[] | undefined = auctionImages?.map(
     (item) => `${fileStoragePath}/${auctionId}/${item.name}`
   );
+
+  // no dependencies, only run this once
+  useIntroRedirect();
 
   useEffect(() => {
     if (auctionData) {
@@ -59,7 +63,7 @@ export const CharityWater = () => {
   }, [userData]);
 
   return displayAuction ? (
-    <div className="h-full w-full">
+    <div className="h-fit w-full pb-4">
       {imageUrls && <ImageCarousel sources={imageUrls} />}
       <AuctionData
         auctionId={auctionId}

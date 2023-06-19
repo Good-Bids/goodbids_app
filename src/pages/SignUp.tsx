@@ -1,5 +1,5 @@
 import { AuthPage } from "~/features/auth";
 
-const SignupPage = () => <AuthPage method="Signup" />;
+const SignUpPage = () => <AuthPage method="signUp" />;
 
-export default SignupPage;
+export default SignUpPage;
