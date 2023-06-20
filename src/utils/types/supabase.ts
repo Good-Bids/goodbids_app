@@ -213,46 +213,6 @@ export interface Database {
         }
         Relationships: []
       }
-      bidder_auction_status: {
-        Row: {
-          auction_id: string
-          bidder_id: string
-          created_at: string
-          early_free_bid: boolean
-          high_bid: boolean
-          many_free_bid: boolean
-          partner_free_bid: boolean
-          status_id: string
-        }
-        Insert: {
-          auction_id: string
-          bidder_id: string
-          created_at?: string
-          early_free_bid?: boolean
-          high_bid?: boolean
-          many_free_bid?: boolean
-          partner_free_bid?: boolean
-          status_id: string
-        }
-        Update: {
-          auction_id?: string
-          bidder_id?: string
-          created_at?: string
-          early_free_bid?: boolean
-          high_bid?: boolean
-          many_free_bid?: boolean
-          partner_free_bid?: boolean
-          status_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "bidder_auction_status_bidder_id_fkey"
-            columns: ["bidder_id"]
-            referencedRelation: "user"
-            referencedColumns: ["bidder_id"]
-          }
-        ]
-      }
       charity: {
         Row: {
           charity_id: string
@@ -318,6 +278,43 @@ export interface Database {
           {
             foreignKeyName: "charity_admin_user_id_fkey"
             columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      free_bids: {
+        Row: {
+          auction_id: string
+          bidder_id: string
+          created_at: string | null
+          free_bid_type: string | null
+          id: number
+        }
+        Insert: {
+          auction_id: string
+          bidder_id: string
+          created_at?: string | null
+          free_bid_type?: string | null
+          id?: number
+        }
+        Update: {
+          auction_id?: string
+          bidder_id?: string
+          created_at?: string | null
+          free_bid_type?: string | null
+          id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "free_bids_auction_id_fkey"
+            columns: ["auction_id"]
+            referencedRelation: "auction"
+            referencedColumns: ["auction_id"]
+          },
+          {
+            foreignKeyName: "free_bids_bidder_id_fkey"
+            columns: ["bidder_id"]
             referencedRelation: "users"
             referencedColumns: ["id"]
           }

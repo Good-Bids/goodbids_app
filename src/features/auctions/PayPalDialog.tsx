@@ -26,6 +26,7 @@ import * as ga from "../../analytics/ga";
 import { useUserQuery } from "~/hooks/useUser";
 import { useRouter } from "next/router";
 import { Auction } from "~/utils/types/auctions";
+import { useFreeBids } from "~/hooks/useFreeBids";
 
 interface PayPalDialogProps {
   bidValue: number;
@@ -84,6 +85,12 @@ export const PayPalDialog = ({
     bidState: "CANCELLED",
     bidId,
   });
+
+  const { data: freeBidsData } = useFreeBids({
+    userId: userData?.id ?? "",
+    auctionId: auction.auction_id,
+  });
+  const hasFreeBids = freeBidsData && freeBidsData.length > 0;
 
   // paypal specific method
   const handleCreateOrder = async (
@@ -188,8 +195,6 @@ export const PayPalDialog = ({
   const isLatestBidder = auction.latest_bidder_id === userData?.id;
 
   const canBid = !isBidLocked && !isLatestBidder;
-
-  const hasFreeBids = false;
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>

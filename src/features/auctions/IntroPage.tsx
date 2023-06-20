@@ -64,10 +64,11 @@ export const IntroPage = () => {
           className="aspect-video w-full rounded"
           src="/mcartney-goodbids.m4v"
           autoPlay={false}
+          poster="/sethPlaceholder.png"
           onEnded={() => setVideoState("ended")}
         />
       </div>
-      <Link href={"/signUp"}>
+      <Link href={"/SignUp"}>
         <button className="flex w-full flex-col items-stretch justify-center rounded bg-cw-blue px-4 py-2 text-xl font-bold text-white">
           <p>Sign Up</p>
         </button>

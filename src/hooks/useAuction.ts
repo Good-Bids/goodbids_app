@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import useSupabase from "./useSupabase";
-import { Auction } from "~/utils/types/auctions";
 
 const supabaseClient = useSupabase();
 
