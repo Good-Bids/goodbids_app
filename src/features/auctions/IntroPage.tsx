@@ -63,7 +63,6 @@ export const IntroPage = () => {
           ref={videoRef}
           className="aspect-video w-full rounded"
           src="/mcartney-goodbids.m4v"
-          preload="none"
           autoPlay={false}
           onEnded={() => setVideoState("ended")}
         />
