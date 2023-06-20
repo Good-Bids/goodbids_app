@@ -24,7 +24,14 @@ export const AuctionData = ({
     totalRaised: number;
     totalParticipants: number;
     myContribution: number;
-  }>({ bidCount: 0, totalRaised: 0, totalParticipants: 0, myContribution: 0 });
+    lastBidValue: number;
+  }>({
+    bidCount: 0,
+    totalRaised: 0,
+    totalParticipants: 0,
+    myContribution: 0,
+    lastBidValue: 0,
+  });
 
   useEffect(() => {
     if (bidsData) {
@@ -40,20 +47,37 @@ export const AuctionData = ({
           bidsData
             ?.filter((bid) => bid.bidder_id === userId)
             ?.reduce((acc, curr) => acc + curr.bid_value, 0) ?? 0,
+        lastBidValue: auction.high_bid_value ?? 0,
       });
     }
   }, [bidsData]);
 
-  const attendance = useAuctionPresence(auctionId, userId);
-  const attendanceString = () => {
-    const otherCount = attendance.length - 1;
-    if (otherCount == 0) {
-      return `You're the only one here. Now's your chance!`;
-    } else
-      return `${otherCount} other ${
-        otherCount == 1 ? "person is" : "people are"
-      } looking at this auction right now.`;
-  };
+  const freeBidsPrompt =
+    bidsData && bidsData?.length < 10
+      ? "First 10 Bids earn a Free Bid"
+      : "Invite two Friends, and if they bid you earn a Free Bid!";
+
+  // const attendance = useAuctionPresence(auctionId, userId);
+  // const attendanceString = () => {
+  //   const otherCount = attendance.length - 1;
+  //   if (otherCount == 0) {
+  //     return `You're the only one here. Now's your chance!`;
+  //   } else
+  //     return `${otherCount} other ${
+  //       otherCount == 1 ? "person is" : "people are"
+  //     } looking at this auction right now.`;
+  // };
+
+  const rightHandData =
+    auctionStats.myContribution == 0
+      ? {
+          text: "Last Bid: ",
+          value: `${auctionStats.lastBidValue.toLocaleString()}`,
+        }
+      : {
+          text: "Your Total: ",
+          value: auctionStats.myContribution.toLocaleString(),
+        };
 
   const { string: timeLeft } = useAuctionTimer({
     auction,
@@ -95,7 +119,7 @@ export const AuctionData = ({
           />
         </svg>
 
-        {attendanceString()}
+        {freeBidsPrompt}
       </div>
       <div className="flex w-full flex-row justify-between py-3">
         <div className="w-1/4">
@@ -106,7 +130,7 @@ export const AuctionData = ({
             </span>
           </span>
         </div>
-        <div className="border-r border-solid border-outerSpace-100" />
+        <div className={`border-l border-solid border-outerSpace-100`} />
         <div className="w-1/4">
           <span>
             {`Raised: `}
@@ -118,10 +142,8 @@ export const AuctionData = ({
         <div className="border-l border-solid border-outerSpace-100" />
         <div className="w-1/4">
           <span>
-            {`Your total: `}
-            <span className="text-sm font-bold">
-              ${auctionStats.myContribution.toLocaleString()}
-            </span>
+            {rightHandData.text}
+            <span className="text-sm font-bold">${rightHandData.value}</span>
           </span>
         </div>
       </div>

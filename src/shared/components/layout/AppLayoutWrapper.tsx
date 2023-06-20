@@ -37,6 +37,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
             alt="Charity Water Logo"
             width="165"
             height="36"
+            priority
           />
         </Link>
         {!isIntroPage && (

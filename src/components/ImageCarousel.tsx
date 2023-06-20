@@ -58,27 +58,23 @@ export const ImageCarousel = ({ sources }: ImageCarouselProps) => {
         </div>
       )}
       {sources.length > 1 ? (
-        <div className="flex h-1/6 w-full flex-row justify-center gap-1">
+        <div className="flex h-fit w-full flex-row flex-wrap justify-center gap-1">
           {sources.map((imageSource, index) => (
             <div
-              className={`relative h-[12px] w-[12px] rounded-md  
-              ${imageSource === mainPhoto ? "bg-cw-blue" : "bg-outerSpace-200"} 
-            md:aspect-square md:h-[unset] md:w-full md:overflow-hidden md:rounded-xl md:p-2`}
+              className={`relative aspect-square w-1/5 md:h-[unset] md:w-full md:overflow-hidden md:rounded-xl md:p-2`}
               key={imageSource}
               onMouseOver={() => {
                 setMainPhoto(sources[index]);
               }}
             >
-              {!isMobile && (
-                <Image
-                  src={imageSource}
-                  alt="a secondary image of the prize to be won"
-                  priority={false}
-                  fill
-                  sizes="100%"
-                  style={{ objectFit: "contain", cursor: "pointer" }}
-                />
-              )}
+              <Image
+                src={imageSource}
+                alt="a secondary image of the prize to be won"
+                priority={false}
+                fill
+                sizes="100%"
+                style={{ objectFit: "contain", cursor: "pointer" }}
+              />
             </div>
           ))}
         </div>
