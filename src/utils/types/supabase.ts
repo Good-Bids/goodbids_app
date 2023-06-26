@@ -290,6 +290,7 @@ export interface Database {
           created_at: string | null
           free_bid_type: string | null
           id: number
+          status: string
         }
         Insert: {
           auction_id: string
@@ -297,6 +298,7 @@ export interface Database {
           created_at?: string | null
           free_bid_type?: string | null
           id?: number
+          status?: string
         }
         Update: {
           auction_id?: string
@@ -304,6 +306,7 @@ export interface Database {
           created_at?: string | null
           free_bid_type?: string | null
           id?: number
+          status?: string
         }
         Relationships: [
           {

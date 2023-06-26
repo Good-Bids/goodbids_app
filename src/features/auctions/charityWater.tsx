@@ -9,6 +9,7 @@ import { useUserQuery } from "~/hooks/useUser";
 import { charityWaterAuctionId, fileStoragePath } from "~/utils/constants";
 import { CommentContainer } from "../comments";
 import { AuctionData } from "./AuctionData";
+import { FreeBidDialog } from "./FreeBidDialog";
 
 export const CharityWater = () => {
   const auctionId = charityWaterAuctionId;
@@ -72,6 +73,11 @@ export const CharityWater = () => {
         setAuctionIsActive={setAuctionIsActive}
       />
       <PayPalDialog
+        bidValue={nextBidValue}
+        auction={displayAuction}
+        isBidLocked={!auctionIsActive}
+      />
+      <FreeBidDialog
         bidValue={nextBidValue}
         auction={displayAuction}
         isBidLocked={!auctionIsActive}

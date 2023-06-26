@@ -20,13 +20,13 @@ import {
   DialogDescription,
 } from "src/components/Dialog";
 
-import { useBidMutation } from "~/hooks/useAuction";
+import { useBidMutation, useBidsByAuction } from "~/hooks/useAuction";
 
 import * as ga from "../../analytics/ga";
 import { useUserQuery } from "~/hooks/useUser";
 import { useRouter } from "next/router";
 import { Auction } from "~/utils/types/auctions";
-import { useFreeBids } from "~/hooks/useFreeBids";
+import { useFreeBidsMutation, useFreeBidsQuery } from "~/hooks/useFreeBids";
 
 interface PayPalDialogProps {
   bidValue: number;
@@ -86,11 +86,54 @@ export const PayPalDialog = ({
     bidId,
   });
 
-  const { data: freeBidsData } = useFreeBids({
+  const { data: bidsData } = useBidsByAuction(auction.auction_id);
+
+  const { data: freeBidsData } = useFreeBidsQuery({
     userId: userData?.id ?? "",
     auctionId: auction.auction_id,
   });
   const hasFreeBids = freeBidsData && freeBidsData.length > 0;
+  const canEarnFreeEarlyBid = bidsData && bidsData.length <= 10;
+  const canEarnFreeOftenBid =
+    bidsData &&
+    bidsData.filter((item) => item.bidder_id === userData?.id).length > 2;
+  const hasFreeEarlyBid =
+    hasFreeBids &&
+    freeBidsData.some((item) => item.free_bid_type === "bid_early");
+  const hasFreeOftenBid =
+    hasFreeBids &&
+    freeBidsData.some((item) => item.free_bid_type === "bid_often");
+
+  const handleEarnFreeBid = async () => {
+    if (userData && bidsData) {
+      try {
+        if (canEarnFreeEarlyBid && !hasFreeEarlyBid) {
+          return await useFreeBidsMutation({
+            userId: userData?.id ?? "",
+            auctionId: auction.auction_id,
+            action: "earn",
+            type: "bid_early",
+          }).mutateAsync();
+          // TODO add success toast?
+          // or success message?
+          // maybe email message?
+        }
+        if (canEarnFreeOftenBid && !hasFreeOftenBid) {
+          return await useFreeBidsMutation({
+            userId: userData?.id ?? "",
+            auctionId: auction.auction_id,
+            action: "earn",
+            type: "bid_often",
+          }).mutateAsync();
+          // TODO add success toast?
+          // or success message?
+          // maybe email message?
+        }
+      } catch (err) {
+        throw err;
+      }
+    }
+  };
 
   // paypal specific method
   const handleCreateOrder = async (
@@ -130,6 +173,7 @@ export const PayPalDialog = ({
   ) => {
     try {
       const confirmation = await bidConfirmation.mutateAsync();
+      await handleEarnFreeBid();
       setIsDialogOpen(false);
       router.reload();
     } catch (err) {
@@ -233,13 +277,6 @@ export const PayPalDialog = ({
                   {`GoodBid $${bidValue} now`}
                 </p>
               </button>
-              {hasFreeBids && (
-                <button className="rounded border-2 border-solid border-black border-opacity-30 py-3">
-                  <p className="text-xl font-bold text-cw-blue">
-                    Place Free Bid
-                  </p>
-                </button>
-              )}
             </>
           )}
         </div>

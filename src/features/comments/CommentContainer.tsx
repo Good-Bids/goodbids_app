@@ -35,7 +35,7 @@ export const CommentContainer = ({ auctionId }: CommentContainer) => {
         <CommentInput auctionId={auctionId} />
         <div className=" flex flex-col gap-3 bg-cw-blue bg-opacity-10 p-3">
           {displayData.map((item) => (
-            <CommentBubble {...item} />
+            <CommentBubble {...item} key={item.message_id} />
           ))}
         </div>
       </div>
