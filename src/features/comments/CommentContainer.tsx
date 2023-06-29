@@ -12,12 +12,14 @@ export const CommentContainer = ({ auctionId }: CommentContainer) => {
 
   const { data: commentsData } = useCommentsQuery(auctionId);
 
+  const isDesktop = window && window.innerWidth >= 767;
+
   const displayData = commentsData ?? [];
 
   return (
-    <div>
+    <div className="md:h-full">
       <div
-        className="my-4 flex max-w-full cursor-pointer flex-row items-center justify-start gap-2 border-t px-4 pt-4"
+        className="my-4 flex max-w-full cursor-pointer flex-row items-center justify-start gap-2 border-t px-4 pt-4 md:cursor-default"
         onClick={() => setShowComments((prior) => !prior)}
       >
         <svg width="24" height="24">
@@ -30,10 +32,12 @@ export const CommentContainer = ({ auctionId }: CommentContainer) => {
       </div>
 
       <div
-        className={`mt-2 ${showComments ? "visible" : "hidden"} flex flex-col`}
+        className={`mt-2 ${
+          showComments || isDesktop ? "visible" : "hidden"
+        } flex flex-col items-center justify-center md:flex-col-reverse`}
       >
         <CommentInput auctionId={auctionId} />
-        <div className=" flex flex-col gap-3 bg-cw-blue bg-opacity-10 p-3">
+        <div className=" flex w-full flex-col gap-3 bg-cw-blue bg-opacity-10 p-3">
           {displayData.map((item) => (
             <CommentBubble {...item} key={item.message_id} />
           ))}

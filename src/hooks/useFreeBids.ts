@@ -43,7 +43,10 @@ const updateFreeBids = async (args: {
       case "redeem": {
         const result = await supabaseClient
           .from("free_bids")
-          .update({ auction_id, bidder_id });
+          .update({ status: "REDEEMED", auction_id, bidder_id, free_bid_type })
+          .eq("auction_id", auction_id)
+          .eq("bidder_id", bidder_id)
+          .eq("free_bid_type", free_bid_type);
         return result;
       }
     }
@@ -59,6 +62,7 @@ export const useFreeBidsQuery = (args: {
   const result = useQuery({
     queryKey: ["checkFreeBids", args.auctionId + "_" + args.userId],
     queryFn: () => getFreeBids(args),
+    enabled: args.userId !== "",
   });
   return result;
 };

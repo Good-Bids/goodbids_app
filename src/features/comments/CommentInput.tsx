@@ -20,7 +20,7 @@ export const CommentInput = (props: { auctionId: string }) => {
 
   return userName !== "anonymous" ? (
     <form
-      className="mx-4 flex flex-col gap-1 py-6"
+      className=" mx-4 flex w-10/12 flex-col gap-1 py-6 md:w-fit"
       onSubmit={handleSubmit(async (data) => {
         try {
           if (data.message) {
@@ -35,7 +35,7 @@ export const CommentInput = (props: { auctionId: string }) => {
     >
       <textarea
         placeholder="write your message here..."
-        className="px-3 py-3"
+        className="px-3 py-3 text-base"
         {...register("message")}
       />
       <label

@@ -93,6 +93,7 @@ export const FreeBidDialog = ({
   });
 
   const handleFreeBidRedemption = async () => {
+    console.log({ userData, hasFreeBids, bidId });
     if (userData && hasFreeBids && bidId) {
       try {
         await redeemFreeBid.mutateAsync();
@@ -148,14 +149,14 @@ export const FreeBidDialog = ({
       <DialogTrigger asChild>
         <div
           id="call-to-action"
-          className="mx-4 flex  min-h-fit w-11/12 flex-col justify-center gap-2 pb-4 pt-4 sm:relative sm:left-0 sm:w-fit sm:flex-col md:flex-row"
+          className="mx-4 flex  min-h-fit w-11/12 flex-col justify-center gap-2 sm:relative sm:left-0 sm:w-fit"
         >
           {canBid && hasFreeBids && (
             <button
-              className="rounded border-2 border-solid border-black border-opacity-30 px-1 py-3"
+              className="rounded border-2 border-solid border-black border-opacity-30 px-4 py-3"
               onClick={openBidDialog}
             >
-              <p className="text-xl font-bold text-cw-blue">Place Free Bid</p>
+              <p className="text-xl font-bold text-cw-blue">{`Place Free Bid (${freeBidsData.length} left)`}</p>
             </button>
           )}
         </div>
@@ -187,8 +188,8 @@ export const FreeBidDialog = ({
               </button>
             )}
             <button
-              className="cursor-pointer bg-outerSpace-200 px-2 text-xl text-outerSpace-500"
-              onClick={() => setIsDialogOpen(false)}
+              className="cursor-pointer rounded border-2 border-outerSpace-200 px-2 text-xl text-outerSpace-500"
+              onClick={() => handleOpenChange(false)}
             >
               cancel
             </button>

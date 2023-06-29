@@ -86,6 +86,20 @@ export const PayPalDialog = ({
     bidId,
   });
 
+  const earnFreeBidEarlyBid = useFreeBidsMutation({
+    userId: userData?.id ?? "",
+    auctionId: auction.auction_id,
+    action: "earn",
+    type: "bid_early",
+  });
+
+  const earnFreeBidOftenBid = useFreeBidsMutation({
+    userId: userData?.id ?? "",
+    auctionId: auction.auction_id,
+    action: "earn",
+    type: "bid_often",
+  });
+
   const { data: bidsData } = useBidsByAuction(auction.auction_id);
 
   const { data: freeBidsData } = useFreeBidsQuery({
@@ -93,38 +107,30 @@ export const PayPalDialog = ({
     auctionId: auction.auction_id,
   });
   const hasFreeBids = freeBidsData && freeBidsData.length > 0;
-  const canEarnFreeEarlyBid = bidsData && bidsData.length <= 10;
-  const canEarnFreeOftenBid =
-    bidsData &&
-    bidsData.filter((item) => item.bidder_id === userData?.id).length > 2;
   const hasFreeEarlyBid =
     hasFreeBids &&
     freeBidsData.some((item) => item.free_bid_type === "bid_early");
   const hasFreeOftenBid =
     hasFreeBids &&
     freeBidsData.some((item) => item.free_bid_type === "bid_often");
+  const canEarnFreeEarlyBid =
+    bidsData && bidsData.length <= 10 && !hasFreeEarlyBid;
+  const canEarnFreeOftenBid =
+    bidsData &&
+    bidsData.filter((item) => item.bidder_id === userData?.id).length > 2 &&
+    !hasFreeOftenBid;
 
   const handleEarnFreeBid = async () => {
     if (userData && bidsData) {
       try {
         if (canEarnFreeEarlyBid && !hasFreeEarlyBid) {
-          return await useFreeBidsMutation({
-            userId: userData?.id ?? "",
-            auctionId: auction.auction_id,
-            action: "earn",
-            type: "bid_early",
-          }).mutateAsync();
+          return await earnFreeBidEarlyBid.mutateAsync();
           // TODO add success toast?
           // or success message?
           // maybe email message?
         }
         if (canEarnFreeOftenBid && !hasFreeOftenBid) {
-          return await useFreeBidsMutation({
-            userId: userData?.id ?? "",
-            auctionId: auction.auction_id,
-            action: "earn",
-            type: "bid_often",
-          }).mutateAsync();
+          return await earnFreeBidOftenBid.mutateAsync();
           // TODO add success toast?
           // or success message?
           // maybe email message?
@@ -246,7 +252,7 @@ export const PayPalDialog = ({
         <div className=" bg-cornflowerLilac text-pompadour">
           <p>{errorState.message}</p>
           <button
-            className="rounded-full border-black"
+            className="container w-fit rounded-full border-2 border-solid border-black px-3"
             onClick={() => setErrorState(undefined)}
           >
             okay
@@ -256,11 +262,11 @@ export const PayPalDialog = ({
       <DialogTrigger asChild>
         <div
           id="call-to-action"
-          className="mx-4 flex  min-h-fit w-11/12 flex-col justify-center gap-2 pb-4 pt-4 sm:relative sm:left-0 sm:w-fit sm:flex-col md:flex-row"
+          className="mx-4 flex  min-h-fit w-11/12 flex-col justify-center gap-2 sm:relative sm:left-0 sm:w-fit"
         >
           {!canBid ? (
             <button
-              className={`container rounded border-2 border-cw-blue bg-cw-blue py-3 text-xl font-bold text-white opacity-40`}
+              className={`md: container rounded border-2 border-cw-blue bg-cw-blue px-8 py-3 text-xl font-bold text-white opacity-40`}
               disabled
             >
               {isLatestBidder
@@ -270,7 +276,7 @@ export const PayPalDialog = ({
           ) : (
             <>
               <button
-                className={`container rounded border-2 border-cw-blue bg-cw-blue py-3 text-xl font-bold text-white`}
+                className={`container rounded border-2 border-cw-blue bg-cw-blue px-4 py-3 text-xl font-bold text-white`}
                 onClick={openBidDialog}
               >
                 <p className="text-xl font-bold text-white">
