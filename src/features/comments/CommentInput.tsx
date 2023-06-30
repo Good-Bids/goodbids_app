@@ -20,7 +20,7 @@ export const CommentInput = (props: { auctionId: string }) => {
 
   return userName !== "anonymous" ? (
     <form
-      className=" mx-4 flex w-10/12 flex-col gap-1 py-6 md:w-fit"
+      className="mx-4 flex w-10/12 flex-col gap-1 py-6 md:h-fit md:w-full md:py-3"
       onSubmit={handleSubmit(async (data) => {
         try {
           if (data.message) {
@@ -35,11 +35,11 @@ export const CommentInput = (props: { auctionId: string }) => {
     >
       <textarea
         placeholder="write your message here..."
-        className="px-3 py-3 text-base"
+        className="rounded px-3 py-3 text-base md:h-16"
         {...register("message")}
       />
       <label
-        className={`flex flex-col justify-center rounded-md border-[1px] border-solid border-outerSpace-100 px-4 py-1`}
+        className={`flex flex-col justify-center rounded-md border-[1px] border-solid border-outerSpace-100 px-4 py-1 md:h-fit`}
       >
         <svg
           width="24"

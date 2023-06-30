@@ -30,8 +30,8 @@ export const IntroPage = () => {
   };
 
   return (
-    <div className="mx-4 my-6 flex h-full flex-col gap-6 overflow-visible">
-      <div className="flex w-full flex-col gap-4">
+    <div className="mx-4 my-6 flex h-full flex-col items-center gap-6 overflow-visible md:h-fit md:gap-2">
+      <div className="flex w-full flex-col gap-4 md:h-fit">
         <p className="text-4xl font-bold text-cw-blue">
           Your generosity deserves a prize!
         </p>
@@ -41,7 +41,7 @@ export const IntroPage = () => {
         </p>
       </div>
       <div
-        className="flex flex-col justify-center"
+        className="flex h-fit flex-col items-center justify-center"
         onClick={() => clickHandler()}
       >
         <div
@@ -61,18 +61,20 @@ export const IntroPage = () => {
         </div>
         <video
           ref={videoRef}
-          className="aspect-video w-full rounded"
+          className={`aspect-video w-full rounded md:w-2/3`}
           src="/mcartney-goodbids.m4v"
           autoPlay={false}
           poster="/sethPlaceholder.png"
           onEnded={() => setVideoState("ended")}
         />
       </div>
-      <Link href={"/SignUp"}>
-        <button className="flex w-full flex-col items-stretch justify-center rounded bg-cw-blue px-4 py-2 text-xl font-bold text-white">
-          <p>Sign Up</p>
-        </button>
-      </Link>
+      <div className="flex w-full flex-col items-stretch md:items-center">
+        <Link href={"/SignUp"}>
+          <button className="container flex w-full flex-col items-stretch justify-center rounded bg-cw-blue px-4 py-2 text-xl font-bold text-white md:w-fit md:px-8">
+            <p>Sign Up</p>
+          </button>
+        </Link>
+      </div>
       <Link href={"/"}>
         <div className="flex w-full flex-row justify-center gap-2">
           <p className="inline-flex text-xl font-bold text-cw-blue underline">

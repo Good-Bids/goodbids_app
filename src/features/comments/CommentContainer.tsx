@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCommentsQuery } from "~/hooks/useComment";
 import { CommentBubble } from "./CommentBubble";
 import { CommentInput } from "./CommentInput";
@@ -16,10 +16,21 @@ export const CommentContainer = ({ auctionId }: CommentContainer) => {
 
   const displayData = commentsData ?? [];
 
+  const convoRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (convoRef.current && displayData) {
+      convoRef.current.scrollTo({
+        top: displayData.length * 100,
+        behavior: "auto",
+      });
+    }
+  }, [displayData]);
+
   return (
-    <div className="md:h-full">
+    <div className="overflow-y-visible md:flex md:h-full md:flex-col">
       <div
-        className="my-4 flex max-w-full cursor-pointer flex-row items-center justify-start gap-2 border-t px-4 pt-4 md:cursor-default"
+        className="my-4 flex max-w-full cursor-pointer flex-row items-center justify-start gap-2 border-t px-4 pt-4 md:mb-2 md:mt-0 md:cursor-default md:border-none md:pt-0"
         onClick={() => setShowComments((prior) => !prior)}
       >
         <svg width="24" height="24">
@@ -32,12 +43,15 @@ export const CommentContainer = ({ auctionId }: CommentContainer) => {
       </div>
 
       <div
-        className={`mt-2 ${
+        className={`mt-2 md:mt-0 ${
           showComments || isDesktop ? "visible" : "hidden"
-        } flex flex-col items-center justify-center md:flex-col-reverse`}
+        } flex flex-col items-center justify-center md:h-[98%] md:flex-col-reverse`}
       >
         <CommentInput auctionId={auctionId} />
-        <div className=" flex w-full flex-col gap-3 bg-cw-blue bg-opacity-10 p-3">
+        <div
+          className="md:h-11/12 flex h-80 w-full flex-1 flex-col gap-3 overflow-y-auto bg-cw-blue bg-opacity-10 p-3"
+          ref={convoRef}
+        >
           {displayData.map((item) => (
             <CommentBubble {...item} key={item.message_id} />
           ))}
