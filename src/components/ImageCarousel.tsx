@@ -41,7 +41,7 @@ export const ImageCarousel = ({ sources }: ImageCarouselProps) => {
   }, [currentIndex]);
 
   return (
-    <div className="flex w-full flex-col items-center gap-2 md:w-2/5">
+    <div className="flex w-full flex-col items-center gap-2 md:w-1/2">
       {mainPhoto !== undefined && (
         <div className="relative mb-0 flex aspect-square w-screen overflow-hidden md:w-full md:rounded">
           <Image

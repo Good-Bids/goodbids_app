@@ -23,9 +23,6 @@ export const CharityWater = () => {
   const [nextBidValue, setNextBidValue] = useState(0);
   const [displayAuction, setDisplayAuction] = useState(auctionData);
 
-  const [showItemDetails, setShowItemDetails] = useState(false);
-  const [showCharityDetails, setShowCharityDetails] = useState(false);
-
   const [userId, setUserId] = useState<string>("unauthenticated");
 
   const imageUrls: string[] | undefined = auctionImages?.map(
@@ -48,6 +45,9 @@ export const CharityWater = () => {
       if (updatedAuction.auction_id === auctionId) {
         if (eventType === "UPDATE") {
           setDisplayAuction(updatedAuction);
+          setNextBidValue(
+            updatedAuction.high_bid_value + updatedAuction.increment
+          );
         }
       }
     }
