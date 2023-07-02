@@ -21,6 +21,7 @@ const getFreeBids = async (args: { auctionId: string; userId: string }) => {
   }
 };
 const updateFreeBids = async (args: {
+  freeBidId?: string;
   auctionId: string;
   userId: string;
   type?: FreeBidType;
@@ -31,23 +32,35 @@ const updateFreeBids = async (args: {
       auctionId: auction_id,
       userId: bidder_id,
       type: free_bid_type,
+      freeBidId: free_bid_id,
       action,
     } = args;
     switch (action) {
-      case "earn": {
-        const result = await supabaseClient
-          .from("free_bids")
-          .insert({ auction_id, bidder_id, free_bid_type, status: "ACTIVE" });
-        return result;
-      }
+      case "earn":
+        {
+          const result = await supabaseClient.from("free_bids").insert({
+            auction_id,
+            bidder_id,
+            free_bid_type,
+            status: "ACTIVE",
+          });
+          return result;
+        }
+        break;
       case "redeem": {
-        const result = await supabaseClient
-          .from("free_bids")
-          .update({ status: "REDEEMED", auction_id, bidder_id, free_bid_type })
-          .eq("auction_id", auction_id)
-          .eq("bidder_id", bidder_id)
-          .eq("free_bid_type", free_bid_type);
-        return result;
+        if (free_bid_id !== undefined) {
+          const result = await supabaseClient
+            .from("free_bids")
+            .update({
+              status: "REDEEMED",
+              auction_id,
+              bidder_id,
+              free_bid_type,
+              free_bid_id,
+            })
+            .eq("free_bid_id", free_bid_id);
+          return result;
+        }
       }
     }
   } catch (err) {
@@ -68,13 +81,14 @@ export const useFreeBidsQuery = (args: {
 };
 
 export const useFreeBidsMutation = (args: {
+  freeBidId?: string;
   userId: string;
   auctionId: string;
   action: "redeem" | "earn";
   type: FreeBidType;
 }) => {
   const mutation = useMutation({
-    mutationKey: ["updateFreeBids", args.auctionId + "_" + args.userId],
+    mutationKey: ["updateFreeBids", args.freeBidId],
     mutationFn: async () => await updateFreeBids(args),
   });
   return mutation;

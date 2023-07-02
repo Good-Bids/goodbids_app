@@ -3,7 +3,7 @@ export type Json =
   | number
   | boolean
   | null
-  | { [key: string]: Json }
+  | { [key: string]: Json | undefined }
   | Json[]
 
 export interface Database {
@@ -192,27 +192,6 @@ export interface Database {
           }
         ]
       }
-      bid_state: {
-        Row: {
-          auction_id: string
-          created_at: string
-          status: string
-          ttl: number
-        }
-        Insert: {
-          auction_id: string
-          created_at?: string
-          status?: string
-          ttl?: number
-        }
-        Update: {
-          auction_id?: string
-          created_at?: string
-          status?: string
-          ttl?: number
-        }
-        Relationships: []
-      }
       charity: {
         Row: {
           charity_id: string
@@ -288,24 +267,24 @@ export interface Database {
           auction_id: string
           bidder_id: string
           created_at: string | null
+          free_bid_id: string
           free_bid_type: string | null
-          id: number
           status: string
         }
         Insert: {
           auction_id: string
           bidder_id: string
           created_at?: string | null
+          free_bid_id?: string
           free_bid_type?: string | null
-          id?: number
           status?: string
         }
         Update: {
           auction_id?: string
           bidder_id?: string
           created_at?: string | null
+          free_bid_id?: string
           free_bid_type?: string | null
-          id?: number
           status?: string
         }
         Relationships: [

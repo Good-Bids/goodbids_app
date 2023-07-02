@@ -89,6 +89,7 @@ export const FreeBidDialog = ({
     userId: userData?.id ?? "",
     auctionId: auction.auction_id,
     action: "redeem",
+    freeBidId: freeBidsData?.[0]?.free_bid_id,
     type: freeBidsData?.[0]?.free_bid_type as FreeBidType,
   });
 
