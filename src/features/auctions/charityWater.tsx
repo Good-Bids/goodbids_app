@@ -11,6 +11,7 @@ import { CommentContainer } from "../comments";
 import { AuctionData } from "./AuctionData";
 import { Details } from "./Details";
 import { FreeBidDialog } from "./FreeBidDialog";
+import { ShareButton } from "./ShareButton";
 
 export const CharityWater = () => {
   const auctionId = charityWaterAuctionId;
@@ -87,6 +88,7 @@ export const CharityWater = () => {
                 auction={displayAuction}
                 isBidLocked={!auctionIsActive}
               />
+              {userData?.id && <ShareButton userId={userData.id} />}
             </div>
           </div>
         </div>
