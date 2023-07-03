@@ -17,7 +17,7 @@ import type {
   RealtimePostgresUpdatePayload,
 } from "@supabase/supabase-js";
 
-import { Auction, BidState } from "~/utils/types/auctions";
+import { Auction } from "~/utils/types/auctions";
 import { useUserQuery } from "~/hooks/useUser";
 
 interface MessageBusProviderProps {
@@ -27,7 +27,6 @@ interface MessageBusProviderProps {
 interface MessageBusValues {
   isInitialized: boolean;
   subscriptions: RealtimeChannel[];
-  lastBidLockMessage?: RealtimePostgresInsertPayload<BidState["Insert"]>;
   lastAuctionUpdateMessage?: RealtimePostgresUpdatePayload<Auction> & {
     auction: Auction;
   };
@@ -57,7 +56,6 @@ const MessageBusProvider = ({ children }: MessageBusProviderProps) => {
   const [mBus, setMBus] = useState<MessageBusValues>({
     isInitialized: false,
     subscriptions: [],
-    lastBidLockMessage: undefined,
     lastAuctionUpdateMessage: undefined,
   });
 

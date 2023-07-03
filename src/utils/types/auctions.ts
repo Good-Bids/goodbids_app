@@ -10,4 +10,3 @@ import { Database } from "./supabase";
 /** Convenience wrapper - from supabase.ts */
 export type Auction = Database["public"]["Tables"]["auction"]["Row"];
 export type Bid = Database["public"]["Tables"]["bid"]["Row"];
-export type BidState = Database["public"]["Tables"]["bid_state"];
