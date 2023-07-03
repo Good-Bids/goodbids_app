@@ -38,6 +38,10 @@ export const FreeBidDialog = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [bidId, setBidId] = useState<string>();
   const [errorState, setErrorState] = useState<Error>();
+  const [modalText, setModalText] = useState<string>(
+    "You won't be charged anything, and you'll become the high bidder."
+  );
+  const [actionButtonCopy, setActionButtonCopy] = useState<string>("confirm");
   const [bidState, setBidState] = useState<
     "PENDING" | "COMPLETE" | "CANCELLED" | "INACTIVE"
   >("INACTIVE");
@@ -99,8 +103,9 @@ export const FreeBidDialog = ({
       try {
         await redeemFreeBid.mutateAsync();
         await bidConfirmation.mutateAsync();
-        window.alert(`free goodbid successfully redeemed for bid ${bidId}`);
-        setIsDialogOpen(false);
+        setModalText("Free GoodBid successfully redeemed!");
+        setActionButtonCopy("close window");
+        setBidState("COMPLETE");
       } catch (err) {
         throw err;
       }
@@ -170,10 +175,7 @@ export const FreeBidDialog = ({
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col">
-          <p className="text-sm font-light text-outerSpace-800">
-            You won&apos;t be charged anything, and you&apos;ll become the high
-            bidder.
-          </p>
+          <p className="text-sm font-light text-outerSpace-800">{modalText}</p>
           <p className="text-sm font-light text-outerSpace-800">
             {" "}
             if nobody else bids in the next {auction.increment} hours, you'll
@@ -183,17 +185,23 @@ export const FreeBidDialog = ({
             {bidId && (
               <button
                 className="font-base rounded bg-cw-blue px-2 text-xl text-white"
-                onClick={handleFreeBidRedemption}
+                onClick={() => {
+                  bidState === "COMPLETE"
+                    ? handleOpenChange(false)
+                    : handleFreeBidRedemption();
+                }}
               >
-                confirm
+                {actionButtonCopy}
               </button>
             )}
-            <button
-              className="cursor-pointer rounded border-2 border-outerSpace-200 px-2 text-xl text-outerSpace-500"
-              onClick={() => handleOpenChange(false)}
-            >
-              cancel
-            </button>
+            {bidState !== "COMPLETE" && (
+              <button
+                className="cursor-pointer rounded border-2 border-outerSpace-200 px-2 text-xl text-outerSpace-500"
+                onClick={() => handleOpenChange(false)}
+              >
+                cancel
+              </button>
+            )}
           </div>
         </div>
       </DialogContent>
