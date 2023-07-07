@@ -379,6 +379,46 @@ export interface Database {
           }
         ]
       }
+      user_referrals: {
+        Row: {
+          created_at: string | null
+          has_placed_bid: boolean
+          id: number
+          new_user_id: string | null
+          referral_id: string
+          referrer_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          has_placed_bid?: boolean
+          id?: number
+          new_user_id?: string | null
+          referral_id?: string
+          referrer_id: string
+        }
+        Update: {
+          created_at?: string | null
+          has_placed_bid?: boolean
+          id?: number
+          new_user_id?: string | null
+          referral_id?: string
+          referrer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_referrals_new_user_id_fkey"
+            columns: ["new_user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never
