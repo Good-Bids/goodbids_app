@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import useSupabase from "~/hooks/useSupabase";
 import { useInterval } from "usehooks-ts";
+import { useInsertNewUserMutation } from "~/hooks/useShareLink";
 
 interface AuthPageProps {
   method: "logIn" | "signUp";
@@ -16,6 +17,8 @@ export const AuthPage = ({ method }: AuthPageProps) => {
   });
   const [hasSubmittedEmail, setHasSubmittedEmail] = useState(false);
   const [rerouteDelay, setRerouteDelay] = useState(5);
+
+  const [referralId, setReferralId] = useState<string>();
 
   const supabaseClient = useSupabase();
 
@@ -52,6 +55,22 @@ export const AuthPage = ({ method }: AuthPageProps) => {
     }
   };
 
+  useEffect(() => {
+    if (router.query) {
+      const queryKeys = Object.keys(router.query);
+      const queryVals = Object.values(router.query);
+      if (queryKeys.includes("referralId") && queryVals[0] !== undefined) {
+        const passedReferralId = queryVals[0].toString();
+        setReferralId(passedReferralId);
+      }
+    }
+  }, [router.query]);
+
+  const insertNewUser = useInsertNewUserMutation({
+    userEmail: loginData.email,
+    referralId: referralId ?? "",
+  });
+
   async function signInWithEmail() {
     try {
       await supabaseClient.auth.signInWithOtp({
@@ -60,6 +79,7 @@ export const AuthPage = ({ method }: AuthPageProps) => {
           emailRedirectTo: url,
         },
       });
+      await insertNewUser.mutateAsync();
       setHasSubmittedEmail(true);
     } catch (error) {
       throw error;

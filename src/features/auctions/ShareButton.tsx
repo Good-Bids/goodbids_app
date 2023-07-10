@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import {
-  useCreateShareLinkMutation,
-  useShareLinkQuery,
+  useCreateReferralIdMutation,
+  useReferralIdQuery,
 } from "~/hooks/useShareLink";
 
 interface ShareButtonProps {
@@ -10,16 +10,17 @@ interface ShareButtonProps {
 }
 
 export const ShareButton = ({ userId }: ShareButtonProps) => {
-  const { data: referralId } = useShareLinkQuery(userId);
-  const createShareLink = useCreateShareLinkMutation({ userId });
+  const { data: referralId } = useReferralIdQuery(userId);
+  const createShareLink = useCreateReferralIdMutation({ userId });
   const [referralLink, setReferralLink] = useState<string>();
+  const [referralIdCreated, setReferralIdCreated] = useState(false);
 
   useEffect(() => {
     if (window !== undefined && referralId !== undefined) {
       const basePath = window.location.origin;
-      setReferralLink(`${basePath}/signUp?referralId=${referralId}`);
+      setReferralLink(`${basePath}/SignUp?referralId=${referralId}`);
     }
-  }, [referralId]);
+  }, [referralId, referralIdCreated]);
 
   const copyToClipboard = async () => {
     if (referralLink === undefined) {
@@ -31,9 +32,17 @@ export const ShareButton = ({ userId }: ShareButtonProps) => {
     await navigator.clipboard.write(data);
   };
 
+  const handleCreateClick = async () => {
+    const { data } = await createShareLink.mutateAsync();
+    const referralId = data?.referral_id;
+    const basePath = window.location.origin;
+    setReferralLink(`${basePath}/SignUp?referralId=${referralId}`);
+    setReferralIdCreated(true);
+  };
+
   return (
     <div className="mx-4 my-2 flex flex-col">
-      {referralId && referralLink ? (
+      {(referralId || referralIdCreated) && referralLink ? (
         <div className="flex w-full flex-col items-center rounded border-[1px] border-solid border-cw-blue p-1">
           <p className="text-xl font-bold text-cw-blue">
             🎉 Referral link created
@@ -53,7 +62,7 @@ export const ShareButton = ({ userId }: ShareButtonProps) => {
           <p>If two people sign up using your link, you'll earn a free bid!</p>
           <button
             className="container w-full rounded bg-green-500 py-2 text-xl font-bold text-white"
-            onClick={() => createShareLink.mutateAsync()}
+            onClick={handleCreateClick}
           >
             Create Referral Link
           </button>

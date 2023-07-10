@@ -3,19 +3,20 @@ import useSupabase from "./useSupabase";
 
 const supabaseClient = useSupabase();
 
-const createShareLink = async (userId: string) => {
+const createReferralId = async (userId: string) => {
   try {
     const result = await supabaseClient
       .from("user_referrals")
       .insert({ referrer_id: userId })
-      .select("*");
+      .select("*")
+      .single();
     return result;
   } catch (err) {
     throw err;
   }
 };
 
-const getShareLink = async (userId: string) => {
+const getReferralId = async (userId: string) => {
   try {
     const result = await supabaseClient
       .from("user_referrals")
@@ -24,47 +25,83 @@ const getShareLink = async (userId: string) => {
       .single();
     if (result.data) {
       return result.data.referral_id;
-    }
+    } else console.error(result);
+  } catch (err) {
+    throw err;
+  }
+};
+const getReferrerId = async (referralId: string) => {
+  try {
+    const result = await supabaseClient
+      .from("user_referrals")
+      .select("referrer_id")
+      .eq("referral_id", referralId)
+      .single();
+    if (result.data) {
+      return result.data.referrer_id;
+    } else console.error(result);
   } catch (err) {
     throw err;
   }
 };
 
-const updateShareLinkUsage = async (args: {
-  userId: string;
+const insertNewReferredUser = async (args: {
+  userEmail: string;
   referralId: string;
+  referrerId: string;
 }) => {
   try {
     if (args.referralId) {
       return await supabaseClient
-        .from("user_referrals")
-        .update({ new_user_id: args.userId, referral_id: args.referralId });
+        .from("new_user_referrals")
+        .insert({
+          referral_id: args.referralId,
+          user_email: args.userEmail,
+          referrer_id: args.referrerId,
+        })
+        .select("*")
+        .single();
     }
   } catch (err) {
     throw err;
   }
 };
 
-export const useCreateShareLinkMutation = (args: { userId: string }) => {
+export const useCreateReferralIdMutation = (args: { userId: string }) => {
   return useMutation({
-    mutationKey: ["createShareLink", args.userId],
-    mutationFn: async () => await createShareLink(args.userId),
+    mutationKey: ["createReferralId", args.userId],
+    mutationFn: async () => await createReferralId(args.userId),
   });
 };
 
-export const useUpdateShareLinkMutation = (args: {
-  userId: string;
+export const useInsertNewUserMutation = (args: {
+  userEmail: string;
   referralId: string;
 }) => {
   return useMutation({
-    mutationKey: ["updateShareLink", args.userId],
-    mutationFn: async () => await updateShareLinkUsage(args),
+    mutationKey: ["insertNewUser", args.userEmail],
+    mutationFn: async () => {
+      const referrerId = await getReferrerId(args.referralId);
+      if (referrerId !== undefined) {
+        return await insertNewReferredUser({
+          ...args,
+          referrerId: referrerId,
+        });
+      }
+    },
   });
 };
 
-export const useShareLinkQuery = (userId: string) => {
+export const useReferralIdQuery = (userId: string) => {
   return useQuery({
     queryKey: ["getShareLink", userId],
-    queryFn: async () => await getShareLink(userId),
+    queryFn: async () => await getReferralId(userId),
+  });
+};
+
+export const useReferrerIdQuery = (referralId: string) => {
+  return useQuery({
+    queryKey: ["getReferrerId", referralId],
+    queryFn: async () => await getReferrerId(referralId),
   });
 };
