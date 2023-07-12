@@ -77,6 +77,7 @@ export const PayPalDialog = ({
     bidAmount: bidValue,
     bidState: "COMPLETE",
     bidId,
+    userEmail: userData?.email,
   });
   const bidCancellation = useBidMutation({
     auctionId: auction.auction_id,
@@ -291,8 +292,7 @@ export const PayPalDialog = ({
         <DialogHeader>
           <DialogTitle>GoodBid ${bidValue}</DialogTitle>
           <DialogDescription>
-            Don&apos;t worry, this is still just a test. You won&apos;t be
-            charged, I promise.
+            Every Bid is a Donation, and every Donation is a Bid.
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col">

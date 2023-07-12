@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import useSupabase from "./useSupabase";
+import { updateReferredUser } from "./useShareLink";
 
 const supabaseClient = useSupabase();
 
@@ -238,8 +239,10 @@ export const updateBidTable = async (args: {
   bidAmount: number;
   bidState: "PENDING" | "CANCELLED" | "COMPLETE";
   bidId?: string;
+  userEmail?: string;
 }) => {
-  const { auctionId, userId, bidAmount, bidState, bidId } = args;
+  const { auctionId, userId, bidAmount, bidState, bidId, userEmail } = args;
+  console.log(userEmail);
   switch (bidState) {
     case "PENDING": {
       try {
@@ -315,6 +318,10 @@ export const updateBidTable = async (args: {
             .from("bid")
             .update({ bid_status: "COMPLETE" })
             .eq("bid_id", bidId);
+          if (userEmail) {
+            console.log(userEmail);
+            await updateReferredUser(userEmail);
+          }
           return { status: update.status, bidId };
         } catch (err) {
           throw err;
@@ -340,15 +347,23 @@ export const updateBidTable = async (args: {
 export const useBidMutation = (args: {
   auctionId: string;
   userId: string;
+  userEmail?: string;
   bidAmount: number;
   bidState: "PENDING" | "CANCELLED" | "COMPLETE";
   bidId?: string;
 }) => {
-  const { auctionId, userId, bidAmount, bidState, bidId } = args;
+  const { auctionId, userId, bidAmount, bidState, bidId, userEmail } = args;
   const bidMutation = useMutation({
     mutationKey: ["updateBid", `${auctionId}_${userId}_${bidAmount}_${bidId}`],
     mutationFn: async () =>
-      await updateBidTable({ auctionId, userId, bidAmount, bidState, bidId }),
+      await updateBidTable({
+        auctionId,
+        userId,
+        bidAmount,
+        bidState,
+        bidId,
+        userEmail,
+      }),
   });
   return bidMutation;
 };

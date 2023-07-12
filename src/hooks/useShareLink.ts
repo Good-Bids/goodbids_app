@@ -30,6 +30,7 @@ const getReferralId = async (userId: string) => {
     throw err;
   }
 };
+
 const getReferrerId = async (referralId: string) => {
   try {
     const result = await supabaseClient
@@ -51,17 +52,29 @@ const insertNewReferredUser = async (args: {
   referrerId: string;
 }) => {
   try {
-    if (args.referralId) {
-      return await supabaseClient
-        .from("new_user_referrals")
-        .insert({
-          referral_id: args.referralId,
-          user_email: args.userEmail,
-          referrer_id: args.referrerId,
-        })
-        .select("*")
-        .single();
-    }
+    return await supabaseClient
+      .from("new_user_referrals")
+      .insert({
+        referral_id: args.referralId,
+        user_email: args.userEmail,
+        referrer_id: args.referrerId,
+      })
+      .select("*")
+      .single();
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const updateReferredUser = async (userEmail: string) => {
+  try {
+    return await supabaseClient
+      .from("new_user_referrals")
+      .update({ has_placed_bid: true })
+      .eq("user_email", userEmail)
+      .eq("has_placed_bid", "false")
+      .select("*")
+      .single();
   } catch (err) {
     throw err;
   }
