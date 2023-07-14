@@ -1,7 +1,7 @@
-import { CharityWater } from "../features/auctions/charityWater";
+import IntroPage from "./intro";
 
 const Home = () => {
-  return <CharityWater />;
+  return IntroPage;
 };
 
 export default Home;

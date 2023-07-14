@@ -231,6 +231,7 @@ export const AuctionDetailPage = () => {
                 bidValue={nextBidValue}
                 auction={displayAuction}
                 isBidLocked={!auctionIsActive}
+                charity={"buildOn"}
               />
             </div>
           </div>

@@ -80,10 +80,23 @@ export const IntroPage = () => {
           </button>
         </Link>
       </div>
-      <Link href={"/"}>
+      <Link href={"/buildOn/Trek"}>
         <div className="flex w-full flex-row justify-center gap-2">
           <p className="text-${colorString} inline-flex text-xl font-bold underline">
-            Skip to Auction
+            Go to the Trek Auction
+          </p>
+          <svg width="25" height="25">
+            <path
+              d="M14.1149 4.31891C13.815 4.03322 13.3403 4.04476 13.0546 4.34469C12.7689 4.64461 12.7804 5.11935 13.0804 5.40504L19.3318 11.3596H4.59766C4.18344 11.3596 3.84766 11.6954 3.84766 12.1096C3.84766 12.5239 4.18344 12.8596 4.59766 12.8596H19.3319L13.0804 18.8144C12.7804 19.1 12.7689 19.5748 13.0546 19.8747C13.3403 20.1746 13.815 20.1862 14.1149 19.9005L21.5339 12.8338C21.7028 12.6729 21.8027 12.4676 21.8337 12.2543C21.8429 12.2075 21.8477 12.1591 21.8477 12.1096C21.8477 12.0601 21.8428 12.0116 21.8337 11.9647C21.8026 11.7515 21.7027 11.5464 21.5339 11.3856L14.1149 4.31891Z"
+              fill={`${charityColor[charity]}`}
+            />
+          </svg>
+        </div>
+      </Link>
+      <Link href={"/buildOn/Watch"}>
+        <div className="flex w-full flex-row justify-center gap-2">
+          <p className="text-${colorString} inline-flex text-xl font-bold underline">
+            Go to the Watch Auction
           </p>
           <svg width="25" height="25">
             <path
