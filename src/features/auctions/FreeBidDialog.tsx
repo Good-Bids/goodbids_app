@@ -20,17 +20,20 @@ import {
   useFreeBidsMutation,
   useFreeBidsQuery,
 } from "~/hooks/useFreeBids";
+import { charityColorTailwindString } from "~/utils/constants";
 
 interface FreeBidDialogProps {
   bidValue: number;
   auction: Auction;
   isBidLocked: boolean;
+  charity: "buildOn" | "charityWater";
 }
 
 export const FreeBidDialog = ({
   bidValue,
   auction,
   isBidLocked,
+  charity,
 }: FreeBidDialogProps) => {
   const { data: userData } = useUserQuery();
   const router = useRouter();
@@ -45,6 +48,8 @@ export const FreeBidDialog = ({
   const [bidState, setBidState] = useState<
     "PENDING" | "COMPLETE" | "CANCELLED" | "INACTIVE"
   >("INACTIVE");
+
+  const colorString = charityColorTailwindString[charity];
 
   // Open the bid now dialog and track its opening via google
   const openBidDialog = async () => {
@@ -162,7 +167,9 @@ export const FreeBidDialog = ({
               className="rounded border-2 border-solid border-black border-opacity-30 px-4 py-3"
               onClick={openBidDialog}
             >
-              <p className="text-xl font-bold text-cw-blue">{`Place Free Bid (${freeBidsData.length} left)`}</p>
+              <p
+                className={`text-xl font-bold text-${colorString}`}
+              >{`Place Free Bid (${freeBidsData.length} left)`}</p>
             </button>
           )}
         </div>
@@ -184,7 +191,7 @@ export const FreeBidDialog = ({
           <div className="flex h-fit flex-row justify-center gap-10 py-3">
             {bidId && (
               <button
-                className="font-base rounded bg-cw-blue px-2 text-xl text-white"
+                className={`font-base rounded bg-${colorString} px-2 text-xl text-white`}
                 onClick={() => {
                   bidState === "COMPLETE"
                     ? handleOpenChange(false)

@@ -14,7 +14,7 @@ export const useAuctionTimer = (args: AuctionTimerArgs) => {
   const [timeLeft, setTimeLeft] = useState<number>(0);
   useInterval(() => {
     const lastBidTimestamp = new Date(
-      Date.parse(auction?.latest_bid_timestamptz ?? new Date().toDateString())
+      Date.parse(auction?.latest_bid_timestamptz ?? new Date().toUTCString())
     );
     const expirationTime = (auction?.top_bid_duration ?? 0) * 1000;
     const expirationTimeStamp = lastBidTimestamp.setTime(

@@ -13,6 +13,20 @@ export const fileStoragePath: string =
 
 export const charityWaterAuctionId = "6b2300f1-33d9-4210-8ae2-0d80d1cf931a";
 
+export const buildOnAuctionIds = {
+  trek: "18d688a8-3138-422f-9668-8de5a33dc73e",
+  watch: "53996feb-5704-4137-aedd-8a589d451767",
+};
+
+export const charityColorTailwindString = {
+  buildOn: "bo-red",
+  charityWater: "cw-blue",
+};
+export const charityColor = {
+  buildOn: "#CC2126",
+  charityWater: "#003366",
+};
+
 export const faq: {
   subject: string;
   questions: { question: string; answer: string }[];

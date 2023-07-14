@@ -27,17 +27,20 @@ import { useUserQuery } from "~/hooks/useUser";
 import { useRouter } from "next/router";
 import { Auction } from "~/utils/types/auctions";
 import { useFreeBidsMutation, useFreeBidsQuery } from "~/hooks/useFreeBids";
+import { charityColorTailwindString } from "~/utils/constants";
 
 interface PayPalDialogProps {
   bidValue: number;
   auction: Auction;
   isBidLocked: boolean;
+  charity: "buildOn" | "charityWater";
 }
 
 export const PayPalDialog = ({
   bidValue,
   auction,
   isBidLocked,
+  charity,
 }: PayPalDialogProps) => {
   const { data: userData } = useUserQuery();
   const router = useRouter();
@@ -246,6 +249,8 @@ export const PayPalDialog = ({
 
   const canBid = !isBidLocked && !isLatestBidder;
 
+  const colorString = charityColorTailwindString[charity];
+
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
       {errorState && (
@@ -266,7 +271,7 @@ export const PayPalDialog = ({
         >
           {!canBid ? (
             <button
-              className={`md: container rounded border-2 border-cw-blue bg-cw-blue px-8 py-3 text-xl font-bold text-white opacity-40`}
+              className={`md: container rounded border-2 border-${colorString} bg-${colorString} px-8 py-3 text-xl font-bold text-white opacity-40`}
               disabled
             >
               {isLatestBidder
@@ -276,7 +281,7 @@ export const PayPalDialog = ({
           ) : (
             <>
               <button
-                className={`container rounded border-2 border-cw-blue bg-cw-blue px-4 py-3 text-xl font-bold text-white`}
+                className={`container rounded border-2 border-${colorString} bg-${colorString} px-4 py-3 text-xl font-bold text-white`}
                 onClick={openBidDialog}
               >
                 <p className="text-xl font-bold text-white">
@@ -291,8 +296,7 @@ export const PayPalDialog = ({
         <DialogHeader>
           <DialogTitle>GoodBid ${bidValue}</DialogTitle>
           <DialogDescription>
-            Don&apos;t worry, this is still just a test. You won&apos;t be
-            charged, I promise.
+            Every Bid is a Donation, and every Donation is a Bid.
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col">

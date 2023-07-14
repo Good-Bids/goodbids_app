@@ -100,14 +100,14 @@ export const AuthPage = ({ method }: AuthPageProps) => {
           </label>
           <button
             onClick={() => signInWithEmail()}
-            className="rounded-full bg-cw-blue px-4 py-2 text-white"
+            className="bg-${colorString} rounded-full px-4 py-2 text-white"
           >
             <p className="font-bold">{actionString}</p>
           </button>
           <br />
           <p className="font-bold text-slate-700">Or...</p>
           <button
-            className="flex flex-row justify-center gap-2 rounded-full border border-cw-blue px-4 py-2"
+            className="border-${colorString} flex flex-row justify-center gap-2 rounded-full border px-4 py-2"
             onClick={() => handleGoogleLogin()}
           >
             <svg

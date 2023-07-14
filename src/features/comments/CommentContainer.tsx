@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { useCommentsQuery } from "~/hooks/useComment";
+import { charityColorTailwindString } from "~/utils/constants";
 import { CommentBubble } from "./CommentBubble";
 import { CommentInput } from "./CommentInput";
 
 interface CommentContainer {
   auctionId: string;
+  charity: "buildOn" | "charityWater";
 }
 
-export const CommentContainer = ({ auctionId }: CommentContainer) => {
+export const CommentContainer = ({ auctionId, charity }: CommentContainer) => {
   const [showComments, setShowComments] = useState(false);
 
   const { data: commentsData } = useCommentsQuery(auctionId);
@@ -17,6 +19,8 @@ export const CommentContainer = ({ auctionId }: CommentContainer) => {
   const displayData = commentsData ?? [];
 
   const convoRef = useRef<HTMLDivElement>(null);
+
+  const colorString = "bo-red";
 
   useEffect(() => {
     if (convoRef.current && displayData) {
@@ -47,13 +51,14 @@ export const CommentContainer = ({ auctionId }: CommentContainer) => {
           showComments || isDesktop ? "visible" : "hidden"
         } flex flex-col items-center justify-center md:h-[98%] md:flex-col-reverse`}
       >
-        <CommentInput auctionId={auctionId} />
+        <CommentInput auctionId={auctionId} charity="buildOn" />
         <div
-          className="md:h-11/12 flex h-80 w-full flex-1 flex-col gap-3 overflow-y-auto bg-cw-blue bg-opacity-10 p-3"
+          className={`md:h-11/12 flex h-80 w-full flex-1 flex-col gap-3 overflow-y-auto bg-${colorString} bg-opacity-10 p-3`}
           ref={convoRef}
         >
+          <div className="h-0 w-0 bg-bo-red" />
           {displayData.map((item) => (
-            <CommentBubble {...item} key={item.message_id} />
+            <CommentBubble {...item} key={item.message_id} charity="buildOn" />
           ))}
         </div>
       </div>

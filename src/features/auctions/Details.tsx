@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-export const Details = () => {
+export const Details = (props: { charity: "buildOn" | "charityWater" }) => {
+  const { charity } = props;
   const [showItemDetails, setShowItemDetails] = useState(false);
   const [showCharityDetails, setShowCharityDetails] = useState(false);
   return (

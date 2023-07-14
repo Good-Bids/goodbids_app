@@ -1,4 +1,5 @@
 import { useUserQuery } from "~/hooks/useUser";
+import { charityColorTailwindString } from "~/utils/constants";
 
 interface Comment {
   text: string;
@@ -6,6 +7,7 @@ interface Comment {
   user_name: string;
   message_id: string;
   created_at: string;
+  charity: "buildOn" | "charityWater";
 }
 
 export const CommentBubble = ({
@@ -14,15 +16,17 @@ export const CommentBubble = ({
   user_name,
   message_id,
   created_at,
+  charity,
 }: Comment) => {
   const { data: currentUser } = useUserQuery();
   const isMe = currentUser?.id === user;
   const date = new Date(created_at).toDateString();
+  const colorString = charityColorTailwindString[charity];
   return (
     <div
       className={`h-fit w-1/2 overflow-x-clip rounded-t-lg px-1 py-1 md:w-5/6  ${
         isMe
-          ? "self-start rounded-r-lg bg-cw-blue bg-opacity-10"
+          ? `self-start rounded-r-lg bg-${colorString} bg-opacity-10`
           : "self-end rounded-l-lg bg-white"
       }`}
       key={message_id}

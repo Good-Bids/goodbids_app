@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { charityColor, charityColorTailwindString } from "~/utils/constants";
 
 type VideoState = "initial" | "playing" | "paused" | "ended";
 
@@ -11,6 +12,10 @@ export const IntroPage = () => {
       window.localStorage.setItem("hasSeenIntro", "true");
     }
   }, []);
+
+  const charity = "buildOn";
+
+  const colorString = charityColorTailwindString[charity];
 
   const textPrompt: Record<VideoState, string> = {
     initial: "Here's the deal",
@@ -32,7 +37,7 @@ export const IntroPage = () => {
   return (
     <div className="mx-4 my-6 flex h-full flex-col items-center gap-6 overflow-visible md:h-fit md:gap-2">
       <div className="flex w-full flex-col gap-4 md:h-fit">
-        <p className="text-4xl font-bold text-cw-blue">
+        <p className={`text-${colorString} text-4xl font-bold`}>
           Your generosity deserves a prize!
         </p>
         <p className="text-xl font-normal text-outerSpace-900">
@@ -70,20 +75,20 @@ export const IntroPage = () => {
       </div>
       <div className="flex w-full flex-col items-stretch md:items-center">
         <Link href={"/SignUp"}>
-          <button className="container flex w-full flex-col items-stretch justify-center rounded bg-cw-blue px-4 py-2 text-xl font-bold text-white md:w-fit md:px-8">
+          <button className="bg-${colorString} container flex w-full flex-col items-stretch justify-center rounded px-4 py-2 text-xl font-bold text-white md:w-fit md:px-8">
             <p>Sign Up</p>
           </button>
         </Link>
       </div>
       <Link href={"/"}>
         <div className="flex w-full flex-row justify-center gap-2">
-          <p className="inline-flex text-xl font-bold text-cw-blue underline">
+          <p className="text-${colorString} inline-flex text-xl font-bold underline">
             Skip to Auction
           </p>
           <svg width="25" height="25">
             <path
               d="M14.1149 4.31891C13.815 4.03322 13.3403 4.04476 13.0546 4.34469C12.7689 4.64461 12.7804 5.11935 13.0804 5.40504L19.3318 11.3596H4.59766C4.18344 11.3596 3.84766 11.6954 3.84766 12.1096C3.84766 12.5239 4.18344 12.8596 4.59766 12.8596H19.3319L13.0804 18.8144C12.7804 19.1 12.7689 19.5748 13.0546 19.8747C13.3403 20.1746 13.815 20.1862 14.1149 19.9005L21.5339 12.8338C21.7028 12.6729 21.8027 12.4676 21.8337 12.2543C21.8429 12.2075 21.8477 12.1591 21.8477 12.1096C21.8477 12.0601 21.8428 12.0116 21.8337 11.9647C21.8026 11.7515 21.7027 11.5464 21.5339 11.3856L14.1149 4.31891Z"
-              fill="#003366"
+              fill={`${charityColor[charity]}`}
             />
           </svg>
         </div>

@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 
 import useSupabase from "~/hooks/useSupabase";
 import { useUserQuery } from "~/hooks/useUser";
+import { charityColorTailwindString } from "~/utils/constants";
 
 interface WrapperProps {
   readonly children: React.ReactNode;
@@ -16,6 +17,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
   const router = useRouter();
 
   const isIntroPage = router.pathname.includes("intro");
+  const colorString = charityColorTailwindString["buildOn"];
 
   const userIsNotSignedIn = user == null;
 
@@ -33,8 +35,8 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
       >
         <Link href="/">
           <Image
-            src="/charityWaterLogo.png"
-            alt="Charity Water Logo"
+            src="/buildOnLogo.png"
+            alt="buildOn Logo"
             width="165"
             height="36"
             priority
@@ -43,15 +45,19 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
         {!isIntroPage && (
           <div className="flex flex-row gap-4">
             <Link href="/intro">
-              <p className="text-right font-bold text-cw-blue">About</p>
+              <p className={`text-right font-bold text-${colorString}`}>
+                About
+              </p>
             </Link>
             {userIsNotSignedIn ? (
               <Link href="/LogIn">
-                <p className="text-right font-bold text-cw-blue">Log in</p>
+                <p className={`text-right font-bold text-${colorString}`}>
+                  Log in
+                </p>
               </Link>
             ) : (
               <button onClick={handleLogoutClick}>
-                <span className="text-right font-bold text-cw-blue">
+                <span className={`text-right font-bold text-${colorString}`}>
                   Sign out
                 </span>
               </button>
