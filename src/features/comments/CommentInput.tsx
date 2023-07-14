@@ -54,7 +54,7 @@ export const CommentInput = (props: { auctionId: string }) => {
         <input
           type="submit"
           value="Send      "
-          className="w-full font-bold text-cw-blue"
+          className="w-full cursor-pointer font-bold text-cw-blue"
         />
       </label>
     </form>
