@@ -75,24 +75,27 @@ export const CharityWater = () => {
               auction={displayAuction}
               userId={userId}
               setAuctionIsActive={setAuctionIsActive}
+              charity="charityWater"
             />
             <div className="my-4 flex flex-col gap-4 py-4">
               <PayPalDialog
                 bidValue={nextBidValue}
                 auction={displayAuction}
                 isBidLocked={!auctionIsActive}
+                charity="charityWater"
               />
               <FreeBidDialog
                 bidValue={nextBidValue}
                 auction={displayAuction}
                 isBidLocked={!auctionIsActive}
+                charity="charityWater"
               />
             </div>
           </div>
         </div>
-        <Details />
+        <Details charity="charityWater" />
       </div>
-      <CommentContainer auctionId={auctionId} />
+      <CommentContainer auctionId={auctionId} charity="charityWater" />
     </div>
   ) : (
     <></>
