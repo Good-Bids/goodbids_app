@@ -44,7 +44,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
         </Link>
         {!isIntroPage && (
           <div className="flex flex-row gap-4">
-            <Link href="/intro">
+            <Link href="/">
               <p className={`text-right font-bold text-${colorString}`}>
                 About
               </p>

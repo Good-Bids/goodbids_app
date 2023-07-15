@@ -11,8 +11,6 @@ import * as ga from "../analytics/ga";
 import { GoogleAnalyticsScript } from "~/analytics/GoogleAnalyticsScript";
 
 import "~/styles/globals.css";
-import "~/styles/chatStyles.css";
-// import "~/styles/customChatMessage.scss";
 
 import { MessageBusProvider } from "~/contexts/Subscriptions";
 import { AppLayoutWrapper } from "~/shared/components/layout/AppLayoutWrapper";

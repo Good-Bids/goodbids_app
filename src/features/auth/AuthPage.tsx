@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import useSupabase from "~/hooks/useSupabase";
 import { useInterval } from "usehooks-ts";
@@ -75,12 +76,12 @@ export const AuthPage = ({ method }: AuthPageProps) => {
   }, 1000);
 
   return (
-    <div className="my-12 flex w-11/12 flex-col justify-center gap-4 overflow-scroll">
+    <div className="my-12 flex w-11/12 flex-col items-center justify-center gap-4 overflow-auto">
       <h1 className="text-3xl font-black text-outerSpace-900">
         {method === "logIn" ? "Welcome Back" : "Sign up"}
       </h1>
       {!hasSubmittedEmail ? (
-        <>
+        <div className="flex w-full flex-col items-center">
           <label className="block" key={"email"}>
             <p className="block text-sm font-bold text-slate-700">
               {`${actionString} with email`}
@@ -107,7 +108,7 @@ export const AuthPage = ({ method }: AuthPageProps) => {
           <br />
           <p className="font-bold text-slate-700">Or...</p>
           <button
-            className="border-${colorString} flex flex-row justify-center gap-2 rounded-full border px-4 py-2"
+            className="border-${colorString}  flex flex-row justify-center gap-2 rounded-full border px-4 py-2 md:w-1/3"
             onClick={() => handleGoogleLogin()}
           >
             <svg
@@ -136,17 +137,25 @@ export const AuthPage = ({ method }: AuthPageProps) => {
             </svg>
             <p className="font-bold">{actionString} with Google</p>
           </button>
-        </>
+          {method === "signUp" && (
+            <Link href="/terms">
+              <p className="mt-32 text-base font-bold text-bo-red">
+                Terms of Service
+              </p>
+            </Link>
+          )}
+        </div>
       ) : (
-        <>
-          <p className="text-3xl font-black text-outerSpace-900">
-            Thanks! check your email for a link back here (it may have ended up
-            in your spam folder).
-          </p>
+        <div className="flex flex-col items-start gap-4">
+          <p className="text-3xl font-black text-outerSpace-900">Thanks!</p>
           <p className="text-xl font-black text-outerSpace-900">
+            check your email for a link back here (it may have ended up in your
+            spam folder).
+          </p>
+          <p className="text-l font-black text-outerSpace-900">
             Redirecting to the home page in {rerouteDelay}…
           </p>
-        </>
+        </div>
       )}
     </div>
   );
