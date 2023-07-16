@@ -43,7 +43,7 @@ export const CommentContainer = ({ auctionId, charity }: CommentContainer) => {
             fill="#232826"
           />
         </svg>
-        <p className="text-l text-outerSpace-900">{` Discussion (${displayData.length})`}</p>
+        <p className="text-l text-outerSpace-900">{` Comments (${displayData.length})`}</p>
       </div>
 
       <div

@@ -58,7 +58,7 @@ export const CommentInput = (props: {
         </svg>
         <input
           type="submit"
-          value="Send      "
+          value="Comment               "
           className={`w-full cursor-pointer font-bold text-${colorString}`}
         />
       </label>

@@ -85,29 +85,32 @@ export const AuthPage = ({ method }: AuthPageProps) => {
       </h1>
       {!hasSubmittedEmail ? (
         <div className="flex w-full flex-col items-center">
-          <label className="block" key={"email"}>
-            <p className="block text-sm font-bold text-slate-700">
-              {`${actionString} with email`}
-            </p>
-            <input
-              type={"email"}
-              name={"email"}
-              value={loginData.email}
-              onChange={handleChange}
-              placeholder="your email..."
-              className="mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder-slate-400 shadow-sm
-    invalid:border-pink-500 invalid:text-pink-600 focus:border-sky-500 focus:outline-none
-    focus:ring-1 focus:ring-sky-500 focus:invalid:border-pink-500 focus:invalid:ring-pink-500
-    disabled:border-slate-200 disabled:bg-slate-50
-    disabled:text-slate-500 disabled:shadow-none"
-            />
-          </label>
-          <button
-            onClick={() => signInWithEmail()}
-            className={`bg-${colorString} rounded-full px-4 py-2 text-white`}
-          >
-            <p className="font-bold">{actionString}</p>
-          </button>
+          <div className="flex w-full flex-row justify-center gap-2">
+            <label className="block" key={"email"}>
+              <p className="block text-sm font-bold text-slate-700">
+                {`${actionString} with email`}
+              </p>
+
+              <input
+                type={"email"}
+                name={"email"}
+                value={loginData.email}
+                onChange={handleChange}
+                placeholder="your email..."
+                className="mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder-slate-400 shadow-sm
+              invalid:border-pink-500 invalid:text-pink-600 focus:border-sky-500 focus:outline-none
+              focus:ring-1 focus:ring-sky-500 focus:invalid:border-pink-500 focus:invalid:ring-pink-500
+              disabled:border-slate-200 disabled:bg-slate-50
+              disabled:text-slate-500 disabled:shadow-none"
+              />
+            </label>
+            <button
+              onClick={() => signInWithEmail()}
+              className={`bg-${colorString} h-fit self-end rounded-full px-4 py-2 text-white`}
+            >
+              <p className="font-bold">{actionString}</p>
+            </button>
+          </div>
           <br />
           <p className="font-bold text-slate-700">Or...</p>
           <button

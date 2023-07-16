@@ -5,7 +5,7 @@ export const Details = (props: { charity: "buildOn" | "charityWater" }) => {
   const [showItemDetails, setShowItemDetails] = useState(false);
   const [showCharityDetails, setShowCharityDetails] = useState(false);
   return (
-    <>
+    <div className="mx-2 my-4 flex flex-col">
       <div
         className="mx-4 flex h-[76px] max-w-full cursor-pointer flex-row items-center justify-between border-y"
         onClick={() => setShowItemDetails((prior) => !prior)}
@@ -107,6 +107,6 @@ export const Details = (props: { charity: "buildOn" | "charityWater" }) => {
           projects.
         </p>
       </div>
-    </>
+    </div>
   );
 };
