@@ -3,7 +3,6 @@ import { ImageCarousel } from "~/components/ImageCarousel";
 import { useMessageBus } from "~/contexts/Subscriptions";
 import { PayPalDialog } from "~/features/auctions/PayPalDialog";
 import { useAuctionQuery } from "~/hooks/useAuction";
-import { useIntroRedirect } from "~/hooks/useIntroRedirect";
 import { useStorageItemsQuery } from "~/hooks/useStorage";
 import { useUserQuery } from "~/hooks/useUser";
 import { charityWaterAuctionId, fileStoragePath } from "~/utils/constants";
@@ -30,7 +29,7 @@ export const CharityWater = () => {
   );
 
   // no dependencies, only run this once
-  useIntroRedirect();
+  // useIntroRedirect('');
 
   useEffect(() => {
     if (auctionData) {
