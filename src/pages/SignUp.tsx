@@ -1,4 +1,4 @@
-import { AuthPage } from "~/features/auth";
+import { AuthPage } from "~/features/authentication";
 
 const SignUpPage = () => <AuthPage method="signUp" />;
 
