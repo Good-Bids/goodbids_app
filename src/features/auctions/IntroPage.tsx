@@ -23,11 +23,10 @@ export const IntroPage = (props: IntroPageProps) => {
       // if (window.localStorage) {
       setWidth(window.innerWidth * 0.75);
       window.localStorage.setItem(`hasSeenIntroFor${prize}`, "true");
+      window.localStorage.setItem("auctionSource", prize);
       // }
     }
   }, []);
-
-  localStorage.setItem("auctionSource", prize);
 
   const charity = "buildOn";
 
