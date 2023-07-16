@@ -13,6 +13,8 @@ export const WelcomeBackPage = () => {
         : "/"
       : "/";
 
+  router.push(supabaseAuthLink);
+
   return (
     <div className="gap- w-11/12 flex-col">
       <h1 className="text-3xl font-black text-outerSpace-900">Welcome Back</h1>
@@ -20,7 +22,9 @@ export const WelcomeBackPage = () => {
         <button
           className={`w-full rounded-full bg-${colorString} px-4 py-2 text-white`}
         >
-          <p className="font-bold">click here to log in</p>
+          <p className="font-bold">
+            If you're not redirected automatically, click this button
+          </p>
         </button>
       </a>
     </div>

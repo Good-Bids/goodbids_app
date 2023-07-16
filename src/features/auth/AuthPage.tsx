@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import useSupabase from "~/hooks/useSupabase";
 import { useInterval } from "usehooks-ts";
+import { charityColorTailwindString } from "~/utils/constants";
 
 interface AuthPageProps {
   method: "logIn" | "signUp";
@@ -19,6 +20,8 @@ export const AuthPage = ({ method }: AuthPageProps) => {
   const [rerouteDelay, setRerouteDelay] = useState(5);
 
   const supabaseClient = useSupabase();
+
+  const colorString = charityColorTailwindString["buildOn"];
 
   const getURL = () => {
     let url =
@@ -101,7 +104,7 @@ export const AuthPage = ({ method }: AuthPageProps) => {
           </label>
           <button
             onClick={() => signInWithEmail()}
-            className="bg-${colorString} rounded-full px-4 py-2 text-white"
+            className={`bg-${colorString} rounded-full px-4 py-2 text-white`}
           >
             <p className="font-bold">{actionString}</p>
           </button>
