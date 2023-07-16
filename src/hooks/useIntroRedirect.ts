@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-export const useIntroRedirect = () => {
+export const useIntroRedirect = (prize: "watch" | "trek") => {
   const router = useRouter();
   useEffect(() => {
     if (window) {
-      if (window.localStorage.getItem("hasSeenIntro") === "true") {
+      if (window.localStorage.getItem(`hasSeenIntroFor${prize}`) === "true") {
         return;
       } else {
         router.push("/intro");

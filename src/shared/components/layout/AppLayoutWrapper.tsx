@@ -70,6 +70,15 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
         className="fixed left-0 right-0 top-[72px] z-0 mx-0 flex h-[calc(100vh_-_72px)] flex-col items-center justify-start overflow-y-auto md:overflow-y-clip md:px-24 md:py-20"
       >
         {children}
+        <div
+          id="appLayoutWrapperFooter"
+          className="flex h-fit w-full flex-col items-center justify-center py-4"
+        >
+          <p className="text-xs">© Do You Zoom, Inc.</p>
+          <Link href="/terms">
+            <p className="text-xs text-bo-red">Terms of Service</p>
+          </Link>
+        </div>
       </main>
     </>
   );

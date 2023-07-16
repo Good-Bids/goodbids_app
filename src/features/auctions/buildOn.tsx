@@ -13,7 +13,8 @@ import { Details } from "./Details";
 import { FreeBidDialog } from "./FreeBidDialog";
 
 export const BuildOn = (props: { prize: "trek" | "watch" }) => {
-  const auctionId = buildOnAuctionIds[props.prize];
+  const { prize } = props;
+  const auctionId = buildOnAuctionIds[prize];
   const { data: userData } = useUserQuery();
   const { data: auctionData } = useAuctionQuery(auctionId);
   const subscription = useMessageBus();
@@ -30,7 +31,7 @@ export const BuildOn = (props: { prize: "trek" | "watch" }) => {
   );
 
   // no dependencies, only run this once
-  useIntroRedirect();
+  useIntroRedirect(prize);
 
   useEffect(() => {
     if (auctionData) {

@@ -43,7 +43,7 @@ export const ImageCarousel = ({ sources }: ImageCarouselProps) => {
   return (
     <div className="flex w-full flex-col items-center gap-2 md:w-1/2">
       {mainPhoto !== undefined && (
-        <div className="relative mb-0 flex aspect-square w-screen overflow-hidden md:w-full md:rounded">
+        <div className="relative mb-0 flex aspect-square w-screen overflow-hidden md:w-full md:max-w-[400px] md:rounded">
           <Image
             src={mainPhoto}
             alt="the primary image of the prize to be won"

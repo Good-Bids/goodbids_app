@@ -20,7 +20,7 @@ export const TOS = () => {
     `Thank you for caring, for participating and for making a difference.`,
   ];
   return (
-    <div className="flex h-full w-full flex-col overflow-auto px-4 py-2">
+    <div className="flex h-full w-full flex-col px-4 py-2">
       <div className="flex flex-col gap-2 py-8">
         <p className="text-4xl font-bold text-black">Terms of Service</p>
         <p className="text-outerspace-700 text-base">
@@ -29,16 +29,18 @@ export const TOS = () => {
           acknowledge and agree to the following:
         </p>
       </div>
-      <ol className="mx-4 list-decimal">
-        {terms.map((term) => (
-          <li className="mb-4">{term}</li>
-        ))}
-      </ol>
+      <div className="h-full w-full overflow-auto px-4">
+        <ol className="mx-4 list-decimal">
+          {terms.map((term) => (
+            <li className="mb-4">{term}</li>
+          ))}
+        </ol>
+      </div>
       <button
         onClick={() => handleBackClick()}
         className="container bg-bo-red p-2 text-base font-bold text-white"
       >
-        Go Back
+        Okay
       </button>
     </div>
   );
