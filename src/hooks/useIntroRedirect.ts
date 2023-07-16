@@ -8,7 +8,7 @@ export const useIntroRedirect = (prize: "watch" | "trek") => {
       if (window.localStorage.getItem(`hasSeenIntroFor${prize}`) === "true") {
         return;
       } else {
-        router.push("/intro");
+        router.push(`/${prize}-intro`);
       }
     }
     return () => {};
