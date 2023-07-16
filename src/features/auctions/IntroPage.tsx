@@ -27,6 +27,8 @@ export const IntroPage = (props: IntroPageProps) => {
     }
   }, []);
 
+  localStorage.setItem("auctionSource", prize);
+
   const charity = "buildOn";
 
   const colorString = charityColorTailwindString[charity];
