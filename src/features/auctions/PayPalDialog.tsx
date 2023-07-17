@@ -6,8 +6,6 @@ import type {
   OnApproveData,
   OnApproveActions,
   OnCancelledActions,
-  OnShippingChangeActions,
-  OnShippingChangeData,
 } from "@paypal/paypal-js";
 import { PayPalButtons } from "@paypal/react-paypal-js";
 
@@ -28,6 +26,7 @@ import { useRouter } from "next/router";
 import { Auction } from "~/utils/types/auctions";
 import { useFreeBidsMutation, useFreeBidsQuery } from "~/hooks/useFreeBids";
 import { charityColorTailwindString } from "~/utils/constants";
+import { useTimeout } from "usehooks-ts";
 
 interface PayPalDialogProps {
   bidValue: number;
@@ -51,6 +50,10 @@ export const PayPalDialog = ({
   const [bidState, setBidState] = useState<
     "PENDING" | "COMPLETE" | "CANCELLED" | "INACTIVE"
   >("INACTIVE");
+
+  const beginFiveMinuteTimer = useTimeout(() => {
+    setIsDialogOpen(false);
+  }, 30_000);
 
   // Open the bid now dialog and track its opening via google
   const openBidDialog = async () => {
@@ -219,30 +222,22 @@ export const PayPalDialog = ({
       case true:
         {
           setIsDialogOpen(changeIsOpenTo);
+          window.setTimeout(() => {
+            setIsDialogOpen(false);
+          }, 300_000);
         }
         break;
       case false: {
-        console.log("closing");
+        console.info("closing");
         setIsDialogOpen(changeIsOpenTo);
         if (bidState !== "COMPLETE") {
-          console.log("cancelling!");
+          console.info("cancelling");
           setBidState("CANCELLED");
           await bidCancellation.mutateAsync();
           setBidId("");
         }
       }
     }
-  };
-
-  const handleShippingChange = async (
-    data: OnShippingChangeData,
-    actions: OnShippingChangeActions
-  ) => {
-    if (data.shipping_address?.country_code !== "US") {
-      return actions.reject();
-    }
-
-    return actions.resolve();
   };
 
   const isLatestBidder = auction.latest_bidder_id === userData?.id;
@@ -296,7 +291,8 @@ export const PayPalDialog = ({
         <DialogHeader>
           <DialogTitle>GoodBid ${bidValue}</DialogTitle>
           <DialogDescription>
-            Every Bid is a Donation, and every Donation is a Bid.
+            Every Bid is a Donation, and every Donation is a Bid. This window
+            will self-close and release in 5 minutes.
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col">
@@ -305,7 +301,6 @@ export const PayPalDialog = ({
             onApprove={handleApprove}
             onCancel={handleCancel}
             onError={handleError}
-            onShippingChange={handleShippingChange}
           />
         </div>
       </DialogContent>
