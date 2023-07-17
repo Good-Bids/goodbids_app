@@ -17,6 +17,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
   const router = useRouter();
 
   const isIntroPage = router.pathname.includes("intro");
+  const prize = router.pathname.includes("watch") ? "watch" : "trek";
   const colorString = charityColorTailwindString["buildOn"];
 
   const userIsNotSignedIn = user == null;
@@ -33,18 +34,18 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
         id="appLayoutWrapperHead"
         className="fixed left-0 right-0 top-0 z-10 flex h-[72px] flex-row items-center justify-between bg-white px-4"
       >
-        <Link href="/">
+        <Link href={`/${prize}-intro`} className="flex flex-row gap-2">
           <Image
-            src="/buildOnLogo.png"
-            alt="buildOn Logo"
-            width="165"
+            src="/collabLogo.png"
+            alt="buildOn GoodBids Logo"
+            width="350"
             height="36"
             priority
           />
         </Link>
         {!isIntroPage && (
           <div className="flex flex-row gap-4">
-            <Link href="/">
+            <Link href={`/${prize}-intro`}>
               <p className={`text-right font-bold text-${colorString}`}>
                 About
               </p>
