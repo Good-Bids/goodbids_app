@@ -33,8 +33,6 @@ export const BuildOn = (props: { prize: "trek" | "watch" }) => {
   // no dependencies, only run this once
   useIntroRedirect(prize);
 
-  localStorage.setItem("auctionSource", prize);
-
   useEffect(() => {
     if (auctionData) {
       setDisplayAuction(auctionData);

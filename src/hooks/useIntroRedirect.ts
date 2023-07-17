@@ -5,6 +5,7 @@ export const useIntroRedirect = (prize: "watch" | "trek") => {
   const router = useRouter();
   useEffect(() => {
     if (window) {
+      window.localStorage.setItem("auctionSource", prize);
       if (window.localStorage.getItem(`hasSeenIntroFor${prize}`) === "true") {
         return;
       } else {
