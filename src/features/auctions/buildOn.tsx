@@ -1,4 +1,12 @@
+import { PayPalButtons } from "@paypal/react-paypal-js";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@radix-ui/react-dialog";
 import { useEffect, useState } from "react";
+import { DialogHeader } from "~/components/Dialog";
 import { ImageCarousel } from "~/components/ImageCarousel";
 import { useMessageBus } from "~/contexts/Subscriptions";
 import { PayPalDialog } from "~/features/auctions/PayPalDialog";
@@ -11,6 +19,7 @@ import { CommentContainer } from "../comments";
 import { AuctionData } from "./AuctionData";
 import { Details } from "./Details";
 import { FreeBidDialog } from "./FreeBidDialog";
+import { IntroDialog } from "./IntroDialog";
 
 export const BuildOn = (props: { prize: "trek" | "watch" }) => {
   const { prize } = props;
@@ -19,6 +28,7 @@ export const BuildOn = (props: { prize: "trek" | "watch" }) => {
   const { data: auctionData } = useAuctionQuery(auctionId);
   const subscription = useMessageBus();
   const { data: auctionImages } = useStorageItemsQuery(auctionId);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const [auctionIsActive, setAuctionIsActive] = useState(true);
   const [nextBidValue, setNextBidValue] = useState(0);
@@ -29,9 +39,6 @@ export const BuildOn = (props: { prize: "trek" | "watch" }) => {
   const imageUrls: string[] | undefined = auctionImages?.map(
     (item) => `${fileStoragePath}/${auctionId}/${item.name}`
   );
-
-  // no dependencies, only run this once
-  useIntroRedirect(prize);
 
   useEffect(() => {
     if (auctionData) {
@@ -91,6 +98,7 @@ export const BuildOn = (props: { prize: "trek" | "watch" }) => {
                 isBidLocked={!auctionIsActive}
                 charity="buildOn"
               />
+              <IntroDialog prize={prize} />
             </div>
           </div>
         </div>

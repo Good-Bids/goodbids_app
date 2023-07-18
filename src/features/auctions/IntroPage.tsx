@@ -27,8 +27,6 @@ export const IntroPage = (props: IntroPageProps) => {
 
   const colorString = charityColorTailwindString[charity];
 
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-
   return (
     <div className="mx-4 my-6 flex h-full flex-col items-center gap-6 overflow-visible md:mt-[-32px] md:h-fit md:gap-2">
       <div className="flex w-[90%] flex-col gap-2 md:h-fit">
@@ -41,18 +39,15 @@ export const IntroPage = (props: IntroPageProps) => {
         </p>
       </div>
       <div className="flex aspect-video w-[75%] flex-col items-center justify-center">
-        <div className="aspect-video w-full">
-          <iframe
-            src={vimeoUrl}
-            allow="autoplay; fullscreen; picture-in-picture"
-            style={{
-              width: "100%",
-              height: "100%",
-            }}
-            title="buildOn and GoodBids"
-            ref={iframeRef}
-          />
-        </div>
+        <iframe
+          src={vimeoUrl}
+          allow="autoplay; fullscreen; picture-in-picture"
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+          title="buildOn and GoodBids"
+        />
       </div>
       <Link href={`/${prize}`}>
         <button

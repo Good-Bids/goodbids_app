@@ -26,7 +26,6 @@ import { useRouter } from "next/router";
 import { Auction } from "~/utils/types/auctions";
 import { useFreeBidsMutation, useFreeBidsQuery } from "~/hooks/useFreeBids";
 import { charityColorTailwindString } from "~/utils/constants";
-import { useTimeout } from "usehooks-ts";
 
 interface PayPalDialogProps {
   bidValue: number;
@@ -50,10 +49,6 @@ export const PayPalDialog = ({
   const [bidState, setBidState] = useState<
     "PENDING" | "COMPLETE" | "CANCELLED" | "INACTIVE"
   >("INACTIVE");
-
-  const beginFiveMinuteTimer = useTimeout(() => {
-    setIsDialogOpen(false);
-  }, 30_000);
 
   // Open the bid now dialog and track its opening via google
   const openBidDialog = async () => {

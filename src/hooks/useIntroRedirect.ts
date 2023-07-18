@@ -1,17 +1,18 @@
-import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-export const useIntroRedirect = (prize: "watch" | "trek") => {
-  const router = useRouter();
+export const useIntroRedirect = (
+  prize: "watch" | "trek",
+  handleOpenChange: (arg0: boolean) => void
+) => {
   useEffect(() => {
     if (window) {
       window.localStorage.setItem("auctionSource", prize);
       if (window.localStorage.getItem(`hasSeenIntroFor${prize}`) === "true") {
         return;
       } else {
-        router.push(`/${prize}-intro`);
+        handleOpenChange(true);
       }
     }
     return () => {};
-  }, [router]);
+  }, []);
 };
