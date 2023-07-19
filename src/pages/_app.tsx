@@ -47,7 +47,20 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     <>
       <Head>
         <title>GoodBids</title>
-        <meta name="description" content="Donate & Win" />
+        <meta
+          name="description"
+          content="Every bid is a donation, every donation is a bid."
+          key="desc"
+        />
+        <meta property="og:title" content="GoodBids | Auctions for a cause " />
+        <meta
+          property="og:description"
+          content="Every Bid is a donation, every donation is a bid."
+        />
+        <meta
+          property="og:image"
+          content="https://www.goodbids.org/_next/image?url=%2FbuildOnLogo.png&w=256&q=75"
+        />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <GoogleAnalyticsScript />
