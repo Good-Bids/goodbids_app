@@ -38,7 +38,7 @@ export const IntroPage = (props: IntroPageProps) => {
           and your generosity can win you prizes!
         </p>
       </div>
-      <div className="flex aspect-video w-[75%] flex-col items-center justify-center">
+      <div className="flex aspect-video w-full flex-col items-center justify-center">
         <iframe
           src={vimeoUrl}
           allow="autoplay; fullscreen; picture-in-picture"

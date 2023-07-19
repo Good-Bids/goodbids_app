@@ -1,13 +1,7 @@
 import Link from "next/link";
 import { useState } from "react";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "src/components/Dialog";
+import { Dialog, DialogTrigger, DialogContent } from "src/components/Dialog";
+import { X } from "lucide-react";
 import { useIntroRedirect } from "~/hooks/useIntroRedirect";
 import { charityColorTailwindString, prizeVideoUrls } from "~/utils/constants";
 
@@ -60,9 +54,9 @@ export const IntroDialog = (props: { prize: "watch" | "trek" }) => {
           </button>
         </div>
       </DialogTrigger>
-      <DialogContent className="h-fit sm:max-w-[816px]">
+      <DialogContent className="h-fit sm:max-w-[95%]">
         <div className="flex flex-col p-0 sm:flex-row">
-          <div className="flex w-full flex-col p-6 sm:w-1/2">
+          <div className="flex w-full flex-col items-center justify-center p-6 sm:w-1/3">
             <p className={`text-${colorString} text-4xl font-bold`}>
               Your generosity deserves a prize
             </p>
@@ -78,7 +72,7 @@ export const IntroDialog = (props: { prize: "watch" | "trek" }) => {
               </button>
             </Link>
           </div>
-          <div className="flex aspect-video w-full flex-col items-center justify-center overflow-clip rounded-b-lg border-0 sm:aspect-video sm:w-1/2 sm:rounded-r-lg">
+          <div className="flex aspect-video w-full flex-col items-center justify-center overflow-clip border-0 sm:aspect-video sm:w-2/3 sm:rounded-r-lg">
             <iframe
               src={vimeoUrl}
               allow="autoplay; fullscreen; picture-in-picture"

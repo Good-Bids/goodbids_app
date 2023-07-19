@@ -40,6 +40,8 @@ export const BuildOn = (props: { prize: "trek" | "watch" }) => {
     (item) => `${fileStoragePath}/${auctionId}/${item.name}`
   );
 
+  useIntroRedirect(prize, setIsDialogOpen);
+
   useEffect(() => {
     if (auctionData) {
       setDisplayAuction(auctionData);
