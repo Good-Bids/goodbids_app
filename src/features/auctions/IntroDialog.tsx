@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Dialog, DialogTrigger, DialogContent } from "src/components/Dialog";
-import { X } from "lucide-react";
 import { useIntroRedirect } from "~/hooks/useIntroRedirect";
 import { charityColorTailwindString, prizeVideoUrls } from "~/utils/constants";
 
@@ -25,6 +24,7 @@ export const IntroDialog = (props: { prize: "watch" | "trek" }) => {
       }
     }
   };
+  useIntroRedirect(props.prize, setIsDialogOpen);
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
@@ -40,7 +40,7 @@ export const IntroDialog = (props: { prize: "watch" | "trek" }) => {
         </div>
       )}
       <DialogTrigger asChild>
-        <div
+        {/* <div
           id="call-to-action"
           className="mx-4 flex  min-h-fit w-11/12 flex-col justify-center gap-2 sm:relative sm:left-0 sm:w-fit"
         >
@@ -52,15 +52,15 @@ export const IntroDialog = (props: { prize: "watch" | "trek" }) => {
               className={`text-xl font-bold text-${colorString}`}
             >{`Preview the intro dialog`}</p>
           </button>
-        </div>
+        </div> */}
       </DialogTrigger>
-      <DialogContent className="h-fit sm:max-w-[95%]">
+      <DialogContent className="h-fit sm:max-w-[90%]">
         <div className="flex flex-col p-0 sm:flex-row">
           <div className="flex w-full flex-col items-center justify-center p-6 sm:w-1/3">
             <p className={`text-${colorString} text-4xl font-bold`}>
               Your generosity deserves a prize
             </p>
-            <p className="my-2 text-sm font-normal text-outerSpace-900">
+            <p className="my-2 text-sm font-normal text-outerSpace-900 dark:text-white">
               Welcome to a new kind of charity auction where every bid is a
               donation, and your generosity can win you prizes.
             </p>

@@ -33,6 +33,24 @@ export const charityColor = {
   charityWater: "#003366",
 };
 
+export const prizeCopy = {
+  watch: {
+    imgSrc: "/watch_hero.jpg",
+    imgAlt: "the apple watch ultra",
+    copy: `Meet the most rugged and capable Apple Watch ever. With a robust
+    titanium case, precision dual-frequency GPS, up to 36 hours of battery
+    life, the freedom of cellular, and three specialized bands made for
+    athletes and adventurers of all kinds.`,
+    className: "relative flex aspect-[1064/378] w-full",
+  },
+  trek: {
+    imgSrc: "/buildOn_senegal.webp",
+    imgAlt: "a map of the regions in Senegal which buildOn is active in",
+    copy: "Come make a difference - in Senegal! buildOn is conducting a trek in Senegal later this year - an experience valued at $45,000 which you could experience at a fraction of the cost.",
+    className: "relative flex aspect-[1.6155115511551] w-full",
+  },
+};
+
 export const faq: {
   subject: string;
   questions: { question: string; answer: string }[];

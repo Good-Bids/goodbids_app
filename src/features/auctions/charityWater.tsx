@@ -92,7 +92,7 @@ export const CharityWater = () => {
             </div>
           </div>
         </div>
-        <Details charity="charityWater" />
+        <Details charity="charityWater" prize="trek" />
       </div>
       <CommentContainer auctionId={auctionId} charity="charityWater" />
     </div>

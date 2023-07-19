@@ -12,7 +12,8 @@ export const useIntroRedirect = (
       if (window.localStorage.getItem(`hasSeenIntroFor${prize}`) === "true") {
         return;
       } else {
-        if (window.innerWidth >= 400) {
+        window.localStorage.setItem(`hasSeenIntroFor${prize}`, "true");
+        if (window.innerWidth >= 640) {
           handleOpenChange(true);
         } else {
           router.push(`/${prize}-intro`);

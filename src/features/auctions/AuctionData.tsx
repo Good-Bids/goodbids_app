@@ -82,8 +82,8 @@ export const AuctionData = ({
   });
 
   return (
-    <div className="mx-4 flex h-fit flex-col gap-2 md:w-full">
-      <p className="text-2xl font-bold md:text-3xl">{auction.name}</p>
+    <div className="mx-4 flex h-fit flex-col gap-2 sm:w-[calc(100%-32px)]">
+      <p className="text-2xl font-bold sm:text-3xl">{auction.name}</p>
       <div
         className="flex w-full border-collapse flex-row justify-start gap-2 border-y border-y-outerSpace-100 py-3"
         role="time left"
@@ -117,7 +117,7 @@ export const AuctionData = ({
         <div className="w-1/4">
           <span>
             {`Est value: `}
-            <span className="text-sm font-bold md:block">
+            <span className="text-sm font-bold sm:block">
               ${itemData?.value?.toLocaleString()}
             </span>
           </span>
@@ -126,7 +126,7 @@ export const AuctionData = ({
         <div className="w-1/4">
           <span>
             {`Raised: `}
-            <span className="text-sm font-bold md:block">
+            <span className="text-sm font-bold sm:block">
               ${auctionStats.totalRaised.toLocaleString()}
             </span>
           </span>
@@ -135,7 +135,7 @@ export const AuctionData = ({
         <div className="w-1/4">
           <span>
             {rightHandData.text}
-            <span className="text-sm font-bold md:block">
+            <span className="text-sm font-bold sm:block">
               ${rightHandData.value}
             </span>
           </span>
