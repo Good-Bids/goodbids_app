@@ -3,7 +3,7 @@ import useSupabase from "./useSupabase";
 
 const supabaseClient = useSupabase();
 
-const getItemsFromStorage = async (auctionId?: string) => {
+export const getItemsFromStorage = async (auctionId?: string) => {
   try {
     const { data: buckets } = await supabaseClient.storage.listBuckets();
     if (buckets) {

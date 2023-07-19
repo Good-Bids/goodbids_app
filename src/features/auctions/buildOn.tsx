@@ -1,17 +1,8 @@
-import { PayPalButtons } from "@paypal/react-paypal-js";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from "@radix-ui/react-dialog";
 import { useEffect, useState } from "react";
-import { DialogHeader } from "~/components/Dialog";
 import { ImageCarousel } from "~/components/ImageCarousel";
 import { useMessageBus } from "~/contexts/Subscriptions";
 import { PayPalDialog } from "~/features/auctions/PayPalDialog";
 import { useAuctionQuery } from "~/hooks/useAuction";
-import { useIntroRedirect } from "~/hooks/useIntroRedirect";
 import { useStorageItemsQuery } from "~/hooks/useStorage";
 import { useUserQuery } from "~/hooks/useUser";
 import { buildOnAuctionIds, fileStoragePath } from "~/utils/constants";
