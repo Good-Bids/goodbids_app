@@ -14,7 +14,7 @@ import "~/styles/globals.css";
 
 import { MessageBusProvider } from "~/contexts/Subscriptions";
 import { AppLayoutWrapper } from "~/shared/components/layout/AppLayoutWrapper";
-import { initialOptions } from "~/utils/constants";
+import { auctionTitleImages, initialOptions } from "~/utils/constants";
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
@@ -57,10 +57,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           property="og:description"
           content="Every Bid is a donation, every donation is a bid."
         />
-        <meta
-          property="og:image"
-          content="https://www.goodbids.org/_next/image?url=%2FbuildOnLogo.png&w=256&q=75"
-        />
+        <meta property="og:image" content={auctionTitleImages.trek} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <GoogleAnalyticsScript />
