@@ -32,7 +32,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
     <div className="flex h-full w-full flex-col">
       <div
         id="appLayoutWrapperHead"
-        className="fixed left-0 right-0 top-0 z-10 flex h-[72px] max-w-[1440px] flex-row items-center justify-between self-center bg-white px-4 sm:left-[50%] sm:translate-x-[-50%]"
+        className="fixed left-0 right-0 top-0 z-10 flex h-[72px] max-w-[1440px] flex-row items-center justify-between self-center bg-white px-4 sm:left-[50%] sm:min-w-[900px] sm:translate-x-[-50%]"
       >
         <Link href={`/${prize}-intro`} className="flex flex-row gap-2">
           <Image
@@ -68,12 +68,12 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
       </div>
       <main
         id="appLayoutWrapperMain"
-        className="fixed left-0 right-0 top-[72px] z-0 mx-0 flex h-[calc(100vh_-_72px)] max-w-[1440px] flex-col items-center justify-start self-center overflow-y-auto sm:left-[50%] sm:translate-x-[-50%] sm:px-4 sm:pt-20"
+        className="fixed left-0 right-0 top-[72px] z-0 mx-0 flex h-[calc(100vh_-_72px)] max-w-[1440px] flex-col items-center justify-start self-center overflow-y-auto sm:left-[50%] sm:min-w-[900px] sm:translate-x-[-50%] sm:px-4 sm:pt-20"
       >
         {children}
         <div
           id="appLayoutWrapperFooter"
-          className="flex h-[72px] w-full flex-row items-start justify-between self-start px-4 py-4 sm:w-[60%]"
+          className="flex h-[72px] w-full flex-row items-start justify-between self-start px-4 py-4 sm:w-full"
         >
           <div
             className="flex h-fit w-[106px] flex-col 
