@@ -34,7 +34,7 @@ export const CommentContainer = ({ auctionId, charity }: CommentContainer) => {
   return (
     <div className="overflow-y-visible md:flex md:h-full md:flex-col">
       <div
-        className="my-4 flex max-w-full cursor-pointer flex-row items-center justify-start gap-2 border-t px-4 pt-4 md:mb-2 md:mt-0 md:cursor-default md:border-none md:pt-0"
+        className="mb-0 mt-4 flex max-w-full cursor-pointer flex-row items-center justify-start gap-2 border-t px-4 pt-4 md:mb-2 md:mt-0 md:cursor-default md:border-none md:pt-0"
         onClick={() => setShowComments((prior) => !prior)}
       >
         <svg width="24" height="24">
@@ -51,6 +51,9 @@ export const CommentContainer = ({ auctionId, charity }: CommentContainer) => {
           showComments || isDesktop ? "visible" : "hidden"
         } flex flex-col items-center justify-center md:h-[98%] md:flex-col-reverse`}
       >
+        <p className="my-0 text-center text-xs text-outerSpace-500">
+          Log in to comment
+        </p>
         <CommentInput auctionId={auctionId} charity="buildOn" />
         <div
           className={`md:h-11/12 flex h-80 w-full flex-1 flex-col gap-3 overflow-y-auto bg-${colorString} bg-opacity-10 p-3`}

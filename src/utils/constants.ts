@@ -24,7 +24,7 @@ export const buildOnAuctionIds = {
   watch: "53996feb-5704-4137-aedd-8a589d451767",
 };
 export const auctionTitleImages = {
-  trek: "https://imjsqwufoypzctthvxmr.supabase.co/storage/v1/object/public/auction-assets/18d688a8-3138-422f-9668-8de5a33dc73e/buildOn_senegal-4.webp",
+  trek: "https://imjsqwufoypzctthvxmr.supabase.co/storage/v1/object/public/auction-assets/buildOn_senegal-4.webp",
   watch:
     "https://imjsqwufoypzctthvxmr.supabase.co/storage/v1/object/public/auction-assets/53996feb-5704-4137-aedd-8a589d451767/watch.png",
 };

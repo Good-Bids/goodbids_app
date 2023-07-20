@@ -65,7 +65,7 @@ export const BuildOn = (props: { prize: "trek" | "watch" }) => {
 
   return displayAuction ? (
     <div className="flex h-fit w-full flex-col pb-4 md:h-full md:w-full md:flex-row md:overflow-y-clip">
-      <div className="flex flex-col overflow-y-auto md:mr-8 md:h-full md:w-4/5">
+      <div className="flex w-full flex-col overflow-y-auto sm:mr-8 sm:h-full sm:w-4/5">
         <div className="flex w-full flex-col sm:h-fit sm:flex-row sm:gap-2">
           {imageUrls && <ImageCarousel sources={imageUrls} />}
           <div className="flex w-full flex-col sm:w-1/2">
