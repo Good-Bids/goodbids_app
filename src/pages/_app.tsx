@@ -32,7 +32,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     })
   );
 
-  const prize = router.pathname.split("/")[1] ?? "trek";
+  const prize = router.pathname.includes("watch") ? "watch" : "trek";
 
   React.useEffect(() => {
     const handleRouteChange = (url: string) => {
