@@ -41,9 +41,12 @@ export const FreeBidDialog = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [bidId, setBidId] = useState<string>();
   const [errorState, setErrorState] = useState<Error>();
-  const [modalText, setModalText] = useState<string>(
-    "You won't be charged anything, and you'll become the high bidder."
-  );
+  const [modalText, setModalText] = useState<string[]>([
+    `You won't be charged anything.`,
+    `You'll become the high bidder.`,
+    `If nobody else bids in the next ${auction.increment} hours, you'll
+    win!`,
+  ]);
   const [actionButtonCopy, setActionButtonCopy] = useState<string>("confirm");
   const [bidState, setBidState] = useState<
     "PENDING" | "COMPLETE" | "CANCELLED" | "INACTIVE"
@@ -62,7 +65,7 @@ export const FreeBidDialog = ({
     // not "button_click"
     ga.event({
       action: "button_click",
-      params: { label: "Bid now", value: bidValue },
+      params: { label: "FreeBid now", value: bidValue },
     });
     setBidState("PENDING");
   };
@@ -103,12 +106,11 @@ export const FreeBidDialog = ({
   });
 
   const handleFreeBidRedemption = async () => {
-    console.log({ userData, hasFreeBids, bidId });
     if (userData && hasFreeBids && bidId) {
       try {
         await redeemFreeBid.mutateAsync();
         await bidConfirmation.mutateAsync();
-        setModalText("Free GoodBid successfully redeemed!");
+        setModalText(["Free GoodBid successfully redeemed!"]);
         setActionButtonCopy("close window");
         setBidState("COMPLETE");
       } catch (err) {
@@ -176,18 +178,26 @@ export const FreeBidDialog = ({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Use ${bidValue} Free Bid</DialogTitle>
+          <DialogTitle>
+            <p className="p-2 pb-0 text-center text-2xl text-bo-red">
+              Use ${bidValue - auction.increment} Free Bid
+            </p>
+          </DialogTitle>
           <DialogDescription>
-            Click "confirm" to use your free bid
+            <p className="p-2 pt-0 text-center">
+              Click "confirm" to use your free bid
+            </p>
           </DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col">
-          <p className="text-sm font-light text-outerSpace-800">{modalText}</p>
-          <p className="text-sm font-light text-outerSpace-800">
-            {" "}
-            if nobody else bids in the next {auction.increment} hours, you'll
-            win!{" "}
-          </p>
+        <div className="flex flex-col p-2">
+          {bidState !== "COMPLETE" && (
+            <p className="text-center text-xl font-bold">How it works:</p>
+          )}
+          {modalText.map((text) => (
+            <p className="pt-1 text-center text-lg font-light text-outerSpace-800">
+              {text}
+            </p>
+          ))}
           <div className="flex h-fit flex-row justify-center gap-10 py-3">
             {bidId && (
               <button

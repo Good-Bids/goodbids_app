@@ -257,7 +257,9 @@ export const updateBidTable = async (args: {
           .single();
 
         if (auctionBids.data && auction.data) {
-          const isFirstBid = auctionBids.data.length == 0;
+          const isFirstBid =
+            auctionBids.data.filter((bid) => bid.bid_status === "COMPLETE")
+              .length == 0;
           const bidId = crypto.randomUUID();
           if (isFirstBid) {
             isValidBidAmount =

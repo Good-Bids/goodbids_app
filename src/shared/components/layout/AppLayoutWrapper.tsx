@@ -30,57 +30,59 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
 
   return (
     <div className="flex h-full w-full flex-col">
-      <div
-        id="appLayoutWrapperHead"
-        className="fixed left-0 right-0 top-0 z-10 flex h-[72px] max-w-[1440px] flex-row items-center justify-between self-center bg-white px-4 sm:left-[50%] sm:min-w-[900px] sm:translate-x-[-50%]"
-      >
-        <Link href={`/${prize}-intro`} className="flex flex-row gap-2">
-          <Image
-            src="/buildOnLogo.png"
-            alt="buildOn GoodBids Logo"
-            width="125"
-            height="36"
-            priority
-          />
-        </Link>
-        {!isIntroPage && (
-          <div className="flex flex-row gap-4">
-            <Link href={`/${prize}-intro`}>
-              <p className={`text-right font-bold text-${colorString}`}>
-                About
-              </p>
-            </Link>
-            {userIsNotSignedIn ? (
-              <Link href="/LogIn">
+      <div className="fixed left-0 right-0 top-0 z-10 flex h-[72px] w-full flex-col items-center shadow-[0_2px_0px_0px_rgba(0,0,0,0.15)] sm:shadow-none">
+        <div
+          id="appLayoutWrapperHead"
+          className="left-0 right-0 top-0 flex h-full w-full max-w-[1228px] flex-row items-center justify-between self-center bg-white px-4 sm:w-full sm:min-w-[1228px]"
+        >
+          <Link href={`/${prize}-intro`} className="flex flex-row gap-2">
+            <Image
+              src="/buildOnLogo.png"
+              alt="buildOn GoodBids Logo"
+              width="125"
+              height="36"
+              priority
+            />
+          </Link>
+          {!isIntroPage && (
+            <div className="flex flex-row gap-4">
+              <Link href={`/${prize}-intro`}>
                 <p className={`text-right font-bold text-${colorString}`}>
-                  Log in
+                  About
                 </p>
               </Link>
-            ) : (
-              <button onClick={handleLogoutClick}>
-                <span className={`text-right font-bold text-${colorString}`}>
-                  Sign out
-                </span>
-              </button>
-            )}
-          </div>
-        )}
+              {userIsNotSignedIn ? (
+                <Link href="/LogIn">
+                  <p className={`text-right font-bold text-${colorString}`}>
+                    Log in
+                  </p>
+                </Link>
+              ) : (
+                <button onClick={handleLogoutClick}>
+                  <span className={`text-right font-bold text-${colorString}`}>
+                    Sign out
+                  </span>
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       </div>
       <main
         id="appLayoutWrapperMain"
-        className="fixed left-0 right-0 top-[72px] z-0 mx-0 flex h-[calc(100vh_-_72px)] max-w-[1440px] flex-col items-center justify-start self-center overflow-y-auto sm:left-[50%] sm:min-w-[900px] sm:translate-x-[-50%] sm:px-4 sm:pt-20"
+        className="fixed left-0 right-0 top-[72px] z-0 mx-0 flex h-[calc(100vh_-_72px)] max-w-[1228px] flex-col items-center justify-start self-center overflow-y-auto sm:left-[50%] sm:w-full sm:min-w-[1228px] sm:translate-x-[-50%] sm:px-4 sm:pt-20"
       >
         {children}
         <div
           id="appLayoutWrapperFooter"
-          className="flex h-[72px] w-full flex-row items-start justify-between self-start px-4 py-4 sm:w-full"
+          className="flex h-[72px] w-full flex-row items-start justify-between self-start px-4 py-4 sm:h-fit sm:w-full sm:py-2"
         >
           <div
-            className="flex h-fit w-[106px] flex-col 
+            className="flex h-fit w-[106px] flex-col
           gap-0 md:w-[300px] md:flex-row md:items-center md:gap-2"
           >
             <p className="text-xs text-outerSpace-600">Powered by</p>
-            <div className="relative my-[-16px] flex h-[48px] w-full md:my-0 md:w-[135px]">
+            <div className="relative my-[-16px] flex h-12 w-full sm:h-6 md:my-0 md:w-[135px]">
               <Image
                 src="/logoWithText-bottleGreen.png"
                 alt="GoodBids Logo"
@@ -91,10 +93,14 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
               />
             </div>
           </div>
-          <div className=" h-fit flex-col items-center justify-center">
-            <p className="text-xs text-outerSpace-600">© Do You Zoom, Inc.</p>
+          <div className=" h-fit flex-col items-center justify-center sm:flex-row">
+            <p className="text-xs text-outerSpace-600 sm:inline">
+              © Do You Zoom, Inc.
+            </p>
             <Link href="/terms">
-              <p className="text-xs text-bo-red">Terms of Service</p>
+              <p className="text-xs text-bo-red sm:inline sm:pl-4">
+                Terms of Service
+              </p>
             </Link>
           </div>
         </div>

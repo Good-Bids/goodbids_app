@@ -41,14 +41,18 @@ export const AuctionData = ({
       setAuctionStats({
         bidCount: bidsData?.length ?? 0,
         totalRaised:
-          bidsData?.reduce((acc, curr) => acc + curr.bid_value, 0) ?? 0,
+          bidsData
+            ?.filter((item) => item.bid_status === "COMPLETE")
+            .reduce((acc, curr) => acc + curr.bid_value, 0) ?? 0,
         totalParticipants:
           bidsData
-            ?.map((bid) => bid.bidder_id)
+            ?.map((bid) => bid.bidder_id && bid.bid_status === "COMPLETE")
             .filter((v, i, s) => s.indexOf(v) === i).length ?? 0,
         myContribution:
           bidsData
-            ?.filter((bid) => bid.bidder_id === userId)
+            ?.filter(
+              (bid) => bid.bidder_id === userId && bid.bid_status === "COMPLETE"
+            )
             ?.reduce((acc, curr) => acc + curr.bid_value, 0) ?? 0,
         lastBidValue: auction.high_bid_value ?? 0,
       });
@@ -57,8 +61,8 @@ export const AuctionData = ({
 
   const freeBidsPrompt =
     bidsData && bidsData?.length < 10
-      ? "First 10 Bids earn a Free Bid"
-      : "Invite two Friends, and if they bid you earn a Free Bid!";
+      ? "First 10 Bids earn a Free Bid!"
+      : "Bid 3 or more times, earn a Free Bid!";
 
   const rightHandData =
     auctionStats.myContribution == 0
@@ -96,7 +100,7 @@ export const AuctionData = ({
             fill="rgb(220 38 38)"
           />
         </svg>
-        <span className="text-lg">
+        <span className="text-base sm:text-lg">
           {`Ending in `}
           <span className="font-bold text-red-600">{timeLeft}</span>
           {` if nobody else bids`}
