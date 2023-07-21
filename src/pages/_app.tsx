@@ -32,6 +32,10 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     })
   );
 
+  const { searchParams } = router.query;
+  const prize = searchParams?.[0] ?? "trek";
+  console.log(prize);
+
   React.useEffect(() => {
     const handleRouteChange = (url: string) => {
       ga.pageview(url);
@@ -57,7 +61,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           property="og:description"
           content="Every Bid is a donation, every donation is a bid."
         />
-        <meta property="og:image" content={auctionTitleImages.trek} />
+        <meta property="og:image" content={`/api/og?prize=${prize}`} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <GoogleAnalyticsScript />

@@ -24,9 +24,9 @@ export const buildOnAuctionIds = {
   watch: "53996feb-5704-4137-aedd-8a589d451767",
 };
 export const auctionTitleImages = {
-  trek: "https://imjsqwufoypzctthvxmr.supabase.co/storage/v1/object/public/auction-assets/openGraph%20image.png",
+  trek: "https://imjsqwufoypzctthvxmr.supabase.co/storage/v1/object/public/auction-assets/og-trek.png",
   watch:
-    "https://imjsqwufoypzctthvxmr.supabase.co/storage/v1/object/public/auction-assets/openGraph%20image.png",
+    "https://imjsqwufoypzctthvxmr.supabase.co/storage/v1/object/public/auction-assets/og-watch.png",
 };
 
 export const charityColorTailwindString = {
