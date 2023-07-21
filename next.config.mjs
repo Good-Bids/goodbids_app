@@ -19,15 +19,6 @@ const config = {
       },
     ],
   },
-  // redirects: async () => {
-  //   return [
-  //     {
-  //       source: "/",
-  //       destination: Math.random() < 0.5 ? "/trek" : "/watch",
-  //       permanent: false,
-  //     },
-  //   ];
-  // },
   /**
    * If you have the "experimental: { appDir: true }" setting enabled, then you
    * must comment the below `i18n` config out.
