@@ -32,9 +32,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     })
   );
 
-  const { searchParams } = router.query;
-  const prize = searchParams?.[0] ?? "trek";
-  console.log(prize);
+  const prize = router.pathname.split("/")[1] ?? "trek";
 
   React.useEffect(() => {
     const handleRouteChange = (url: string) => {
