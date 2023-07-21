@@ -1,3 +1,4 @@
+import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { useBidsByAuction } from "~/hooks/useAuction";
 import { useAuctionTimer } from "~/hooks/useAuctionTimer";
@@ -35,6 +36,8 @@ export const AuctionData = ({
     myContribution: 0,
     lastBidValue: 0,
   });
+
+  const [showFreeBidInfo, setShowFreeBidInfo] = useState(false);
 
   useEffect(() => {
     if (bidsData) {
@@ -107,7 +110,7 @@ export const AuctionData = ({
         </span>
       </div>
       <div
-        className="flex w-full border-collapse flex-row justify-start gap-2 border-b border-y-outerSpace-100 py-3"
+        className="flex w-full border-collapse flex-row items-center justify-start gap-2 border-b border-y-outerSpace-100 py-3"
         role="freebidsPrompt"
       >
         <svg width="24" height="24" overflow="visible">
@@ -116,8 +119,36 @@ export const AuctionData = ({
             fill={`${charityColor[charity]}`}
           />
         </svg>
-
-        {freeBidsPrompt}
+        <p className="font-bold ">{freeBidsPrompt}</p>
+        <InfoCircledIcon
+          className="cursor-pointer"
+          onClick={() => setShowFreeBidInfo(!showFreeBidInfo)}
+        />
+      </div>
+      <div
+        title="click to close"
+        className={`flex w-full border-collapse flex-col justify-start gap-2 border-b border-y-outerSpace-100 py-3 ${
+          showFreeBidInfo ? "visible" : "hidden"
+        }`}
+      >
+        <p className="text-sm font-bold text-bo-red">FREE BIDS</p>
+        <p className="text-xs">
+          Bid early and bid often. Goodbids offers rewards for supporting an
+          auction. In any auction, the first ten paying bidders are awarded a
+          free bid that they can use later in the auction.
+        </p>
+        <p className="text-xs">
+          In addition, if you participate with a paid bid three times in one
+          auction, you can earn another free bid. These bids aren't transferable
+          and don't roll over to other auctions, so be sure to use them before
+          the auction is over. The free bid makes you the current leader in the
+          auction, and if it ends before anyone else bids, you win.
+        </p>
+        <p className="text-xs">
+          Of course, you won't get a tax deduction as the bid was free. The good
+          news is that these bonus bids increase the total amount raised by the
+          charity, and so everyone wins.
+        </p>
       </div>
       <div className="flex w-full flex-row justify-between gap-4 py-3">
         <div className="w-1/4">
