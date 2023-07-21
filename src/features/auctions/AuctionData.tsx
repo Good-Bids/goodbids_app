@@ -83,7 +83,9 @@ export const AuctionData = ({
 
   return (
     <div className="mx-4 flex h-fit flex-col gap-2 sm:w-[calc(100%-32px)]">
-      <p className="text-2xl font-bold sm:text-3xl">{auction.name}</p>
+      <p className="self-center text-2xl font-bold sm:self-start sm:text-3xl">
+        {auction.name}
+      </p>
       <div
         className="flex w-full border-collapse flex-row justify-start gap-2 border-y border-y-outerSpace-100 py-3"
         role="time left"

@@ -284,13 +284,19 @@ export const PayPalDialog = ({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>GoodBid ${bidValue}</DialogTitle>
+          <DialogTitle>
+            <p className="p-2 text-center">
+              GoodBid ${bidValue} for {auction.name}
+            </p>
+          </DialogTitle>
           <DialogDescription>
-            Every Bid is a Donation, and every Donation is a Bid. This window
-            will self-close and release in 5 minutes.
+            <p className="p-2">
+              Every Bid is a Donation, and every Donation is a Bid. This window
+              will self-close and release in 5 minutes.
+            </p>
           </DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col">
+        <div className="flex flex-col p-2">
           <PayPalButtons
             createOrder={handleCreateOrder}
             onApprove={handleApprove}

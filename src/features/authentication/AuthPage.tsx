@@ -111,6 +111,10 @@ export const AuthPage = ({ method }: AuthPageProps) => {
               <p className="font-bold">{actionString}</p>
             </button>
           </div>
+          <p className="mx-4 my-2 text-xs text-outerSpace-500">
+            (you don't need a password - we'll send you a secure link to
+            authenticate.)
+          </p>
           <br />
           <p className="font-bold text-slate-700">Or...</p>
           <button
