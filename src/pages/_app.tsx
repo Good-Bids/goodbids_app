@@ -59,7 +59,8 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           property="og:description"
           content="Every Bid is a donation, every donation is a bid."
         />
-        <meta property="og:image" content={`/api/og?prize=${prize}`} />
+        <meta property="og:image" content={`/og-${prize}.png`} />
+        <meta property="twitter:image" content={`/og-${prize}.png`} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <GoogleAnalyticsScript />
