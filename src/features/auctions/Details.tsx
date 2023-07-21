@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { prizeCopy } from "~/utils/constants";
+import { ChevronDown, ChevronRight } from "lucide-react";
 
 export const Details = (props: {
   charity: "buildOn" | "charityWater";
@@ -20,18 +21,13 @@ export const Details = (props: {
   const { imgSrc, imgAlt, copy, className } = prizeCopy[prize];
 
   return (
-    <div className="mx-2 my-4 flex w-full flex-col self-center sm:w-10/12">
+    <div className="mx-2 my-2 flex w-full flex-col self-center sm:w-10/12">
       <div
-        className="mx-4 flex h-[76px] max-w-full cursor-pointer flex-row items-center justify-between border-y"
+        className="mx-4 flex h-[76px] max-w-full cursor-pointer flex-row items-center justify-between border-y pr-20"
         onClick={() => setShowItemDetails((prior) => !prior)}
       >
         <p className="text-l font-bold text-outerSpace-900">About this item</p>
-        <svg width="24" height="25">
-          <path
-            d="M13.2673 4.95157C12.9674 4.66588 12.4926 4.67742 12.2069 4.97735C11.9213 5.27727 11.9328 5.75201 12.2327 6.0377L18.4841 11.9923H3.75C3.33579 11.9923 3 12.3281 3 12.7423C3 13.1565 3.33579 13.4923 3.75 13.4923H18.4842L12.2327 19.447C11.9328 19.7327 11.9213 20.2074 12.2069 20.5074C12.4926 20.8073 12.9674 20.8188 13.2673 20.5331L20.6862 13.4664C20.8551 13.3055 20.9551 13.1003 20.9861 12.8869C20.9952 12.8401 21 12.7918 21 12.7423C21 12.6927 20.9952 12.6443 20.986 12.5974C20.955 12.3842 20.855 12.1791 20.6862 12.0183L13.2673 4.95157Z"
-            fill="#232826"
-          />
-        </svg>
+        {showItemDetails ? <ChevronDown /> : <ChevronRight />}
       </div>
       <div
         className={`mx-4 my-2 ${
@@ -49,16 +45,11 @@ export const Details = (props: {
         <p>{copy}</p>
       </div>
       <div
-        className="mx-4 flex h-[76px] max-w-full cursor-pointer flex-row items-center justify-between border-y"
+        className="mx-4 flex h-[76px] max-w-full cursor-pointer flex-row items-center justify-between border-y pr-20"
         onClick={() => setShowCharityDetails((prior) => !prior)}
       >
         <p className="text-l font-bold text-outerSpace-900">About buildOn</p>
-        <svg width="24" height="25">
-          <path
-            d="M13.2673 4.95157C12.9674 4.66588 12.4926 4.67742 12.2069 4.97735C11.9213 5.27727 11.9328 5.75201 12.2327 6.0377L18.4841 11.9923H3.75C3.33579 11.9923 3 12.3281 3 12.7423C3 13.1565 3.33579 13.4923 3.75 13.4923H18.4842L12.2327 19.447C11.9328 19.7327 11.9213 20.2074 12.2069 20.5074C12.4926 20.8073 12.9674 20.8188 13.2673 20.5331L20.6862 13.4664C20.8551 13.3055 20.9551 13.1003 20.9861 12.8869C20.9952 12.8401 21 12.7918 21 12.7423C21 12.6927 20.9952 12.6443 20.986 12.5974C20.955 12.3842 20.855 12.1791 20.6862 12.0183L13.2673 4.95157Z"
-            fill="#232826"
-          />
-        </svg>
+        {showCharityDetails ? <ChevronDown /> : <ChevronRight />}
       </div>
       <div
         className={`mx-4 my-2 ${

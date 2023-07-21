@@ -26,7 +26,6 @@ import { Auction } from "~/utils/types/auctions";
 import { fileStoragePath } from "~/utils/constants";
 import { useAuctionTimer } from "~/hooks/useAuctionTimer";
 import { AuctionDetailsTab } from "~/components/AuctionDetailTabs";
-import { ChatContainer } from "../chat/ChatContainer";
 
 interface AuctionDetailsProps {
   auction: Auction;

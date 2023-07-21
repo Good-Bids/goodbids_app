@@ -162,6 +162,7 @@ export const PayPalDialog = ({
       return create;
     } catch (err) {
       if (err instanceof Error) {
+        console.error({ err });
         setErrorState(err);
       } else
         setErrorState({
