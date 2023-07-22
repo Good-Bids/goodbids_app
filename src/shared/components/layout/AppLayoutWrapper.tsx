@@ -83,14 +83,20 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
           >
             <p className="text-xs text-outerSpace-600">Powered by</p>
             <div className="relative my-[-16px] flex h-12 w-full sm:h-6 md:my-0 md:w-[135px]">
-              <Image
-                src="/logoWithText-bottleGreen.png"
-                alt="GoodBids Logo"
-                sizes="100%"
-                style={{ objectFit: "contain", opacity: "55%" }}
-                priority
-                fill
-              />
+              <Link
+                href="https://forms.gle/o4Lj8A1NEEAnfjHNA"
+                passHref
+                target="_blank"
+              >
+                <Image
+                  src="/logoWithText-bottleGreen.png"
+                  alt="GoodBids Logo"
+                  sizes="100%"
+                  style={{ objectFit: "contain", opacity: "55%" }}
+                  priority
+                  fill
+                />
+              </Link>
             </div>
           </div>
           <div className=" h-fit flex-col items-center justify-center sm:flex-row">

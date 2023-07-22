@@ -42,7 +42,7 @@ export const Details = (props: {
             style={{ objectFit: "contain" }}
           />
         </div>
-        <p>{copy}</p>
+        <p className="my-2 w-full">{copy}</p>
       </div>
       <div
         className="mx-4 flex h-[76px] max-w-full cursor-pointer flex-row items-center justify-between border-y pr-20"
@@ -65,7 +65,7 @@ export const Details = (props: {
             alt="a student smiles at the camera"
           />
         </div>
-        <p>
+        <p className="my-2 w-full">
           buildOn is a remarkable charity that stands out for its transformative
           impact on communities around the world. With a mission to break the
           cycle of poverty, illiteracy, and low expectations, buildOn empowers
@@ -80,7 +80,7 @@ export const Details = (props: {
             alt="members of the community line up to sign the covenant"
           />
         </div>
-        <p>
+        <p className="my-2 w-full">
           By constructing schools in some of the most underserved regions of the
           world, buildOn opens doors to learning for children and adults who
           previously had limited or no access to education. Education is the
@@ -95,7 +95,7 @@ export const Details = (props: {
             alt="a buildOn member sharing a moment with a student"
           />
         </div>
-        <p>
+        <p className="my-2 w-full">
           But buildOn goes beyond simply constructing schools. It engages local
           communities, encouraging active participation and ownership in the
           process. Members of the community contribute volunteer hours to build
@@ -111,7 +111,7 @@ export const Details = (props: {
             alt="adult students in class"
           />
         </div>
-        <p className="w-full">
+        <p className="my-2 w-full">
           Through its Service Learning Programs, buildOn engages students from
           underserved schools in the United States in community service
           activities. These experiences help young people develop empathy,
@@ -127,7 +127,7 @@ export const Details = (props: {
             alt="a buildOn member sharing a moment with a student"
           />
         </div>
-        <p>
+        <p className="my-2 w-full">
           buildOn's programs have a ripple effect. As education improves and
           communities become more empowered, the positive impact extends beyond
           the school walls. These empowered communities take charge of their own
@@ -142,7 +142,7 @@ export const Details = (props: {
             alt="the buildOn logo"
           />
         </div>
-        <p>
+        <p className="my-2 w-full">
           buildOn not only constructs schools but also builds futures. Its
           commitment to education, community involvement, and global citizenship
           make it a wonderful organization to support. By empowering
