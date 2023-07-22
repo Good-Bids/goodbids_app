@@ -19,8 +19,6 @@ const client = z.object({
   NEXT_PUBLIC_SUPABASE_KEY: z.string().min(1),
   NEXT_PUBLIC_CHARITY_API_KEY: z.string().min(1),
   NEXT_PUBLIC_PAYPAL_CLIENT_ID: z.string().min(1),
-  NEXT_PUBLIC_STREAM_KEY: z.string().min(1),
-  NEXT_PUBLIC_STREAM_SECRET: z.string().min(1),
 });
 
 /**
@@ -37,8 +35,6 @@ const processEnv = {
   NEXT_PUBLIC_SUPABASE_KEY: process.env.NEXT_PUBLIC_SUPABASE_KEY,
   NEXT_PUBLIC_CHARITY_API_KEY: process.env.NEXT_PUBLIC_CHARITY_API_KEY,
   NEXT_PUBLIC_PAYPAL_CLIENT_ID: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
-  NEXT_PUBLIC_STREAM_KEY: process.env.NEXT_PUBLIC_STREAM_KEY,
-  NEXT_PUBLIC_STREAM_SECRET: process.env.NEXT_PUBLIC_STREAM_SECRET,
 };
 
 // Don't touch the part below
