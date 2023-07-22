@@ -35,7 +35,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
           id="appLayoutWrapperHead"
           className="left-0 right-0 top-0 flex h-full w-full max-w-[1228px] flex-row items-center justify-between self-center bg-white px-4 sm:w-full sm:min-w-[1228px]"
         >
-          <Link href={`/${prize}-intro`} className="flex flex-row gap-2">
+          <Link href={`/`} className="flex flex-row gap-2">
             <Image
               src="/buildOnLogo.png"
               alt="buildOn GoodBids Logo"
