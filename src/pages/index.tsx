@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useAuctionRedirect } from "~/hooks/useAuctionRedirect";
 
 const Home = () => {
-  useAuctionRedirect();
+  // useAuctionRedirect();
 
   return (
     <div className="flex h-full w-11/12 flex-col items-center justify-center gap-4">
