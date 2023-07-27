@@ -28,8 +28,8 @@ export const IntroPage = (props: IntroPageProps) => {
   const colorString = charityColorTailwindString[charity];
 
   return (
-    <div className="mx-4 my-6 flex h-full flex-col items-center gap-6 overflow-visible md:mt-[-32px] md:h-fit md:gap-2">
-      <div className="flex w-[90%] flex-col gap-2 md:h-fit">
+    <div className="mx-4 my-6 flex h-full flex-col items-center gap-6 overflow-visible sm:mt-[-32px] sm:h-fit sm:gap-2">
+      <div className="flex w-[90%] flex-col gap-2 sm:h-fit">
         <p className={`text-${colorString} text-4xl font-bold`}>
           Your generosity deserves a prize
         </p>
@@ -51,7 +51,7 @@ export const IntroPage = (props: IntroPageProps) => {
       </div>
       <Link href={`/${prize}`}>
         <button
-          className={`bg-${colorString} container flex w-full flex-col items-stretch justify-center rounded px-4 py-2 text-xl font-bold text-white md:w-fit md:px-8`}
+          className={`bg-${colorString} container flex w-full flex-col items-stretch justify-center rounded px-4 py-2 text-xl font-bold text-white sm:w-fit sm:px-8`}
         >
           <p>Go to the Auction</p>
         </button>

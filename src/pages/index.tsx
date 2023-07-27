@@ -1,14 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useAuctionRedirect } from "~/hooks/useAuctionRedirect";
 
 const Home = () => {
-  //  useAuctionRedirect();
-
   return (
     <div className="flex h-full w-11/12 flex-col items-center justify-center gap-4">
       <div className="flex h-full w-full flex-col flex-wrap justify-center gap-16 sm:h-full sm:flex-row">
-        <Link href="/trek-intro" className="h-fit w-full sm:w-2/5">
+        <Link href="/trek" className="h-fit w-full sm:w-2/5">
           <p className="text-center text-xl font-bold text-bo-red">
             The Trek Auction
           </p>
@@ -21,7 +18,7 @@ const Home = () => {
             />
           </div>
         </Link>
-        <Link href="/watch-intro" className="h-fit w-full sm:w-2/5">
+        <Link href="/watch" className="h-fit w-full sm:w-2/5">
           <p className="text-center text-xl font-bold text-bo-red">
             The Watch Auction
           </p>

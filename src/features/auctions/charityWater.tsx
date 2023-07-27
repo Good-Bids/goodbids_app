@@ -64,9 +64,9 @@ export const CharityWater = () => {
   }, [userData]);
 
   return displayAuction ? (
-    <div className="flex h-fit w-full flex-col pb-4 md:h-full md:w-full md:flex-row md:overflow-y-clip">
-      <div className="flex flex-col overflow-y-scroll md:mr-8 md:h-full md:w-4/5">
-        <div className="flex flex-col md:h-fit md:flex-row md:gap-8">
+    <div className="flex h-fit w-full flex-col pb-4 sm:h-full sm:w-full sm:flex-row sm:overflow-y-clip">
+      <div className="flex flex-col overflow-y-scroll sm:mr-8 sm:h-full sm:w-4/5">
+        <div className="flex flex-col sm:h-fit sm:flex-row sm:gap-8">
           {imageUrls && <ImageCarousel sources={imageUrls} />}
           <div className="flex flex-col">
             <AuctionData

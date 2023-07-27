@@ -25,7 +25,7 @@ export const CommentInput = (props: {
 
   return userName !== "anonymous" ? (
     <form
-      className="mx-4 flex w-10/12 flex-col gap-1 py-6 md:h-fit md:w-full md:py-3"
+      className="mx-4 flex w-10/12 flex-col gap-1 py-6 sm:h-fit sm:w-full sm:py-3"
       onSubmit={handleSubmit(async (data) => {
         try {
           if (data.message) {
@@ -40,11 +40,11 @@ export const CommentInput = (props: {
     >
       <textarea
         placeholder="write your message here..."
-        className="rounded px-3 py-3 text-base md:h-16"
+        className="rounded px-3 py-3 text-base sm:h-16"
         {...register("message")}
       />
       <label
-        className={`flex flex-col justify-center rounded-md border-[1px] border-solid border-outerSpace-100 px-4 py-1 md:h-fit`}
+        className={`flex flex-col justify-center rounded-md border-[1px] border-solid border-outerSpace-100 px-4 py-1 sm:h-fit`}
       >
         <svg
           width="24"

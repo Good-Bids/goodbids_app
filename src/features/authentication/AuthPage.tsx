@@ -118,7 +118,7 @@ export const AuthPage = ({ method }: AuthPageProps) => {
           <br />
           <p className="font-bold text-slate-700">Or...</p>
           <button
-            className="border-${colorString}  flex flex-row justify-center gap-2 rounded-full border px-4 py-2 md:w-1/3"
+            className="border-${colorString}  flex flex-row justify-center gap-2 rounded-full border px-4 py-2 sm:w-1/3"
             onClick={() => handleGoogleLogin()}
           >
             <svg

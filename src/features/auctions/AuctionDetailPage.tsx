@@ -155,14 +155,14 @@ export const AuctionDetailPage = () => {
     const charityDescriptionHeader = charity?.description_header;
     const charityDescriptionBody = charity?.description_body.split("</br>");
     return (
-      <div className="flex h-[calc(100%_-_40em)] w-full flex-grow flex-col items-center pb-24 md:p-0">
+      <div className="flex h-[calc(100%_-_40em)] w-full flex-grow flex-col items-center pb-24 sm:p-0">
         <div
-          className="mb-4 flex flex-col items-start gap-8 md:h-full md:flex-row md:justify-center"
+          className="mb-4 flex flex-col items-start gap-8 sm:h-full sm:flex-row sm:justify-center"
           id="auction-detailPage-container"
         >
           {imageUrls !== undefined && <ImageCarousel sources={imageUrls} />}
           <div
-            className="flex w-full flex-col items-start justify-start gap-4 p-2 md:h-full md:w-1/3"
+            className="flex w-full flex-col items-start justify-start gap-4 p-2 sm:h-full sm:w-1/3"
             id="auction-info-container"
           >
             <div className="flex h-fit w-full flex-col gap-2 overflow-y-auto">
@@ -236,7 +236,7 @@ export const AuctionDetailPage = () => {
           </div>
         </div>
         <Tabs.Root
-          className="flex w-full flex-col shadow-md md:w-4/6"
+          className="flex w-full flex-col shadow-md sm:w-4/6"
           defaultValue="tab1"
         >
           <Tabs.List
@@ -273,7 +273,7 @@ export const AuctionDetailPage = () => {
             value="tab2"
           >
             <div className="flex h-full w-full flex-col gap-4 overflow-y-auto">
-              <div className="flex h-80 w-full flex-col items-center md:h-96">
+              <div className="flex h-80 w-full flex-col items-center sm:h-96">
                 <iframe
                   width="100%"
                   height="100%"

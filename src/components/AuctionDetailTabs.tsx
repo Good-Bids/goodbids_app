@@ -20,7 +20,7 @@ export const AuctionDetailsTab = ({
 
   return (
     <Tabs.Root
-      className="flex w-full flex-col shadow-md md:w-4/6"
+      className="flex w-full flex-col shadow-md sm:w-4/6"
       defaultValue="tab1"
     >
       <Tabs.List

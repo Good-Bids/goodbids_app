@@ -30,10 +30,10 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
 
   return (
     <div className="flex h-full w-full flex-col">
-      <div className="fixed left-0 right-0 top-0 z-10 flex h-[72px] w-full flex-col items-center shadow-[0_2px_0px_0px_rgba(0,0,0,0.15)] sm:shadow-none">
+      <div className="fixed left-0 right-0 top-0 z-10 flex h-[72px] w-full flex-col items-center shadow">
         <div
           id="appLayoutWrapperHead"
-          className="left-0 right-0 top-0 flex h-full w-full max-w-[1228px] flex-row items-center justify-between self-center bg-white px-4 sm:w-full sm:min-w-[1228px]"
+          className="left-0 right-0 top-0 flex h-full w-full flex-row items-center justify-between self-center bg-white px-4 sm:w-full"
         >
           <Link href={`/`} className="flex flex-row gap-2">
             <Image
@@ -45,7 +45,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
             />
           </Link>
           {!isIntroPage && (
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-row gap-12 sm:mr-8">
               <Link href={`/${prize}-intro`}>
                 <p className={`text-right font-bold text-${colorString}`}>
                   About
@@ -70,19 +70,19 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
       </div>
       <main
         id="appLayoutWrapperMain"
-        className="fixed left-0 right-0 top-[72px] z-0 mx-0 flex h-[calc(100vh_-_72px)] max-w-[1228px] flex-col items-center justify-start self-center overflow-y-auto sm:left-[50%] sm:w-full sm:min-w-[1228px] sm:translate-x-[-50%] sm:px-4 sm:pt-20"
+        className="fixed left-0 right-0 top-[72px] z-0 mx-0 flex h-[calc(100vh_-_72px)] flex-col items-center justify-start self-center overflow-y-auto sm:left-[50%] sm:w-full sm:min-w-[1228px] sm:translate-x-[-50%] sm:px-4"
       >
         {children}
         <div
           id="appLayoutWrapperFooter"
-          className="flex h-[72px] w-full flex-row items-start justify-between self-start px-4 py-4 sm:h-fit sm:w-full sm:py-2"
+          className="flex h-[72px] w-full flex-row items-start justify-between self-start border-t-[1px] border-outerSpace-100 px-4 py-4 sm:h-fit sm:w-full sm:py-2"
         >
           <div
             className="flex h-fit w-[106px] flex-col
-          gap-0 md:w-[300px] md:flex-row md:items-center md:gap-2"
+          gap-0 sm:w-[300px] sm:flex-row sm:items-center sm:gap-2"
           >
             <p className="text-xs text-outerSpace-600">Powered by</p>
-            <div className="relative my-[-16px] flex h-12 w-full sm:h-6 md:my-0 md:w-[135px]">
+            <div className="relative my-[-16px] flex h-12 w-full sm:my-0 sm:h-6 sm:w-[135px]">
               <Link
                 href="https://forms.gle/o4Lj8A1NEEAnfjHNA"
                 passHref

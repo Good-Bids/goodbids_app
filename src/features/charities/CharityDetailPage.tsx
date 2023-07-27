@@ -180,7 +180,7 @@ const CharityDetails = ({ charity }: { charity: Charity }) => {
       </div>
       <div className="flex w-full flex-grow flex-row flex-wrap">
         {/* Left col */}
-        <div className="border-r-none flex w-full flex-shrink-0 flex-grow flex-col md:w-1/2 md:border-r">
+        <div className="border-r-none flex w-full flex-shrink-0 flex-grow flex-col sm:w-1/2 sm:border-r">
           <div className="border-b p-2">
             <p className="pt-1 text-xs text-neutral-800">
               Registered Charity Number (USA): {charity.ein}

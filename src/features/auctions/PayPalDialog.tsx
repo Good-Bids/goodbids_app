@@ -262,7 +262,7 @@ export const PayPalDialog = ({
         >
           {!canBid ? (
             <button
-              className={`md: container rounded border-2 border-${colorString} bg-${colorString} px-8 py-3 text-xl font-bold text-white opacity-40`}
+              className={`sm: container rounded border-2 border-${colorString} bg-${colorString} px-8 py-3 text-xl font-bold text-white opacity-40`}
               disabled
             >
               {isLatestBidder

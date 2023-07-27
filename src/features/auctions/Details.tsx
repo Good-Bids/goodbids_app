@@ -26,8 +26,10 @@ export const Details = (props: {
         className="mx-4 flex h-[76px] max-w-full cursor-pointer flex-row items-center justify-between border-y pr-20"
         onClick={() => setShowItemDetails((prior) => !prior)}
       >
-        <p className="text-l font-bold text-outerSpace-900">About this item</p>
-        {showItemDetails ? <ChevronDown /> : <ChevronRight />}
+        <p className="text-l font-bold text-outerSpace-900 sm:ml-8">
+          About this item
+        </p>
+        {showItemDetails ? <ChevronRight /> : <ChevronDown />}
       </div>
       <div
         className={`mx-4 my-2 ${
@@ -48,8 +50,10 @@ export const Details = (props: {
         className="mx-4 flex h-[76px] max-w-full cursor-pointer flex-row items-center justify-between border-y pr-20"
         onClick={() => setShowCharityDetails((prior) => !prior)}
       >
-        <p className="text-l font-bold text-outerSpace-900">About buildOn</p>
-        {showCharityDetails ? <ChevronDown /> : <ChevronRight />}
+        <p className="text-l font-bold text-outerSpace-900 sm:ml-8">
+          About buildOn
+        </p>
+        {showCharityDetails ? <ChevronRight /> : <ChevronDown />}
       </div>
       <div
         className={`mx-4 my-2 ${

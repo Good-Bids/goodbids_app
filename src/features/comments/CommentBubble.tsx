@@ -24,20 +24,20 @@ export const CommentBubble = ({
   const colorString = charityColorTailwindString[charity];
   return (
     <div
-      className={`h-fit w-1/2 overflow-x-clip rounded-t-lg px-1 py-1 md:w-5/6  ${
+      className={`h-fit w-1/2 overflow-x-clip rounded-t-lg px-1 py-1 sm:w-11/12 ${
         isMe
           ? `self-start rounded-r-lg bg-${colorString} bg-opacity-10`
           : "self-end rounded-l-lg bg-white"
       }`}
       key={message_id}
     >
-      <p className="overflow-ellipsis text-base font-bold text-outerSpace-900">
+      <p className="text-md overflow-ellipsis font-bold text-outerSpace-900">
         {user_name}
       </p>
       <p className="mb-2 mt-[-4px] text-xs font-light italic text-outerSpace-300">
         {date}
       </p>
-      <p className="text-base text-outerSpace-900">{text}</p>
+      <p className="text-xs text-outerSpace-900">{text}</p>
     </div>
   );
 };

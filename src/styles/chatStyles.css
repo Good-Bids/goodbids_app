@@ -2782,7 +2782,7 @@ stream-icon-placeholder {
 .str-chat {
   --str-chat__border-radius-xs: 8px;
   --str-chat__border-radius-sm: 14px;
-  --str-chat__border-radius-md: 18px;
+  --str-chat__border-radius-sm: 18px;
   --str-chat__border-radius-lg: 20px;
   --str-chat__border-radius-circle: 999px;
   --str-chat__font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
