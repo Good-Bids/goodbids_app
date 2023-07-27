@@ -46,11 +46,11 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
           </Link>
           {!isIntroPage && (
             <div className="flex flex-row gap-12 sm:mr-8">
-              <Link href={`/${prize}-intro`}>
+              {/* <Link href={`/${prize}-intro`}>
                 <p className={`text-right font-bold text-${colorString}`}>
                   About
                 </p>
-              </Link>
+              </Link> */}
               {userIsNotSignedIn ? (
                 <Link href="/LogIn">
                   <p className={`text-right font-bold text-${colorString}`}>
