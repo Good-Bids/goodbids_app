@@ -242,6 +242,9 @@ export const PayPalDialog = ({
 
   const colorString = charityColorTailwindString[charity];
 
+  const cleanBidValue =
+    Math.floor(bidValue) < bidValue ? bidValue.toFixed(2) : bidValue;
+
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
       {errorState && (
@@ -276,7 +279,7 @@ export const PayPalDialog = ({
                 onClick={openBidDialog}
               >
                 <p className="text-xl font-bold text-white">
-                  {`GoodBid $${bidValue} now`}
+                  {`GoodBid $${cleanBidValue} now`}
                 </p>
               </button>
             </>

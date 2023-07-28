@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useCommentsQuery } from "~/hooks/useComment";
-import { charityColorTailwindString } from "~/utils/constants";
+import { useUserQuery } from "~/hooks/useUser";
 import { CommentBubble } from "./CommentBubble";
 import { CommentInput } from "./CommentInput";
 
@@ -16,6 +16,8 @@ export const CommentContainer = ({ auctionId, charity }: CommentContainer) => {
   const { data: commentsData } = useCommentsQuery(auctionId);
 
   const isDesktop = window && window.innerWidth >= 767;
+
+  const userData = useUserQuery();
 
   const displayData = commentsData ?? [];
 
@@ -53,9 +55,11 @@ export const CommentContainer = ({ auctionId, charity }: CommentContainer) => {
         } flex flex-col items-center justify-center sm:h-[98%] sm:flex-col-reverse`}
       >
         <Link href="/LogIn">
-          <p className="my-0 text-center text-xs text-outerSpace-500 sm:my-2">
-            Log in to comment
-          </p>
+          {!userData && (
+            <p className="my-0 text-center text-xs text-outerSpace-500 sm:my-2">
+              Log in to comment
+            </p>
+          )}
         </Link>
         <CommentInput auctionId={auctionId} charity="buildOn" />
         <div
