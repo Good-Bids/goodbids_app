@@ -21,13 +21,13 @@ export const CommentContainer = ({ auctionId, charity }: CommentContainer) => {
 
   const displayData = commentsData ?? [];
 
-  const convoRef = useRef<HTMLDivElement>(null);
+  const conversationRef = useRef<HTMLDivElement>(null);
 
   const colorString = "bo-red";
 
   useEffect(() => {
-    if (convoRef.current && displayData) {
-      convoRef.current.scrollTo({
+    if (conversationRef.current && displayData) {
+      conversationRef.current.scrollTo({
         top: displayData.length * 100,
         behavior: "auto",
       });
@@ -64,7 +64,7 @@ export const CommentContainer = ({ auctionId, charity }: CommentContainer) => {
         <CommentInput auctionId={auctionId} charity="buildOn" />
         <div
           className={`sm:h-11/12 flex h-80 w-full flex-1 flex-col gap-3 overflow-y-auto bg-${colorString} bg-opacity-10 p-3`}
-          ref={convoRef}
+          ref={conversationRef}
         >
           <div className="h-0 w-0 bg-bo-red" />
           {displayData.map((item) => (
