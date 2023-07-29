@@ -30,7 +30,6 @@ export const AuthPage = ({ method }: AuthPageProps) => {
 
   const getURL = () => {
     let url =
-      stagingSite ?? // Automatically set by Vercel.
       productionSite ?? // Set this to your site URL in production env.
       "http://localhost:3000/";
     // Make sure to include `https://` when not localhost.
