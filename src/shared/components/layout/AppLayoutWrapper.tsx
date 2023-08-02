@@ -52,7 +52,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
                 </p>
               </Link> */}
               {userIsNotSignedIn ? (
-                <Link href="/LogIn">
+                <Link href="/login">
                   <p className={`text-right font-bold text-${colorString}`}>
                     Log in
                   </p>

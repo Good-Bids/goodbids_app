@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import useSupabase from "~/hooks/useSupabase";
-import { useInterval } from "usehooks-ts";
 import { charityColorTailwindString } from "~/utils/constants";
 
 interface AuthPageProps {
@@ -13,6 +12,7 @@ export const AuthPage = ({ method }: AuthPageProps) => {
   const actionString = method === "logIn" ? "Log in" : "Sign up";
 
   const router = useRouter();
+  const [source, setSource] = useState("/");
   const [loginData, setLoginData] = useState<{ email: string }>({
     email: "",
   });
@@ -74,18 +74,38 @@ export const AuthPage = ({ method }: AuthPageProps) => {
     }
   }
 
-  useInterval(() => {
-    if (hasSubmittedEmail) {
-      if (rerouteDelay > 0) {
-        setRerouteDelay((prior) => prior - 1);
-      } else router.push("/");
+  const pageCopy = {
+    logIn: {
+      greeting: "Welcome Back",
+      reminder: "Don't have an account? Click here to sign up",
+      linkOut: "/signup",
+    },
+    signUp: {
+      greeting: "Sign Up",
+      reminder: "Already Signed up? Click here to log in",
+      linkOut: "/login",
+    },
+  };
+  useEffect(() => {
+    if (window !== undefined) {
+      const auctionSource = window.localStorage.getItem("auctionSource");
+      switch (auctionSource) {
+        case "watch":
+          setSource("/watch");
+          break;
+        case "trek":
+          setSource("/trek");
+          break;
+        default:
+          setSource("/");
+      }
     }
-  }, 1000);
+  }, []);
 
   return (
     <div className="my-12 flex w-11/12 flex-col items-center justify-center gap-4 overflow-auto">
       <h1 className="text-3xl font-black text-outerSpace-900">
-        {method === "logIn" ? "Welcome Back" : "Sign up"}
+        {pageCopy[method].greeting}
       </h1>
       {!hasSubmittedEmail ? (
         <div className="flex w-full flex-col items-center">
@@ -122,7 +142,7 @@ export const AuthPage = ({ method }: AuthPageProps) => {
           <br />
           <p className="font-bold text-slate-700">Or...</p>
           <button
-            className="border-${colorString}  flex flex-row justify-center gap-2 rounded-full border px-4 py-2 sm:w-1/3"
+            className={`border-${colorString} flex flex-row justify-center gap-2 rounded-full border px-4 py-2 sm:w-1/3`}
             onClick={() => handleGoogleLogin()}
           >
             <svg
@@ -151,9 +171,16 @@ export const AuthPage = ({ method }: AuthPageProps) => {
             </svg>
             <p className="font-bold">{actionString} with Google</p>
           </button>
+
+          <a
+            href={pageCopy[method].linkOut}
+            className="mt-8 px-4 py-2 text-xs text-outerSpace-900"
+          >
+            <p>{pageCopy[method].reminder}</p>
+          </a>
           {method === "signUp" && (
             <Link href="/terms">
-              <p className="mt-32 text-base font-bold text-bo-red">
+              <p className="mt-16 text-base font-bold text-bo-red sm:mt-32">
                 Terms of Service
               </p>
             </Link>
@@ -166,9 +193,11 @@ export const AuthPage = ({ method }: AuthPageProps) => {
             check your email for a link back here (it may have ended up in your
             spam folder).
           </p>
-          <p className="text-l font-black text-outerSpace-900">
-            Redirecting to the home page in {rerouteDelay}…
-          </p>
+          <a href={source} className="self-center">
+            <button className="container w-fit rounded-full bg-bo-red px-4 py-2 text-lg text-white">
+              <p>back to {source}</p>
+            </button>
+          </a>
         </div>
       )}
     </div>
