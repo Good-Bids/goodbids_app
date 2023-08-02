@@ -53,7 +53,7 @@ export const PayPalDialog = ({
   // Open the bid now dialog and track its opening via google
   const openBidDialog = async () => {
     if (userData?.id === undefined) {
-      await router.push("/LogIn");
+      await router.push("/login");
     }
     setIsDialogOpen(true);
     // place the event tag inside the open dialog
@@ -279,7 +279,9 @@ export const PayPalDialog = ({
                 onClick={openBidDialog}
               >
                 <p className="text-xl font-bold text-white">
-                  {`GoodBid $${cleanBidValue} now`}
+                  {!!userData
+                    ? `GoodBid $${cleanBidValue} now`
+                    : `Log in now to bid $${cleanBidValue}`}
                 </p>
               </button>
             </>

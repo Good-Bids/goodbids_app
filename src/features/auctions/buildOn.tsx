@@ -59,6 +59,9 @@ export const BuildOn = (props: { prize: "trek" | "watch" }) => {
   useEffect(() => {
     if (userData) {
       setUserId(userData.id);
+      if (window) {
+        window.localStorage.setItem("userExists", "true");
+      }
     }
   }, [userData]);
 

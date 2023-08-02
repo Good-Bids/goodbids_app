@@ -52,7 +52,7 @@ export const IntroDialog = (props: { prize: "watch" | "trek" }) => {
               donation, and your generosity can win you prizes.
             </p>
             <div className="mt-6 flex w-full flex-row items-center justify-start gap-10">
-              <Link href={`/SignUp`} className="h-fit w-fit self-center">
+              <Link href={`/signup`} className="h-fit w-fit self-center">
                 <button
                   className={`bg-${colorString} container flex w-full flex-col items-stretch justify-center self-center px-7 py-4 text-xl font-bold text-white sm:w-fit sm:px-8`}
                 >
