@@ -28,17 +28,18 @@ export const CommentContainer = ({ auctionId, charity }: CommentContainer) => {
   useEffect(() => {
     if (conversationRef.current && displayData) {
       conversationRef.current.scrollTo({
-        top: displayData.length * 100,
+        top: displayData.length * 200,
         behavior: "auto",
       });
     }
   }, [displayData]);
 
   return (
-    <div className="sm:h-11/12 overflow-y-visible sm:my-4 sm:flex sm:flex-col sm:border-[1px] sm:border-outerSpace-100">
+    <div className="sm:h-11/12 overflow-y-clip sm:my-4 sm:flex sm:min-w-[280px] sm:flex-col sm:gap-0">
       <div
-        className="mb-0 mt-4 flex max-w-full cursor-pointer flex-row items-center justify-start gap-2 border-t px-4 pt-4 sm:mb-2 sm:mt-0 sm:cursor-default sm:border-none sm:pt-0"
+        className="sm:h-1/12 mb-0 mt-4 flex max-w-full flex-row items-center justify-start gap-2 border-t px-4 pt-4 sm:mb-2 sm:mt-0 sm:border-[1px] sm:border-outerSpace-100 sm:pb-2 sm:pt-0"
         onClick={() => setShowComments((prior) => !prior)}
+        id="comments header"
       >
         <svg width="24" height="24" className="sm:mt-2">
           <path
@@ -50,23 +51,26 @@ export const CommentContainer = ({ auctionId, charity }: CommentContainer) => {
       </div>
 
       <div
+        id="commentsBody"
         className={`mt-2 sm:mt-0 ${
           showComments || isDesktop ? "visible" : "hidden"
-        } flex flex-col items-center justify-center sm:h-[98%] sm:flex-col-reverse`}
+        } flex flex-col items-center justify-center sm:h-2/3 sm:flex-grow sm:flex-col-reverse`}
       >
-        <Link href="/login">
-          {!userData && (
-            <p className="my-0 text-center text-xs text-outerSpace-500 sm:my-2">
+        {!userData.data?.email && (
+          <Link
+            href="/login"
+            className="my-0 flex h-12 w-full items-center justify-center text-center text-xs text-outerSpace-500 sm:my-2 sm:min-h-[5%] sm:cursor-pointer sm:rounded-full sm:border-[1px] sm:border-bo-red"
+          >
+            <p className="text-base font-bold text-outerSpace-900">
               Log in to comment
             </p>
-          )}
-        </Link>
+          </Link>
+        )}
         <CommentInput auctionId={auctionId} charity="buildOn" />
         <div
-          className={`sm:h-11/12 flex h-80 w-full flex-1 flex-col gap-3 overflow-y-auto bg-${colorString} bg-opacity-10 p-3`}
+          className={`flex h-40 w-full flex-1 gap-3 overflow-y-auto sm:h-2/3 sm:flex-col bg-${colorString} flex-col-reverse overflow-clip bg-opacity-10 p-3 sm:max-h-[95%]`}
           ref={conversationRef}
         >
-          <div className="h-0 w-0 bg-bo-red" />
           {displayData.map((item) => (
             <CommentBubble {...item} key={item.message_id} charity="buildOn" />
           ))}
