@@ -103,15 +103,15 @@ export const AuthPage = ({ method }: AuthPageProps) => {
   }, []);
 
   return (
-    <div className="my-12 flex w-11/12 flex-col items-center justify-center gap-4 overflow-auto">
-      <h1 className="text-3xl font-black text-outerSpace-900">
-        {pageCopy[method].greeting}
-      </h1>
+    <div className="my-12 flex h-full w-11/12 flex-col items-center justify-center gap-4 overflow-auto sm:w-[450px]">
       {!hasSubmittedEmail ? (
         <div className="flex w-full flex-col items-center">
-          <div className="flex w-full flex-row justify-center gap-2">
-            <label className="block" key={"email"}>
-              <p className="block text-sm font-bold text-slate-700">
+          <h1 className="mb-8 text-3xl font-black text-outerSpace-900 sm:mb-16">
+            {pageCopy[method].greeting}
+          </h1>
+          <div className="flex w-full flex-row justify-between gap-2 sm:w-[450px]">
+            <label className="block w-2/3" key={"email"}>
+              <p className="text-md block font-bold text-outerSpace-900">
                 {`${actionString} with email`}
               </p>
 
@@ -130,19 +130,19 @@ export const AuthPage = ({ method }: AuthPageProps) => {
             </label>
             <button
               onClick={() => signInWithEmail()}
-              className={`bg-${colorString} h-fit self-end rounded-full px-4 py-2 text-white`}
+              className={`bg-${colorString} h-fit w-1/3 self-end rounded-full px-4 py-2 text-white`}
             >
-              <p className="font-bold">{actionString}</p>
+              <p className="font-bold">submit</p>
             </button>
           </div>
-          <p className="mx-4 my-2 text-xs text-outerSpace-500">
+          <p className="my-2 text-xs text-outerSpace-500">
             (you don't need a password - we'll send you a secure link to
             authenticate.)
           </p>
           <br />
-          <p className="font-bold text-slate-700">Or...</p>
+          <p className="font-bold text-outerSpace-900">Or...</p>
           <button
-            className={`border-${colorString} flex flex-row justify-center gap-2 rounded-full border px-4 py-2 sm:w-1/3`}
+            className={`flex w-full flex-row justify-center gap-2 rounded-full border border-bo-red px-4 py-2`}
             onClick={() => handleGoogleLogin()}
           >
             <svg
@@ -169,12 +169,14 @@ export const AuthPage = ({ method }: AuthPageProps) => {
                 d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
               ></path>
             </svg>
-            <p className="font-bold">{actionString} with Google</p>
+            <p className="text-md font-bold text-outerSpace-900">
+              {actionString} with Google
+            </p>
           </button>
 
           <a
             href={pageCopy[method].linkOut}
-            className="mt-8 px-4 py-2 text-xs text-outerSpace-900"
+            className="mt-8 px-4 py-2 text-xs text-outerSpace-900 underline"
           >
             <p>{pageCopy[method].reminder}</p>
           </a>
@@ -188,14 +190,16 @@ export const AuthPage = ({ method }: AuthPageProps) => {
         </div>
       ) : (
         <div className="flex flex-col items-start gap-4">
-          <p className="text-3xl font-black text-outerSpace-900">Thanks!</p>
-          <p className="text-xl font-black text-outerSpace-900">
-            check your email for a link back here (it may have ended up in your
-            spam folder).
+          <p className="self-center text-2xl font-black text-outerSpace-900">
+            Thanks!
+          </p>
+          <p className="text-lg text-outerSpace-900">
+            Check your email for a link back to the site (it may have ended up
+            in your spam folder).
           </p>
           <a href={source} className="self-center">
-            <button className="container w-fit rounded-full bg-bo-red px-4 py-2 text-lg text-white">
-              <p>back to {source}</p>
+            <button className="container w-fit rounded-full bg-bo-red px-4 py-2 text-lg font-bold text-white">
+              <p>back to {source.split("/")[1]} auction</p>
             </button>
           </a>
         </div>

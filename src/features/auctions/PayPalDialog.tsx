@@ -279,7 +279,9 @@ export const PayPalDialog = ({
                 onClick={openBidDialog}
               >
                 <p className="text-xl font-bold text-white">
-                  {`GoodBid $${cleanBidValue} now`}
+                  {!!userData
+                    ? `GoodBid $${cleanBidValue} now`
+                    : `Log in now to bid $${cleanBidValue}`}
                 </p>
               </button>
             </>
