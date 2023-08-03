@@ -78,12 +78,12 @@ export const AuthPage = ({ method }: AuthPageProps) => {
     logIn: {
       greeting: "Welcome Back",
       reminder: "Don't have an account? Click here to sign up",
-      linkOut: "/signup",
+      linkOut: "/auth-signup",
     },
     signUp: {
       greeting: "Sign Up",
       reminder: "Already Signed up? Click here to log in",
-      linkOut: "/login",
+      linkOut: "/auth-login",
     },
   };
   useEffect(() => {

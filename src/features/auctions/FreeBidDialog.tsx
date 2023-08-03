@@ -57,7 +57,7 @@ export const FreeBidDialog = ({
   // Open the bid now dialog and track its opening via google
   const openBidDialog = async () => {
     if (userData?.id === undefined) {
-      await router.push("/login");
+      await router.push("/auth-login");
     }
     setIsDialogOpen(true);
     // place the event tag inside the open dialog
