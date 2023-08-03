@@ -75,6 +75,7 @@ export const CharityWater = () => {
               userId={userId}
               setAuctionIsActive={setAuctionIsActive}
               charity="charityWater"
+              prize="watch"
             />
             <div className="my-4 flex flex-col gap-4 py-4">
               <PayPalDialog
