@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { prizeCopy } from "~/utils/constants";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, PlusIcon, MinusIcon } from "lucide-react";
 
 export const Details = (props: {
   charity: "buildOn" | "charityWater";
@@ -29,7 +29,7 @@ export const Details = (props: {
         <p className="text-l font-bold text-outerSpace-900 sm:ml-8">
           About this item
         </p>
-        {showItemDetails ? <ChevronRight /> : <ChevronDown />}
+        {showItemDetails ? <MinusIcon /> : <PlusIcon />}
       </div>
       <div
         className={`mx-4 my-2 ${
@@ -53,7 +53,7 @@ export const Details = (props: {
         <p className="text-l font-bold text-outerSpace-900 sm:ml-8">
           About buildOn
         </p>
-        {showCharityDetails ? <ChevronRight /> : <ChevronDown />}
+        {showCharityDetails ? <MinusIcon /> : <PlusIcon />}
       </div>
       <div
         className={`mx-4 my-2 ${

@@ -77,6 +77,7 @@ export const BuildOn = (props: { prize: "trek" | "watch" }) => {
               userId={userId}
               setAuctionIsActive={setAuctionIsActive}
               charity="buildOn"
+              prize={prize}
             />
             <div className="my-4 flex flex-col gap-4 py-4">
               <PayPalDialog
