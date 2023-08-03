@@ -47,7 +47,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
           {!isIntroPage && (
             <div className="flex flex-row gap-12 sm:mr-8">
               {userIsNotSignedIn ? (
-                <Link href="/login">
+                <Link href="/auth-login">
                   <p className={`text-right font-bold text-${colorString}`}>
                     Log in
                   </p>

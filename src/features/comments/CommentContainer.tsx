@@ -58,7 +58,7 @@ export const CommentContainer = ({ auctionId, charity }: CommentContainer) => {
       >
         {!userData.data?.email && (
           <Link
-            href="/login"
+            href="/auth-login"
             className="my-0 flex h-12 w-full items-center justify-center text-center text-xs text-outerSpace-500 sm:my-2 sm:mb-4 sm:h-fit sm:min-h-[5%] sm:w-5/6 sm:cursor-pointer sm:border-[1px] sm:border-outerSpace-100"
           >
             <p className="text-base font-bold text-bo-red">Log in to comment</p>
