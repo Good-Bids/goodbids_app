@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { prizeCopy } from "~/utils/constants";
-import { ChevronDown, ChevronRight, PlusIcon, MinusIcon } from "lucide-react";
+import { PlusIcon, MinusIcon } from "lucide-react";
 
 export const Details = (props: {
   charity: "buildOn" | "charityWater";
@@ -36,6 +36,7 @@ export const Details = (props: {
           showItemDetails ? "visible" : "hidden"
         } flex flex-col items-center justify-center`}
       >
+        {copy}
         <div className={className}>
           <Image
             src={imgSrc}
@@ -44,7 +45,6 @@ export const Details = (props: {
             style={{ objectFit: "contain" }}
           />
         </div>
-        <p className="my-2 w-full">{copy}</p>
       </div>
       <div
         className="mx-4 flex h-[76px] max-w-full cursor-pointer flex-row items-center justify-between border-y pr-20"
