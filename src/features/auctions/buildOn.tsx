@@ -18,6 +18,7 @@ export const BuildOn = (props: { prize: "trek" | "watch" }) => {
   const { data: userData } = useUserQuery();
   const { data: auctionData } = useAuctionQuery(auctionId);
   const subscription = useMessageBus();
+
   const { data: auctionImages } = useStorageItemsQuery(auctionId);
 
   const [auctionIsActive, setAuctionIsActive] = useState(true);
