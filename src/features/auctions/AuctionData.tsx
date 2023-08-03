@@ -3,7 +3,7 @@ import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { useBidsByAuction } from "~/hooks/useAuction";
 import { useAuctionTimer } from "~/hooks/useAuctionTimer";
 import { useItemQuery } from "~/hooks/useItem";
-import { charityColor } from "~/utils/constants";
+import { charityColor, prizeShortDescriptions } from "~/utils/constants";
 import { Auction } from "~/utils/types/auctions";
 
 interface AuctionDataProps {
@@ -12,6 +12,7 @@ interface AuctionDataProps {
   auction: Auction;
   setAuctionIsActive: Dispatch<SetStateAction<boolean>>;
   charity: "buildOn" | "charityWater";
+  prize: "watch" | "trek";
 }
 
 export const AuctionData = ({
@@ -20,6 +21,7 @@ export const AuctionData = ({
   setAuctionIsActive,
   userId,
   charity,
+  prize,
 }: AuctionDataProps) => {
   const { data: bidsData } = useBidsByAuction(auctionId);
   const { data: itemData } = useItemQuery(auction.item_id ?? "");
@@ -54,7 +56,10 @@ export const AuctionData = ({
         myContribution:
           bidsData
             ?.filter(
-              (bid) => bid.bidder_id === userId && bid.bid_status === "COMPLETE"
+              (bid) =>
+                bid.bidder_id === userId &&
+                bid.bid_status === "COMPLETE" &&
+                bid.free_bid_flag !== true
             )
             ?.reduce((acc, curr) => acc + curr.bid_value, 0) ?? 0,
         lastBidValue: auction.high_bid_value ?? 0,
@@ -92,6 +97,9 @@ export const AuctionData = ({
     <div className="mx-4 flex h-fit flex-col gap-2 sm:w-[calc(100%-32px)]">
       <p className="self-center text-2xl font-bold sm:self-start sm:text-3xl">
         {auction.name}
+        <p className="my-0 text-center text-sm font-light sm:text-start">
+          {prizeShortDescriptions[prize]}
+        </p>
       </p>
       <div
         className="flex w-full border-collapse flex-row justify-start gap-2 border-y border-y-outerSpace-100 py-3"
@@ -120,10 +128,12 @@ export const AuctionData = ({
           />
         </svg>
         <p className="font-bold ">{freeBidsPrompt}</p>
-        <InfoCircledIcon
-          className="cursor-pointer"
+        <p
+          className="cursor-pointer text-sm font-bold text-bo-red underline"
           onClick={() => setShowFreeBidInfo(!showFreeBidInfo)}
-        />
+        >
+          learn more
+        </p>
       </div>
       <div
         title="click to close"

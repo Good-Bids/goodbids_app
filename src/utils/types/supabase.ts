@@ -152,6 +152,7 @@ export interface Database {
           bidder_id: string
           charity_id: string
           created_at: string
+          free_bid_flag: boolean | null
         }
         Insert: {
           auction_id: string
@@ -161,6 +162,7 @@ export interface Database {
           bidder_id: string
           charity_id: string
           created_at?: string
+          free_bid_flag?: boolean | null
         }
         Update: {
           auction_id?: string
@@ -170,6 +172,7 @@ export interface Database {
           bidder_id?: string
           charity_id?: string
           created_at?: string
+          free_bid_flag?: boolean | null
         }
         Relationships: [
           {
@@ -345,35 +348,69 @@ export interface Database {
           }
         ]
       }
-      user: {
+      new_user_referrals: {
         Row: {
-          auth_id: string
-          bidder_id: string
           created_at: string | null
-          email: string
-          is_charity_admin: boolean
-          name: string | null
+          has_placed_bid: boolean | null
+          id: number
+          referral_id: string
+          referrer_id: string
+          user_email: string
         }
         Insert: {
-          auth_id: string
-          bidder_id?: string
           created_at?: string | null
-          email?: string
-          is_charity_admin?: boolean
-          name?: string | null
+          has_placed_bid?: boolean | null
+          id?: number
+          referral_id: string
+          referrer_id: string
+          user_email: string
         }
         Update: {
-          auth_id?: string
-          bidder_id?: string
           created_at?: string | null
-          email?: string
-          is_charity_admin?: boolean
-          name?: string | null
+          has_placed_bid?: boolean | null
+          id?: number
+          referral_id?: string
+          referrer_id?: string
+          user_email?: string
         }
         Relationships: [
           {
-            foreignKeyName: "bidder_auth_id_fkey"
-            columns: ["auth_id"]
+            foreignKeyName: "new_user_referrals_referral_id_fkey"
+            columns: ["referral_id"]
+            referencedRelation: "user_referrals"
+            referencedColumns: ["referral_id"]
+          },
+          {
+            foreignKeyName: "new_user_referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
+            referencedRelation: "user_referrals"
+            referencedColumns: ["referrer_id"]
+          }
+        ]
+      }
+      user_referrals: {
+        Row: {
+          created_at: string | null
+          id: number
+          referral_id: string
+          referrer_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          referral_id?: string
+          referrer_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          referral_id?: string
+          referrer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
             referencedRelation: "users"
             referencedColumns: ["id"]
           }

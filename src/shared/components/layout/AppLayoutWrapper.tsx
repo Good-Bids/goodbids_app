@@ -93,7 +93,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
                 fill
               />
             </div>
-            <p className="text-xs text-outerSpace-600">Feedback? Questions?</p>
+            <p className="text-xs text-outerSpace-600">Contact GoodBids</p>
           </div>
         </Link>
         <div className=" h-fit flex-col items-center justify-center sm:flex-row">

@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { prizeVideoUrls } from "~/utils/constants";
+import {
+  prizeShortDescriptions,
+  prizeValue,
+  prizeVideoUrls,
+} from "~/utils/constants";
 
 const Home = () => {
   const router = useRouter();
@@ -30,11 +34,7 @@ const Home = () => {
     }
   }, []);
   const prizes = ["Trek", "Watch"];
-  const shortSlug = {
-    trek: "Help build a school in Senegal",
-    watch: "The Apple Watch Ultra",
-  };
-  const prizeValue = { trek: "$45,000", watch: "$800" };
+
   return (
     <div className="flex h-full w-11/12 flex-col flex-nowrap items-center justify-center pb-10">
       {showHome && (
@@ -62,10 +62,10 @@ const Home = () => {
                 </div>
                 <p className="text-center text-lg font-bold text-bo-red">
                   <p className="text-sm font-normal text-outerSpace-700">
-                    {shortSlug[lowercasePrize]}
+                    {prizeShortDescriptions[lowercasePrize]}
                   </p>
                   <p className="text-outerSpace-900">
-                    {prizeValue[lowercasePrize]}
+                    value: {prizeValue[lowercasePrize]}
                   </p>
                 </p>
               </Link>

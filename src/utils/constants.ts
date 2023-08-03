@@ -14,6 +14,12 @@ export const prizeVideoUrls = {
   trek: "https://player.vimeo.com/video/844987673?h=24cef9ccac&amp;badge=0&amp;controls=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
 };
 
+export const prizeShortDescriptions = {
+  trek: "Help build a school in Senegal",
+  watch: "Win an Apple Watch Ultra",
+};
+export const prizeValue = { trek: "$45,000", watch: "$800" };
+
 export const fileStoragePath: string =
   "https://imjsqwufoypzctthvxmr.supabase.co/storage/v1/object/public/auction-assets";
 
