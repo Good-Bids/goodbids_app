@@ -162,17 +162,22 @@ export const FreeBidDialog = ({
       <DialogTrigger asChild>
         <div
           id="call-to-action"
-          className="mx-4 flex  min-h-fit w-11/12 flex-col justify-center gap-2 sm:relative sm:left-0 sm:w-fit"
+          className="mx-4 flex  min-h-fit w-11/12 flex-col justify-center gap-2 sm:relative sm:left-0"
         >
           {canBid && hasFreeBids && (
-            <button
-              className="rounded border-2 border-solid border-black border-opacity-30 px-4 py-3"
-              onClick={openBidDialog}
-            >
-              <p
-                className={`text-xl font-bold text-${colorString}`}
-              >{`Place Free Bid (${freeBidsData.length} left)`}</p>
-            </button>
+            <>
+              <p className="w-full rounded bg-screaminGreen bg-opacity-20 py-4 text-center font-bold text-bottleGreen">
+                🎉 Congrats, you've earned a free bid!
+              </p>
+              <button
+                className="w-full rounded border-2 border-solid border-black border-opacity-30 px-4 py-3"
+                onClick={openBidDialog}
+              >
+                <p
+                  className={`text-xl font-bold text-${colorString}`}
+                >{`Place Free Bid (${freeBidsData.length} left)`}</p>
+              </button>
+            </>
           )}
         </div>
       </DialogTrigger>
