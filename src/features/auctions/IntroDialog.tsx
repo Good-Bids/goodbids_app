@@ -41,7 +41,7 @@ export const IntroDialog = (props: { prize: "watch" | "trek" }) => {
         </div>
       )}
       <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="h-fit sm:max-w-[90%]">
+      <DialogContent className="sm:w-80% h-fit sm:max-w-[1200px]">
         <div className="flex flex-col p-0 sm:flex-row">
           <div className="flex w-full flex-col items-center justify-center gap-4 p-6 sm:w-1/3">
             <p className={`text-${colorString} text-4xl font-bold`}>
@@ -51,20 +51,20 @@ export const IntroDialog = (props: { prize: "watch" | "trek" }) => {
               Welcome to a new kind of charity auction where every bid is a
               donation, and your generosity can win you prizes.
             </p>
-            <div className="mt-6 flex w-full flex-row items-center justify-start gap-10">
+            <div className="mt-6 flex w-full flex-col items-center justify-start gap-2">
               <Link href={`/signup`} className="h-fit w-fit self-center">
                 <button
                   className={`bg-${colorString} container flex w-full flex-col items-stretch justify-center self-center px-7 py-4 text-xl font-bold text-white sm:w-fit sm:px-8`}
                 >
-                  <p>Sign Up</p>
+                  <p>Sign Up to Bid</p>
                 </button>
               </Link>
               <p
-                className="cursor-pointer text-xl font-bold text-bo-red underline"
+                className="cursor-pointer text-sm text-outerSpace-700 underline"
                 onClick={() => setIsDialogOpen(false)}
               >
-                to auction
-                <ArrowRight className="inline" />
+                check out the auction first
+                <ArrowRight className="mx-[-4px] inline h-4" />
               </p>
             </div>
           </div>
