@@ -18,7 +18,7 @@ export const prizeShortDescriptions = {
   trek: "Help build a school in Senegal",
   watch: "Win an Apple Watch Ultra",
 };
-export const prizeValue = { trek: "$45,000", watch: "$800" };
+export const prizeValue = { trek: "$45,000", watch: "$799" };
 
 export const fileStoragePath: string =
   "https://imjsqwufoypzctthvxmr.supabase.co/storage/v1/object/public/auction-assets";
@@ -44,20 +44,99 @@ export const charityColor = {
   charityWater: "#003366",
 };
 
-export const prizeCopy = {
+export const prizeCopy: {
+  watch: {
+    imgSrc: string;
+    imgAlt: string;
+    copy: JSX.Element;
+    className: string;
+  };
+  trek: {
+    imgSrc: string;
+    imgAlt: string;
+    copy: JSX.Element;
+    className: string;
+  };
+} = {
   watch: {
     imgSrc: "/watch_hero.jpg",
     imgAlt: "the apple watch ultra",
-    copy: `Meet the most rugged and capable Apple Watch ever. With a robust
-    titanium case, precision dual-frequency GPS, up to 36 hours of battery
-    life, the freedom of cellular, and three specialized bands made for
-    athletes and adventurers of all kinds.`,
-    className: "relative flex aspect-[1064/378] w-full",
+    copy: (
+      <>
+        <a href="https://www.apple.com/watch/" target="_blank">
+          <p className="my-2 w-full underline">The Apple Watch Ultra</p>
+        </a>
+        <p className="my-2 mt-4 w-full text-sm">
+          Winner will receive an Apple gift card worth $799 and can purchase any
+          Apple product with it. Additional costs are at winner's expense.
+        </p>
+      </>
+    ),
+    className: "relative flex aspect-[532/189] w-1/2",
   },
   trek: {
     imgSrc: "/buildOn_senegal.webp",
     imgAlt: "a map of the regions in Senegal which buildOn is active in",
-    copy: "Come make a difference - in Senegal! buildOn is conducting a trek in Senegal later this year - an experience valued at $45,000 which you could experience at a fraction of the cost.",
+    copy: (
+      <>
+        <p className="text-start text-3xl font-bold">
+          Trek is a place where intention and purpose meet impact.
+        </p>
+        <p className="my-2 w-full text-center text-sm font-light">
+          “I believe everyone should experience Trek at least once in their
+          life. It is one of the instances where you can feel the heart of the
+          world so closely. I truly believe that there are few better ways to
+          make a positive change in the world.”
+          <p className="font-bold">— Simon Kim, Trek Participant</p>
+        </p>
+        <p className="my-2 mt-4 w-full text-center text-sm font-light">
+          “Trek is where compassion and action come together. It is where
+          Ignition meets Solidarity. Trek is a place where we light a lot of
+          fires. And education is a fire that no one can put out!”
+          <p className="font-bold">- Jim Ziolkowski, founder, BuildOn</p>
+        </p>
+        <p className="my-2 mt-4 w-full text-center text-sm font-light">
+          “I was ashamed because I lived my entire life in the darkness of
+          illiteracy. Now I am proud because I am living in the light of
+          education”.
+          <p className="font-bold">
+            -Komba Dumbia of Mali. She joined the leadership committee to build
+            a school and then graduated from our adult literacy program.
+          </p>
+        </p>
+        <p className="my-2 mt-4 w-full text-start text-sm">
+          A once-in-a-lifetime chance to make a difference and change things for
+          the better. Join bestselling author and buildOn founder Jim Ziolkowski
+          on a trek to Senegal for an intensive, hands-on experience that will
+          impact generations.
+        </p>
+        <p className="my-2 mt-4 w-full text-start text-sm">
+          If you're ready for the chance to dig deep and find yourself, this
+          Trek may be exactly what you're looking for.
+        </p>
+        <p className="my-2 mt-4 w-full text-start text-sm">
+          No one can change the world. But together, we can make a difference.
+          When you're ready to be transformed by your power to lead, to connect
+          and to have an impact, the Trek is ready for you.
+        </p>
+        <p className="my-2 mt-4 w-full text-start text-xs">
+          <p className="text-sm font-bold">Details:</p>
+          The value of the Trek is $45,000. The winner of the auction is
+          responsible for their own airfare, and every penny donated goes to
+          fund BuildOn's work around the world.
+        </p>
+        <p className="my-2 mt-4 w-full text-start text-xs">
+          The Trek will be scheduled at a time that works for the team at
+          BuildOn and as much notice as possible will be given to the winner.
+          The prize is transferable to anyone of the winner's choice. Airfare,
+          insurance and health expenses are at the winner's expense. If for some
+          reason the winner cannot attend, they have the option of deferring
+          until a future year's Trek (with the approval of Buildon) or turning
+          their donation into a deductible donation and receiving no prize of
+          value.
+        </p>
+      </>
+    ),
     className: "relative flex aspect-[1.6155115511551] w-full",
   },
 };
