@@ -44,7 +44,7 @@ const Home = () => {
             return (
               <Link
                 href={`/${lowercasePrize}`}
-                className="container mt-4 flex h-2/5 w-full flex-col rounded sm:w-2/5 sm:justify-between sm:gap-6 sm:border sm:px-4 sm:py-8 sm:drop-shadow"
+                className="container mt-4 flex h-2/5 w-full flex-col rounded sm:h-fit sm:w-2/5 sm:justify-between sm:gap-6 sm:border sm:px-4 sm:py-8 sm:drop-shadow"
               >
                 <p className="my-0 text-center text-2xl font-bold text-bo-red underline">
                   The {prize} Auction
