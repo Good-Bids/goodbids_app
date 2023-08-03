@@ -73,9 +73,6 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
         id="appLayoutWrapperFooter"
         className="absolute bottom-0 flex h-[72px] w-full flex-row items-start justify-between self-start border-t-[1px] border-outerSpace-100 bg-white px-2 py-2 sm:fixed sm:h-fit sm:w-full sm:px-4 sm:py-2"
       >
-        <div className="absolute bottom-[-10px] left-[calc(50vw_-_16px)] flex h-fit w-8 items-center justify-center rounded-full border-[1px] border-outerSpace-200 bg-white sm:hidden">
-          <p className="text-base font-bold text-outerSpace-500">...</p>
-        </div>
         <Link
           href="https://forms.gle/o4Lj8A1NEEAnfjHNA"
           passHref
