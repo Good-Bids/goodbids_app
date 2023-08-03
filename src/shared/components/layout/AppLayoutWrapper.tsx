@@ -46,11 +46,6 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
           </Link>
           {!isIntroPage && (
             <div className="flex flex-row gap-12 sm:mr-8">
-              {/* <Link href={`/${prize}-intro`}>
-                <p className={`text-right font-bold text-${colorString}`}>
-                  About
-                </p>
-              </Link> */}
               {userIsNotSignedIn ? (
                 <Link href="/login">
                   <p className={`text-right font-bold text-${colorString}`}>
@@ -70,47 +65,51 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
       </div>
       <main
         id="appLayoutWrapperMain"
-        className="fixed left-0 right-0 top-[72px] z-0 mx-0 flex h-[calc(100vh_-_72px)] flex-col items-center justify-start self-center overflow-y-auto sm:left-[50%] sm:w-full sm:min-w-[1228px] sm:translate-x-[-50%] sm:px-4"
+        className="fixed left-0 right-0 top-[72px] z-0 mx-0 flex h-[calc(100vh_-_72px)] flex-col items-center justify-start self-center overflow-y-auto sm:left-[50%] sm:w-full sm:max-w-[1440px] sm:translate-x-[-50%] sm:px-4"
       >
         {children}
-        <div
-          id="appLayoutWrapperFooter"
-          className="flex h-[72px] w-full flex-row items-start justify-between self-start border-t-[1px] border-outerSpace-100 px-4 py-4 sm:h-fit sm:w-full sm:py-2"
+      </main>
+      <div
+        id="appLayoutWrapperFooter"
+        className="absolute bottom-0 flex h-[72px] w-full flex-row items-start justify-between self-start border-t-[1px] border-outerSpace-100 bg-white px-2 py-2 sm:fixed sm:h-fit sm:w-full sm:px-4 sm:py-2"
+      >
+        <div className="absolute bottom-[-10px] left-[calc(50vw_-_16px)] flex h-fit w-8 items-center justify-center rounded-full border-[1px] border-outerSpace-200 bg-white sm:hidden">
+          <p className="text-base font-bold text-outerSpace-500">...</p>
+        </div>
+        <Link
+          href="https://forms.gle/o4Lj8A1NEEAnfjHNA"
+          passHref
+          target="_blank"
         >
           <div
-            className="flex h-fit w-[106px] flex-col
-          gap-0 sm:w-[300px] sm:flex-row sm:items-center sm:gap-2"
+            className="flex h-fit w-[156px] flex-col 
+          gap-1 sm:w-[380px] sm:flex-row sm:items-center sm:gap-0"
           >
             <p className="text-xs text-outerSpace-600">Powered by</p>
             <div className="relative my-[-16px] flex h-12 w-full sm:my-0 sm:h-6 sm:w-[135px]">
-              <Link
-                href="https://forms.gle/o4Lj8A1NEEAnfjHNA"
-                passHref
-                target="_blank"
-              >
-                <Image
-                  src="/logoWithText-bottleGreen.png"
-                  alt="GoodBids Logo"
-                  sizes="100%"
-                  style={{ objectFit: "contain", opacity: "55%" }}
-                  priority
-                  fill
-                />
-              </Link>
+              <Image
+                src="/logoWithText-bottleGreen.png"
+                alt="GoodBids Logo"
+                sizes="100%"
+                style={{ objectFit: "contain", opacity: "55%" }}
+                priority
+                fill
+              />
             </div>
+            <p className="text-xs text-outerSpace-600">Feedback? Questions?</p>
           </div>
-          <div className=" h-fit flex-col items-center justify-center sm:flex-row">
-            <p className="text-xs text-outerSpace-600 sm:inline">
-              © Do You Zoom, Inc.
+        </Link>
+        <div className=" h-fit flex-col items-center justify-center sm:flex-row">
+          <p className="text-xs text-outerSpace-600 sm:inline">
+            © Do You Zoom, Inc.
+          </p>
+          <Link href="/terms">
+            <p className="text-xs text-bo-red sm:inline sm:pl-4">
+              Terms of Service
             </p>
-            <Link href="/terms">
-              <p className="text-xs text-bo-red sm:inline sm:pl-4">
-                Terms of Service
-              </p>
-            </Link>
-          </div>
+          </Link>
         </div>
-      </main>
+      </div>
     </div>
   );
 };

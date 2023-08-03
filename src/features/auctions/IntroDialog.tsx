@@ -41,7 +41,7 @@ export const IntroDialog = (props: { prize: "watch" | "trek" }) => {
         </div>
       )}
       <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="h-fit sm:max-w-[90%]">
+      <DialogContent className="sm:w-80% h-fit sm:max-w-[1200px]">
         <div className="flex flex-col p-0 sm:flex-row">
           <div className="flex w-full flex-col items-center justify-center gap-4 p-6 sm:w-1/3">
             <p className={`text-${colorString} text-4xl font-bold`}>

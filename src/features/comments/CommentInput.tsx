@@ -54,7 +54,7 @@ export const CommentInput = (props: {
         <svg
           width="1"
           height="25"
-          className="translate-x-[-25vw] self-center sm:translate-x-[-50px]"
+          className="translate-x-[-25vw] self-center sm:translate-x-[-75px]"
           overflow="visible"
         >
           <text className={`font-bold`} y="18" x="-80px" fill="#CC2126">

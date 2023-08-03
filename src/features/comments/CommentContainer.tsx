@@ -35,9 +35,9 @@ export const CommentContainer = ({ auctionId, charity }: CommentContainer) => {
   }, [displayData]);
 
   return (
-    <div className="sm:h-11/12 overflow-y-clip sm:my-4 sm:flex sm:min-w-[280px] sm:flex-col sm:gap-0">
+    <div className="overflow-y-clip sm:mb-4 sm:mt-2 sm:flex sm:h-[92%] sm:min-w-[280px] sm:flex-col sm:gap-0 sm:border-[1px] sm:border-outerSpace-100">
       <div
-        className="sm:h-1/12 mb-0 mt-4 flex max-w-full flex-row items-center justify-start gap-2 border-t px-4 pt-4 sm:mb-2 sm:mt-0 sm:border-[1px] sm:border-outerSpace-100 sm:pb-2 sm:pt-0"
+        className="sm:h-1/12 mb-0 mt-4 flex max-w-full flex-row items-center justify-start gap-2 border-t px-4 pt-4 sm:mb-2 sm:mt-0  sm:pb-2 sm:pt-0"
         onClick={() => setShowComments((prior) => !prior)}
         id="comments header"
       >
@@ -59,11 +59,9 @@ export const CommentContainer = ({ auctionId, charity }: CommentContainer) => {
         {!userData.data?.email && (
           <Link
             href="/login"
-            className="my-0 flex h-12 w-full items-center justify-center text-center text-xs text-outerSpace-500 sm:my-2 sm:min-h-[5%] sm:cursor-pointer sm:rounded-full sm:border-[1px] sm:border-bo-red"
+            className="my-0 flex h-12 w-full items-center justify-center text-center text-xs text-outerSpace-500 sm:my-2 sm:mb-4 sm:h-fit sm:min-h-[5%] sm:w-5/6 sm:cursor-pointer sm:border-[1px] sm:border-outerSpace-100"
           >
-            <p className="text-base font-bold text-outerSpace-900">
-              Log in to comment
-            </p>
+            <p className="text-base font-bold text-bo-red">Log in to comment</p>
           </Link>
         )}
         <CommentInput auctionId={auctionId} charity="buildOn" />
