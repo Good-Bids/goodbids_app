@@ -261,17 +261,15 @@ export const PayPalDialog = ({
       <DialogTrigger asChild>
         <div
           id="call-to-action"
-          className="mx-4 flex  min-h-fit w-11/12 flex-col justify-center gap-2 sm:relative sm:left-0 sm:w-fit"
+          className="mx-4 flex  min-h-fit w-11/12 flex-col justify-center gap-2 sm:relative sm:left-0"
         >
-          {!canBid ? (
-            <button
-              className={`sm: container rounded border-2 border-${colorString} bg-${colorString} px-8 py-3 text-xl font-bold text-white opacity-40`}
-              disabled
-            >
-              {isLatestBidder
-                ? "Thanks for your bid!"
-                : `Someone else is placing a bid right now.`}
-            </button>
+          {isLatestBidder ? (
+            <p className="rounded bg-outerSpace-50 bg-opacity-50 py-2 text-center text-base font-bold">
+              Thanks for your bid!
+              <p className="text-center text-xs font-normal">
+                If someone outbids you, you'll be able to bid again.
+              </p>
+            </p>
           ) : (
             <>
               <button
@@ -279,7 +277,9 @@ export const PayPalDialog = ({
                 onClick={openBidDialog}
               >
                 <p className="text-xl font-bold text-white">
-                  {!!userData
+                  {!canBid
+                    ? `Someone else is placing a bid right now.`
+                    : !!userData
                     ? `GoodBid $${cleanBidValue} now`
                     : `Log in now to bid $${cleanBidValue}`}
                 </p>
@@ -288,7 +288,7 @@ export const PayPalDialog = ({
           )}
         </div>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="overflow-y-auto py-2 sm:max-h-[85vh] sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
             <p className="p-2 text-center">

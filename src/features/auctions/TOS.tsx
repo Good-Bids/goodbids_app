@@ -40,7 +40,7 @@ export const TOS = () => {
         onClick={() => handleBackClick()}
         className="container bg-bo-red p-2 text-base font-bold text-white"
       >
-        Okay
+        Back to previous page
       </button>
     </div>
   );
