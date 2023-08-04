@@ -47,7 +47,7 @@ export const IntroDialog = (props: { prize: "watch" | "trek" }) => {
             <p className={`text-${colorString} text-4xl font-bold`}>
               Your generosity deserves a prize
             </p>
-            <p className="mb-0 mt-2 text-sm font-normal text-outerSpace-900 dark:text-white">
+            <p className="mb-0 mt-2 text-sm font-normal text-outerSpace-900 ">
               Welcome to a new kind of charity auction where every bid is a
               donation, and your generosity can win you prizes.
             </p>
