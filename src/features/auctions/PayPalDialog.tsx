@@ -292,7 +292,7 @@ export const PayPalDialog = ({
         <DialogHeader>
           <DialogTitle>
             <p className="p-2 text-center">
-              GoodBid ${bidValue} for {auction.name}
+              GoodBid ${cleanBidValue} for {auction.name}
             </p>
           </DialogTitle>
           <DialogDescription>
