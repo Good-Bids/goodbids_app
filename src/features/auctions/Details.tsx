@@ -146,7 +146,7 @@ export const Details = (props: {
             alt="the buildOn logo"
           />
         </div>
-        <p className="my-2 w-full">
+        <p className="my-2 mb-8 w-full">
           buildOn not only constructs schools but also builds futures. Its
           commitment to education, community involvement, and global citizenship
           make it a wonderful organization to support. By empowering
