@@ -94,7 +94,7 @@ export const prizeCopy: {
           “Trek is where compassion and action come together. It is where
           Ignition meets Solidarity. Trek is a place where we light a lot of
           fires. And education is a fire that no one can put out!”
-          <p className="font-bold">- Jim Ziolkowski, founder, BuildOn</p>
+          <p className="font-bold">- Jim Ziolkowski, founder, buildOn</p>
         </p>
         <p className="my-2 mt-4 w-full text-center text-sm font-light">
           “I was ashamed because I lived my entire life in the darkness of
@@ -124,11 +124,11 @@ export const prizeCopy: {
           <p className="text-sm font-bold">Details:</p>
           The value of the Trek is $45,000. The winner of the auction is
           responsible for their own airfare, and every penny donated goes to
-          fund BuildOn's work around the world.
+          fund buildOn's work around the world.
         </p>
         <p className="my-2 mt-4 w-full text-start text-xs">
           The Trek will be scheduled at a time that works for the team at
-          BuildOn and as much notice as possible will be given to the winner.
+          buildOn and as much notice as possible will be given to the winner.
           The prize is transferable to anyone of the winner's choice. Airfare,
           insurance and health expenses are at the winner's expense. If for some
           reason the winner cannot attend, they have the option of deferring

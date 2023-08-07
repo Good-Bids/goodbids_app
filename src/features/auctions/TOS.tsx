@@ -8,7 +8,7 @@ export const TOS = () => {
   };
 
   const terms = [
-    `Goodbids does not charge a fee to anyone using this service, and all financial interactions that we facilitate are only between our users (the “bidders”) and charities like BuildOn (the “charities”).`,
+    `Goodbids does not charge a fee to anyone using this service, and all financial interactions that we facilitate are only between our users (the “bidders”) and charities like buildOn (the “charities”).`,
     `This service is optimized for use in the United States, but you are welcome to use it anywhere that it is not regulated or prohibited. You must be 18 or older to use this site.`,
     `All taxes and tax deductions are the responsibility of the bidder.`,
     `Every bid made using GoodBids is a non-refundable donation to the charity, made via Paypal.`,
