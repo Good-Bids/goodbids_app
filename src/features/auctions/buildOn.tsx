@@ -81,18 +81,22 @@ export const BuildOn = (props: { prize: "trek" | "watch" }) => {
               prize={prize}
             />
             <div className="my-4 flex flex-col gap-4 py-4">
-              <PayPalDialog
-                bidValue={nextBidValue}
-                auction={displayAuction}
-                isBidLocked={!auctionIsActive}
-                charity="buildOn"
-              />
-              <FreeBidDialog
-                bidValue={nextBidValue}
-                auction={displayAuction}
-                isBidLocked={!auctionIsActive}
-                charity="buildOn"
-              />
+              {new Date(displayAuction.start_date) <= new Date() && (
+                <>
+                  <PayPalDialog
+                    bidValue={nextBidValue}
+                    auction={displayAuction}
+                    isBidLocked={!auctionIsActive}
+                    charity="buildOn"
+                  />
+                  <FreeBidDialog
+                    bidValue={nextBidValue}
+                    auction={displayAuction}
+                    isBidLocked={!auctionIsActive}
+                    charity="buildOn"
+                  />
+                </>
+              )}
               <IntroDialog prize={prize} />
             </div>
           </div>

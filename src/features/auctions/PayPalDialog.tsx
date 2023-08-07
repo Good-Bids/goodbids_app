@@ -297,8 +297,7 @@ export const PayPalDialog = ({
           </DialogTitle>
           <DialogDescription>
             <p className="p-2">
-              Every Bid is a Donation, and every Donation is a Bid. This window
-              will self-close and release in 5 minutes.
+              Every Bid is a Donation, and every Donation is a Bid.
             </p>
           </DialogDescription>
         </DialogHeader>
