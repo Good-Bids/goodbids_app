@@ -83,12 +83,18 @@ export const AuctionData = ({
           value: auctionStats.myContribution.toLocaleString(),
         };
 
+  const startDate = new Date(auction.start_date).toLocaleDateString();
+
+  const hasStarted = new Date(auction.start_date) <= new Date();
+
   const { string: timeLeft } = useAuctionTimer({
     auction,
     onTimeUpdate: (arg0: boolean) => {
-      setAuctionIsActive((prior: boolean) => {
-        return prior !== arg0 ? arg0 : prior;
-      });
+      if (hasStarted) {
+        setAuctionIsActive((prior: boolean) => {
+          return prior !== arg0 ? arg0 : prior;
+        });
+      }
     },
     interval: 500,
   });
@@ -111,11 +117,18 @@ export const AuctionData = ({
             fill="rgb(220 38 38)"
           />
         </svg>
-        <span className="text-base sm:text-lg">
-          {`Ending in `}
-          <span className="font-bold text-red-600">{timeLeft}</span>
-          {` if nobody else bids`}
-        </span>
+        {hasStarted ? (
+          <span className="text-base sm:text-lg">
+            {`Ending in `}
+            <span className="font-bold text-bo-red">{timeLeft}</span>
+            {` if nobody else bids`}
+          </span>
+        ) : (
+          <span className="text-base sm:text-lg">
+            {`Auction goes live on `}
+            <span className="font-bold text-bo-red">{startDate}</span>
+          </span>
+        )}
       </div>
       <div
         className="flex w-full border-collapse flex-row items-center justify-start gap-2 border-b border-y-outerSpace-100 py-3"

@@ -6,7 +6,7 @@ export const initialOptions: PayPalScriptOptions = {
   currency: "USD",
   intent: "capture",
   disableFunding: "credit,card",
-  debug: true,
+  debug: false,
 };
 
 export const prizeVideoUrls = {

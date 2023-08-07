@@ -29,6 +29,7 @@ export interface Database {
           over_bid_good_time_late_fee: number | null
           over_bid_good_time_often_fee: number | null
           over_bid_good_time_threshold_field: Json | null
+          start_date: string
           status: string
           top_bid_duration: number
           type: string
@@ -52,6 +53,7 @@ export interface Database {
           over_bid_good_time_late_fee?: number | null
           over_bid_good_time_often_fee?: number | null
           over_bid_good_time_threshold_field?: Json | null
+          start_date?: string
           status?: string
           top_bid_duration?: number
           type?: string
@@ -75,6 +77,7 @@ export interface Database {
           over_bid_good_time_late_fee?: number | null
           over_bid_good_time_often_fee?: number | null
           over_bid_good_time_threshold_field?: Json | null
+          start_date?: string
           status?: string
           top_bid_duration?: number
           type?: string
