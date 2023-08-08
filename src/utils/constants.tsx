@@ -4,8 +4,9 @@ import { env } from "~/env.mjs";
 export const initialOptions: PayPalScriptOptions = {
   clientId: env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
   currency: "USD",
-  intent: "capture",
+  intent: "authorize",
   disableFunding: "credit,card",
+  commit: true,
   debug: false,
 };
 

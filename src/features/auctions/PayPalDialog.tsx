@@ -180,7 +180,8 @@ export const PayPalDialog = ({
     actions: OnApproveActions
   ) => {
     try {
-      const confirmation = await bidConfirmation.mutateAsync();
+      await actions.order?.authorize();
+      await bidConfirmation.mutateAsync();
       await handleEarnFreeBid();
       setIsDialogOpen(false);
       router.reload();
