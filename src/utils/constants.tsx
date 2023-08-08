@@ -14,6 +14,8 @@ export const prizeVideoUrls = {
     "https://player.vimeo.com/video/844987638?h=d6af026508&amp;badge=0&amp;controls=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
   trek: "https://player.vimeo.com/video/844987673?h=24cef9ccac&amp;badge=0&amp;controls=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
 };
+export const goodBidsIntroVideo =
+  "https://player.vimeo.com/video/852726923?h=e14037d5a1&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479";
 
 export const prizeShortDescriptions = {
   trek: "Help build a school in Senegal",
