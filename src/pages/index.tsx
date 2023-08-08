@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import {
+  goodBidsIntroVideo,
   prizeShortDescriptions,
   prizeValue,
   prizeVideoUrls,
@@ -38,13 +39,13 @@ const Home = () => {
   return (
     <div className="flex h-full w-11/12 flex-col flex-nowrap items-center justify-center pb-10">
       {showHome && (
-        <div className="flex h-full w-full flex-col flex-wrap justify-start gap-4 sm:h-full sm:flex-row sm:items-center sm:justify-center sm:gap-12 ">
+        <div className="align-center flex h-fit w-full flex-col flex-nowrap justify-start gap-4 overflow-y-auto sm:h-full sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-12">
           {prizes.map((prize) => {
             const lowercasePrize = prize.toLowerCase() as "trek" | "watch";
             return (
               <Link
                 href={`/${lowercasePrize}`}
-                className="container mt-4 flex h-2/5 w-full flex-col rounded sm:h-fit sm:w-2/5 sm:justify-between sm:gap-6 sm:border sm:px-4 sm:py-8 sm:drop-shadow"
+                className="container mt-4 flex h-2/5 w-full flex-col rounded sm:h-1/2 sm:w-2/5 sm:justify-between sm:gap-6 sm:border sm:px-4 sm:py-8 sm:drop-shadow"
               >
                 <p className="my-0 text-center text-2xl font-bold text-bo-red underline">
                   The {prize} Auction
@@ -52,7 +53,7 @@ const Home = () => {
                 <div className=" relative flex aspect-video w-full flex-col items-center gap-2">
                   <iframe
                     src={prizeVideoUrls[lowercasePrize]}
-                    allow="autoplay; fullscreen; picture-in-picture"
+                    allow="fullscreen; picture-in-picture"
                     style={{
                       width: "100%",
                       height: "100%",
@@ -71,6 +72,18 @@ const Home = () => {
               </Link>
             );
           })}
+          <div className="mb-16 mt-4 flex aspect-video h-fit w-full flex-col items-center sm:h-2/5 sm:w-1/2">
+            <p className=" text-2xl font-bold text-bo-red">What is GoodBids?</p>
+            <iframe
+              src={goodBidsIntroVideo}
+              allow="fullscreen; picture-in-picture"
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
+              title="buildOn and GoodBids"
+            />
+          </div>
         </div>
       )}
     </div>

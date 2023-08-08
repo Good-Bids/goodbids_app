@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { prizeCopy } from "~/utils/constants";
+import { prizeCopy, prizeVideoUrls } from "~/utils/constants";
 import { PlusIcon, MinusIcon } from "lucide-react";
 
 export const Details = (props: {
@@ -37,12 +37,15 @@ export const Details = (props: {
         } flex flex-col items-center justify-center`}
       >
         {copy}
-        <div className={className}>
-          <Image
-            src={imgSrc}
-            alt={imgAlt}
-            fill
-            style={{ objectFit: "contain" }}
+        <div className=" relative flex aspect-video w-full flex-col items-center gap-2">
+          <iframe
+            src={prizeVideoUrls[prize]}
+            allow="autoplay; fullscreen; picture-in-picture"
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
+            title="buildOn and GoodBids"
           />
         </div>
       </div>
