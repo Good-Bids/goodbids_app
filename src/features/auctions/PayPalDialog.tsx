@@ -180,7 +180,8 @@ export const PayPalDialog = ({
     actions: OnApproveActions
   ) => {
     try {
-      const confirmation = await bidConfirmation.mutateAsync();
+      await actions.order?.authorize();
+      await bidConfirmation.mutateAsync();
       await handleEarnFreeBid();
       setIsDialogOpen(false);
       router.reload();
@@ -242,8 +243,13 @@ export const PayPalDialog = ({
 
   const colorString = charityColorTailwindString[charity];
 
+  const dynamicValue =
+    bidState === "PENDING" ? bidValue - auction.increment : bidValue;
+
   const cleanBidValue =
-    Math.floor(bidValue) < bidValue ? bidValue.toFixed(2) : bidValue;
+    Math.floor(dynamicValue) < dynamicValue
+      ? dynamicValue.toFixed(2)
+      : dynamicValue;
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
