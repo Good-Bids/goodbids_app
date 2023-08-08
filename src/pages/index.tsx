@@ -72,7 +72,7 @@ const Home = () => {
               </Link>
             );
           })}
-          <div className="mb-16 mt-4 flex aspect-video h-fit w-full flex-col items-center sm:h-2/5 sm:w-1/2">
+          <div className="mb-24 mt-4 flex aspect-video h-fit w-full flex-col items-center sm:h-2/5 sm:w-1/2">
             <p className=" text-2xl font-bold text-bo-red">What is GoodBids?</p>
             <iframe
               src={goodBidsIntroVideo}
