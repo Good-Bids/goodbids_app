@@ -34,7 +34,7 @@ export const LearnMoreDialog = () => {
           Learn More about GoodBids
         </p>
       </DialogTrigger>
-      <DialogContent className="sm:w-80% h-fit sm:max-w-[1200px]">
+      <DialogContent className="sm:w-80% sm:max-w-[800px]">
         <div
           className={`mt-4 flex w-full flex-col items-center gap-4 px-1 py-2 sm:px-2 sm:py-4`}
         >
