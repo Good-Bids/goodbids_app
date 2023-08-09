@@ -38,15 +38,15 @@ const Home = () => {
   const prizes = ["Trek", "Watch"];
 
   return (
-    <div className="flex h-full w-11/12 flex-col flex-nowrap items-center justify-center pb-14">
+    <div className="flex h-full w-11/12 flex-col flex-nowrap items-center justify-center">
       {showHome && (
-        <div className="align-center flex h-fit w-full flex-col flex-nowrap justify-start gap-8 overflow-y-auto sm:h-full sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-12">
+        <div className="align-center flex h-fit w-full flex-col flex-nowrap justify-start gap-8 overflow-y-auto sm:h-fit sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-12">
           {prizes.map((prize) => {
             const lowercasePrize = prize.toLowerCase() as "trek" | "watch";
             return (
               <Link
                 href={`/${lowercasePrize}`}
-                className="container mt-4 flex h-[450px] w-full flex-col rounded sm:w-2/5 sm:justify-between sm:gap-6 sm:border sm:px-4 sm:py-8 sm:drop-shadow"
+                className="container mt-4 flex h-fit w-full flex-col rounded sm:h-[450px] sm:w-2/5 sm:justify-between sm:gap-6 sm:border sm:px-4 sm:py-8 sm:drop-shadow"
               >
                 <p className="my-0 text-center text-2xl font-bold text-bo-red underline">
                   The {prize} Auction
@@ -73,13 +73,18 @@ const Home = () => {
               </Link>
             );
           })}
-          <div className="mb-24 mt-4 flex aspect-video h-fit w-full flex-col items-center sm:mb-0 sm:h-2/5 sm:w-1/2">
+          <div
+            className={`mt-4 flex aspect-video h-fit w-full flex-col items-center sm:mb-0 ${
+              introVideoDimensions === "0px" ? "sm:w-fit" : "sm:w-1/2"
+            }`}
+          >
             <iframe
               src={goodBidsIntroVideo}
               allow="fullscreen; picture-in-picture; autoplay"
+              className={introVideoDimensions === "0px" ? "hidden" : "visible"}
               style={{
-                width: introVideoDimensions,
-                height: introVideoDimensions,
+                height: "100%",
+                width: "100%",
               }}
               title="buildOn and GoodBids"
             />
