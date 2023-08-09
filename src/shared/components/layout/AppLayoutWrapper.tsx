@@ -78,10 +78,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
           passHref
           target="_blank"
         >
-          <div
-            className="flex h-fit w-[156px] flex-col 
-          gap-1 sm:w-[380px] sm:flex-row sm:items-center sm:gap-0"
-          >
+          <div className="flex h-fit w-[156px] flex-col gap-[6px] sm:w-[380px] sm:flex-row sm:items-center sm:gap-0">
             <p className="text-xs text-outerSpace-600">Powered by</p>
             <div className="relative my-[-16px] flex h-12 w-full sm:my-0 sm:h-6 sm:w-[135px]">
               <Image
@@ -93,7 +90,9 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
                 fill
               />
             </div>
-            <p className="text-xs text-outerSpace-600">Contact GoodBids</p>
+            <p className="mt-1 text-xs text-outerSpace-600 sm:mt-0">
+              Contact GoodBids
+            </p>
           </div>
         </Link>
         <div className=" h-fit flex-col items-center justify-center sm:flex-row">

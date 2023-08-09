@@ -11,6 +11,7 @@ import {
 const Home = () => {
   const router = useRouter();
   const [showHome, setShowHome] = useState(false);
+  const [introVideoDimensions, setIntroVideoDimensions] = useState("0px");
   useEffect(() => {
     if (window) {
       // if the user has come from the redirect page
@@ -37,20 +38,20 @@ const Home = () => {
   const prizes = ["Trek", "Watch"];
 
   return (
-    <div className="flex h-full w-11/12 flex-col flex-nowrap items-center justify-center pb-10">
+    <div className="flex h-full w-11/12 flex-col flex-nowrap items-center justify-center pb-14">
       {showHome && (
-        <div className="align-center flex h-fit w-full flex-col flex-nowrap justify-start gap-4 overflow-y-auto sm:h-full sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-12">
+        <div className="align-center flex h-fit w-full flex-col flex-nowrap justify-start gap-8 overflow-y-auto sm:h-full sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-12">
           {prizes.map((prize) => {
             const lowercasePrize = prize.toLowerCase() as "trek" | "watch";
             return (
               <Link
                 href={`/${lowercasePrize}`}
-                className="container mt-4 flex h-2/5 w-full flex-col rounded sm:h-1/2 sm:w-2/5 sm:justify-between sm:gap-6 sm:border sm:px-4 sm:py-8 sm:drop-shadow"
+                className="container mt-4 flex h-[450px] w-full flex-col rounded sm:w-2/5 sm:justify-between sm:gap-6 sm:border sm:px-4 sm:py-8 sm:drop-shadow"
               >
                 <p className="my-0 text-center text-2xl font-bold text-bo-red underline">
                   The {prize} Auction
                 </p>
-                <div className=" relative flex aspect-video w-full flex-col items-center gap-2">
+                <div className="relative flex aspect-video w-full flex-col items-center gap-2">
                   <iframe
                     src={prizeVideoUrls[lowercasePrize]}
                     allow="fullscreen; picture-in-picture"
@@ -73,16 +74,25 @@ const Home = () => {
             );
           })}
           <div className="mb-24 mt-4 flex aspect-video h-fit w-full flex-col items-center sm:mb-0 sm:h-2/5 sm:w-1/2">
-            <p className=" text-2xl font-bold text-bo-red">What is GoodBids?</p>
             <iframe
               src={goodBidsIntroVideo}
-              allow="fullscreen; picture-in-picture"
+              allow="fullscreen; picture-in-picture; autoplay"
               style={{
-                width: "100%",
-                height: "100%",
+                width: introVideoDimensions,
+                height: introVideoDimensions,
               }}
               title="buildOn and GoodBids"
             />
+            <p
+              className=" cursor-pointer text-lg font-bold text-bo-red underline"
+              onClick={() =>
+                setIntroVideoDimensions((prior) =>
+                  prior === "0px" ? "100%" : "0px"
+                )
+              }
+            >
+              Lean More about GoodBids
+            </p>
           </div>
         </div>
       )}
