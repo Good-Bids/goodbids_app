@@ -36,7 +36,7 @@ export const LearnMoreDialog = () => {
       </DialogTrigger>
       <DialogContent className="sm:w-80% h-fit sm:max-w-[1200px]">
         <div
-          className={`mt-4 flex aspect-video h-fit w-full flex-col items-center gap-4 px-1 py-2 sm:px-2 sm:py-4`}
+          className={`mt-4 flex h-fit w-full flex-col items-center gap-4 px-1 py-2 sm:px-2 sm:py-4`}
         >
           <p className="text-center text-lg font-bold text-bo-red">
             Watch this video to learn more about GoodBids
@@ -44,7 +44,7 @@ export const LearnMoreDialog = () => {
           <iframe
             src={goodBidsIntroVideo}
             allow="fullscreen; picture-in-picture; autoplay"
-            className="mb-2 h-full sm:w-full"
+            className="mb-2 aspect-video sm:w-full"
             title="buildOn and GoodBids"
           />
         </div>
