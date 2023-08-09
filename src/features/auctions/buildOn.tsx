@@ -3,6 +3,7 @@ import { ImageCarousel } from "~/components/ImageCarousel";
 import { useMessageBus } from "~/contexts/Subscriptions";
 import { PayPalDialog } from "~/features/auctions/PayPalDialog";
 import { useAuctionQuery } from "~/hooks/useAuction";
+import { useAuctionTimer } from "~/hooks/useAuctionTimer";
 import { useStorageItemsQuery } from "~/hooks/useStorage";
 import { useUserQuery } from "~/hooks/useUser";
 import { buildOnAuctionIds, fileStoragePath } from "~/utils/constants";
@@ -66,6 +67,9 @@ export const BuildOn = (props: { prize: "trek" | "watch" }) => {
     }
   }, [userData]);
 
+  const isWithinTimeRange =
+    new Date(displayAuction?.start_date ?? "") <= new Date();
+
   return displayAuction ? (
     <div className="flex h-fit w-full flex-col pb-4 sm:h-full sm:w-full sm:flex-row sm:overflow-y-clip sm:pb-0">
       <div className="flex max-h-full w-full flex-col overflow-y-auto sm:mr-8 sm:h-full sm:w-4/5 sm:pt-20">
@@ -81,7 +85,7 @@ export const BuildOn = (props: { prize: "trek" | "watch" }) => {
               prize={prize}
             />
             <div className="my-4 flex flex-col gap-4 py-4">
-              {new Date(displayAuction.start_date) <= new Date() && (
+              {isWithinTimeRange && (
                 <>
                   <PayPalDialog
                     bidValue={nextBidValue}
