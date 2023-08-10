@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -20,6 +20,8 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
   const prize = router.pathname.includes("watch") ? "watch" : "trek";
   const colorString = charityColorTailwindString["buildOn"];
 
+  const [innerHeight, setInnerHeight] = useState(0);
+
   const userIsNotSignedIn = user == null;
 
   const handleLogoutClick = async () => {
@@ -28,8 +30,14 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
     });
   };
 
+  useEffect(() => {
+    if (document !== undefined) {
+      setInnerHeight(document.body.clientHeight);
+    }
+  }, []);
+
   return (
-    <div className="flex h-full w-full flex-col">
+    <div className={`flex h-[${innerHeight}] w-full flex-col`}>
       <div className="fixed left-0 right-0 top-0 z-10 flex h-[72px] w-full flex-col items-center shadow">
         <div
           id="appLayoutWrapperHead"
@@ -67,45 +75,47 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
         id="appLayoutWrapperMain"
         className="fixed left-0 right-0 top-[72px] z-0 mx-0 flex h-[calc(100vh_-_72px)] flex-col items-center justify-start self-center overflow-y-auto sm:left-[50%] sm:w-full sm:max-w-[1440px] sm:translate-x-[-50%] sm:px-4"
       >
-        {children}
-        <div
-          id="appLayoutWrapperFooter"
-          className="flex h-[72px] w-full flex-row items-start justify-between self-start border-t-[1px] border-outerSpace-100 bg-white px-2 py-2 sm:ml-[-16px] sm:h-fit sm:w-[calc(100%_+_32px)] sm:px-4 sm:py-2"
-        >
-          <Link
-            href="https://forms.gle/o4Lj8A1NEEAnfjHNA"
-            passHref
-            target="_blank"
-          >
-            <div className="flex h-fit w-[156px] flex-col gap-[6px] sm:w-[380px] sm:flex-row sm:items-center sm:gap-0">
-              <p className="text-xs text-outerSpace-600">Powered by</p>
-              <div className="relative my-[-16px] flex h-12 w-full sm:my-0 sm:h-6 sm:w-[135px]">
-                <Image
-                  src="/logoWithText-bottleGreen.png"
-                  alt="GoodBids Logo"
-                  sizes="100%"
-                  style={{ objectFit: "contain", opacity: "55%" }}
-                  priority
-                  fill
-                />
-              </div>
-              <p className="mt-1 text-xs text-outerSpace-600 sm:mt-0">
-                Contact GoodBids
-              </p>
-            </div>
-          </Link>
-          <div className=" h-fit flex-col items-center justify-center sm:flex-row">
-            <p className="text-xs text-outerSpace-600 sm:inline">
-              © Do You Zoom, Inc.
-            </p>
-            <Link href="/terms">
-              <p className="text-xs text-bo-red sm:inline sm:pl-4">
-                Terms of Service
-              </p>
-            </Link>
-          </div>
+        <div className="h-[calc(100%_-_144px)] w-full sm:h-[calc(100%_-_72px)]">
+          {children}
         </div>
       </main>
+      <div
+        id="appLayoutWrapperFooter"
+        className="fixed bottom-0 flex h-[72px] w-full flex-row items-start justify-between self-start border-t-[1px] border-outerSpace-100 bg-white px-2 py-2 sm:ml-[-16px] sm:h-fit sm:w-[calc(100%_+_32px)] sm:px-6 sm:py-2"
+      >
+        <Link
+          href="https://forms.gle/o4Lj8A1NEEAnfjHNA"
+          passHref
+          target="_blank"
+        >
+          <div className="flex h-fit w-[156px] flex-col gap-[6px] sm:w-[380px] sm:flex-row sm:items-center sm:gap-0">
+            <p className="text-xs text-outerSpace-600">Powered by</p>
+            <div className="relative my-[-16px] flex h-12 w-full sm:my-0 sm:h-6 sm:w-[135px]">
+              <Image
+                src="/logoWithText-bottleGreen.png"
+                alt="GoodBids Logo"
+                sizes="100%"
+                style={{ objectFit: "contain", opacity: "55%" }}
+                priority
+                fill
+              />
+            </div>
+            <p className="mt-1 text-xs text-outerSpace-600 sm:mt-0">
+              Contact GoodBids
+            </p>
+          </div>
+        </Link>
+        <div className=" h-fit flex-col items-center justify-center sm:flex-row">
+          <p className="text-xs text-outerSpace-600 sm:inline">
+            © Do You Zoom, Inc.
+          </p>
+          <Link href="/terms">
+            <p className="text-xs text-bo-red sm:inline sm:pl-4">
+              Terms of Service
+            </p>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };

@@ -37,15 +37,15 @@ const Home = () => {
   const prizes = ["Trek", "Watch"];
 
   return (
-    <div className="flex h-fit w-11/12 flex-col flex-nowrap items-center justify-center sm:h-full">
+    <div className="flex h-full w-full flex-col flex-nowrap items-center justify-center sm:h-full ">
       {showHome && (
-        <div className="align-center flex h-fit w-full flex-col flex-nowrap justify-start gap-8 overflow-y-auto sm:h-fit sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-12">
+        <div className="align-center flex h-fit w-full flex-col flex-nowrap items-center justify-start gap-8 overflow-y-auto sm:h-fit sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-12">
           {prizes.map((prize) => {
             const lowercasePrize = prize.toLowerCase() as "trek" | "watch";
             return (
               <Link
                 href={`/${lowercasePrize}`}
-                className="container mt-4 flex h-fit w-full flex-col rounded sm:h-[450px] sm:w-2/5 sm:justify-between sm:gap-6 sm:border sm:px-4 sm:py-8 sm:drop-shadow"
+                className="container mt-4 flex h-fit w-10/12 flex-col rounded sm:h-[450px] sm:w-2/5 sm:justify-between sm:gap-6 sm:border sm:px-4 sm:py-8 sm:drop-shadow"
               >
                 <p className="my-0 text-center text-2xl font-bold text-bo-red underline">
                   The {prize} Auction
