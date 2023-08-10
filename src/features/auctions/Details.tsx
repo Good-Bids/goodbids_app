@@ -21,7 +21,7 @@ export const Details = (props: {
   const { imgSrc, imgAlt, copy, className } = prizeCopy[prize];
 
   return (
-    <div className="mx-2 my-2 flex w-full flex-col self-center sm:w-10/12 sm:max-w-[500px]">
+    <div className="mx-2 mb-20 mt-2 flex w-full flex-col self-center sm:mb-2 sm:w-10/12 sm:max-w-[500px]">
       <div
         className="mx-4 flex h-[76px] max-w-full cursor-pointer flex-row items-center justify-between border-y pr-20"
         onClick={() => setShowItemDetails((prior) => !prior)}
@@ -61,7 +61,7 @@ export const Details = (props: {
       <div
         className={`mx-4 my-2 ${
           showCharityDetails ? "visible" : "hidden"
-        } flex flex-col gap-4`}
+        } mb flex flex-col gap-4`}
       >
         {/* prompt: Can you write 250 words about buildOn and why it's a wonderful charity to support */}
         <div className="relative flex aspect-[1.6155115511551] w-full">
