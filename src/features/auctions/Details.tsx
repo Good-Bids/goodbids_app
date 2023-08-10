@@ -21,7 +21,7 @@ export const Details = (props: {
   const { imgSrc, imgAlt, copy, className } = prizeCopy[prize];
 
   return (
-    <div className="mx-2 mb-20 mt-2 flex w-full flex-col self-center sm:mb-2 sm:w-10/12 sm:max-w-[500px]">
+    <div className="mx-2 mt-2 flex w-full flex-col self-center sm:mb-2 sm:w-10/12 sm:max-w-[500px]">
       <div
         className="mx-4 flex h-[76px] max-w-full cursor-pointer flex-row items-center justify-between border-y pr-20"
         onClick={() => setShowItemDetails((prior) => !prior)}
