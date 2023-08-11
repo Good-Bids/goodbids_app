@@ -73,7 +73,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
       </div>
       <main
         id="appLayoutWrapperMain"
-        className="fixed left-0 right-0 top-[72px] z-0 mx-0 flex h-[calc(100svh_-_144px)] flex-col items-center justify-start self-center overflow-y-auto border-2 border-blue-600 sm:left-[50%] sm:w-full sm:max-w-[1440px] sm:translate-x-[-50%] sm:px-4"
+        className="fixed left-0 right-0 top-[72px] z-0 mx-0 flex h-[calc(100svh_-_144px)] flex-col items-center justify-start self-center overflow-y-auto sm:left-[50%] sm:w-full sm:max-w-[1440px] sm:translate-x-[-50%] sm:px-4"
       >
         <div className="h-full w-full">{children}</div>
       </main>
