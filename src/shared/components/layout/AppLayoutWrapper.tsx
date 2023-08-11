@@ -37,7 +37,7 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
   }, []);
 
   return (
-    <div className={`flex h-[100svh] w-full flex-col`}>
+    <div className={`flex h-[calc(100svh)] w-full flex-col`}>
       <div className="fixed left-0 right-0 top-0 z-10 flex h-[72px] w-full flex-col items-center shadow">
         <div
           id="appLayoutWrapperHead"
