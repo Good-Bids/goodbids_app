@@ -47,7 +47,10 @@ export const AuctionData = ({
         bidCount: bidsData?.length ?? 0,
         totalRaised:
           bidsData
-            ?.filter((item) => item.bid_status === "COMPLETE")
+            ?.filter(
+              (bid) =>
+                bid.bid_status === "COMPLETE" && bid.free_bid_flag !== true
+            )
             .reduce((acc, curr) => acc + curr.bid_value, 0) ?? 0,
         totalParticipants:
           bidsData
@@ -87,7 +90,7 @@ export const AuctionData = ({
 
   const hasStarted = new Date(auction.start_date) <= new Date();
 
-  const { string: timeLeft } = useAuctionTimer({
+  const { timeLeftString, timeLeftValues } = useAuctionTimer({
     auction,
     onTimeUpdate: (arg0: boolean) => {
       if (hasStarted) {
@@ -117,10 +120,18 @@ export const AuctionData = ({
             fill="rgb(220 38 38)"
           />
         </svg>
-        {hasStarted ? (
+        {timeLeftValues &&
+        timeLeftValues.hoursLeft +
+          timeLeftValues.minutesLeft +
+          timeLeftValues.secondsLeft <=
+          0 ? (
+          <p className="text-base font-bold text-bo-red sm:text-lg">
+            Auction Complete - Thanks for Playing!
+          </p>
+        ) : hasStarted ? (
           <span className="text-base sm:text-lg">
             {`Ending in `}
-            <span className="font-bold text-bo-red">{timeLeft}</span>
+            <span className="font-bold text-bo-red">{timeLeftString}</span>
             {` if nobody else bids`}
           </span>
         ) : (

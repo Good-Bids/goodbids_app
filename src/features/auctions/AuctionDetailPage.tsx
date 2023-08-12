@@ -144,7 +144,7 @@ export const AuctionDetailPage = () => {
       } looking at this auction right now.`;
   };
 
-  const { string: timeLeft } = useAuctionTimer({
+  const { timeLeftString: timeLeft } = useAuctionTimer({
     auction: displayAuction as Auction,
     onTimeUpdate: setAuctionIsActive,
     interval: 100,

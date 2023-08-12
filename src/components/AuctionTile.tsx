@@ -26,7 +26,7 @@ export const AuctionTile = (props: { auction: Auction }) => {
     }
   }, [images]);
 
-  const { string: timeLeft } = useAuctionTimer({
+  const { timeLeftString: timeLeft } = useAuctionTimer({
     auction,
     onTimeUpdate: () => {
       return;

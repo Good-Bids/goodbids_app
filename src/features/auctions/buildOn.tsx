@@ -71,7 +71,7 @@ export const BuildOn = (props: { prize: "trek" | "watch" }) => {
     new Date(displayAuction?.start_date ?? "") <= new Date();
 
   return displayAuction ? (
-    <div className="flex h-fit w-full flex-col overflow-y-auto pb-4 sm:h-full sm:w-full sm:flex-row sm:overflow-y-clip sm:pb-0">
+    <div className="flex h-fit w-full flex-col items-end overflow-y-auto pb-4 sm:h-full sm:w-full sm:flex-row sm:overflow-y-clip sm:pb-0">
       <div className="flex max-h-full w-full flex-col overflow-y-auto sm:mr-8 sm:h-full sm:w-4/5 sm:pt-20">
         <div className="flex w-full flex-col sm:h-fit sm:flex-row sm:gap-2">
           {imageUrls && <ImageCarousel sources={imageUrls} />}
