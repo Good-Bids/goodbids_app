@@ -35,7 +35,7 @@ export const CommentContainer = ({ auctionId, charity }: CommentContainer) => {
   }, [displayData]);
 
   return (
-    <div className="overflow-y-clip sm:mb-4 sm:mt-2 sm:flex sm:h-[92%] sm:min-w-[280px] sm:flex-col sm:gap-0 sm:border-[1px] sm:border-outerSpace-100">
+    <div className="w-full overflow-y-clip sm:mb-4 sm:mt-2 sm:flex sm:h-[92%] sm:w-[280px] sm:flex-col sm:gap-0 sm:border-[1px] sm:border-outerSpace-100">
       <div
         className="sm:h-1/12 mb-0 mt-4 flex max-w-full flex-row items-center justify-start gap-2 border-t px-4 pt-4 sm:mb-2 sm:mt-0  sm:pb-2 sm:pt-0"
         onClick={() => setShowComments((prior) => !prior)}
