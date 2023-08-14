@@ -278,18 +278,23 @@ export const PayPalDialog = ({
             </p>
           ) : (
             <>
-              <button
-                className={`container rounded border-2 border-${colorString} bg-${colorString} px-4 py-3 text-xl font-bold text-white`}
-                onClick={openBidDialog}
-              >
-                <p className="text-xl font-bold text-white">
-                  {!canBid
-                    ? `Someone else is placing a bid right now.`
-                    : !!userData
-                    ? `GoodBid $${cleanBidValue} now`
-                    : `Log in now to bid $${cleanBidValue}`}
+              {canBid ? (
+                <button
+                  className={`container rounded border-2 border-${colorString} bg-${colorString} px-4 py-3 text-xl font-bold text-white`}
+                  onClick={openBidDialog}
+                >
+                  <p className="text-xl font-bold text-white">
+                    {!!userData
+                      ? `GoodBid $${cleanBidValue} now`
+                      : `Log in now to bid $${cleanBidValue}`}
+                  </p>
+                </button>
+              ) : (
+                <p className="rounded bg-outerSpace-50 px-4 py-2 text-center text-lg text-outerSpace-600">
+                  {" "}
+                  Someone else is placing a bid right now
                 </p>
-              </button>
+              )}
             </>
           )}
         </div>
@@ -297,9 +302,7 @@ export const PayPalDialog = ({
       <DialogContent className="overflow-y-auto py-2 sm:max-h-[85vh] sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            <p className="p-2 text-center">
-              GoodBid ${cleanBidValue} for {auction.name}
-            </p>
+            <p className="p-2 text-center">GoodBid now for {auction.name}</p>
           </DialogTitle>
           <DialogDescription>
             <p className="p-2">
