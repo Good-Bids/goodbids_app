@@ -126,7 +126,7 @@ export const AuctionData = ({
           timeLeftValues.secondsLeft <=
           0 ? (
           <p className="text-base font-bold text-bo-red sm:text-lg">
-            Auction Complete - Thanks for Playing
+            Auction Complete - Thanks for Playing!
           </p>
         ) : hasStarted ? (
           <span className="text-base sm:text-lg">
