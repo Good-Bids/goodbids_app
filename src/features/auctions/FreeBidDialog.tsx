@@ -103,7 +103,7 @@ export const FreeBidDialog = ({
     action: "redeem",
     freeBidId: freeBidsData?.[0]?.free_bid_id,
     type: freeBidsData?.[0]?.free_bid_type as FreeBidType,
-    value: bidValue,
+    value: bidValue - auction.increment,
   });
 
   const handleFreeBidRedemption = async () => {
