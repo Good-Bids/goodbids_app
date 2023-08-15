@@ -238,8 +238,9 @@ export const updateBidTable = async (args: {
   bidAmount: number;
   bidState: "PENDING" | "CANCELLED" | "COMPLETE";
   bidId?: string;
+  freeBidFlag?: boolean;
 }) => {
-  const { auctionId, userId, bidAmount, bidState, bidId } = args;
+  const { auctionId, userId, bidAmount, bidState, bidId, freeBidFlag } = args;
   switch (bidState) {
     case "PENDING": {
       try {
@@ -300,6 +301,7 @@ export const updateBidTable = async (args: {
               bidder_id: userId,
               charity_id: auction.data.charity_id,
               bid_id: bidId,
+              free_bid_flag: freeBidFlag,
             });
             if (insert.status == 201) {
               return { ...insert, bidId };
@@ -345,12 +347,20 @@ export const useBidMutation = (args: {
   bidAmount: number;
   bidState: "PENDING" | "CANCELLED" | "COMPLETE";
   bidId?: string;
+  freeBidFlag?: boolean;
 }) => {
-  const { auctionId, userId, bidAmount, bidState, bidId } = args;
+  const { auctionId, userId, bidAmount, bidState, bidId, freeBidFlag } = args;
   const bidMutation = useMutation({
     mutationKey: ["updateBid", `${auctionId}_${userId}_${bidAmount}_${bidId}`],
     mutationFn: async () =>
-      await updateBidTable({ auctionId, userId, bidAmount, bidState, bidId }),
+      await updateBidTable({
+        auctionId,
+        userId,
+        bidAmount,
+        bidState,
+        bidId,
+        freeBidFlag,
+      }),
   });
   return bidMutation;
 };
