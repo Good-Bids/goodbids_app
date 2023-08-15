@@ -36,7 +36,9 @@ export const useAuctionTimer = (args: AuctionTimerArgs) => {
 
     return {
       timeLeftString:
-        hoursLeft + ":" + formattedMinutesLeft + ":" + formattedSecondsLeft,
+        minutesLeft < 1
+          ? "less than a minute"
+          : hoursLeft + ":" + formattedMinutesLeft + ":" + formattedSecondsLeft,
       timeLeftValues: {
         hoursLeft,
         minutesLeft,
