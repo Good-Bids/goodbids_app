@@ -120,9 +120,26 @@ export const AuctionData = ({
             fill="rgb(220 38 38)"
           />
         </svg>
-        <p className="text-base font-bold text-bo-red sm:text-lg">
-          Auction Complete - Thanks for Playing!
-        </p>
+        {timeLeftValues &&
+        timeLeftValues.hoursLeft +
+          timeLeftValues.minutesLeft +
+          timeLeftValues.secondsLeft <=
+          0 ? (
+          <p className="text-base font-bold text-bo-red sm:text-lg">
+            Auction Complete - Thanks for Playing
+          </p>
+        ) : hasStarted ? (
+          <span className="text-base sm:text-lg">
+            {`Ending in `}
+            <span className="font-bold text-bo-red">{timeLeftString}</span>
+            {` if nobody else bids`}
+          </span>
+        ) : (
+          <span className="text-base sm:text-lg">
+            {`Auction goes live on `}
+            <span className="font-bold text-bo-red">{startDate}</span>
+          </span>
+        )}
       </div>
       <div
         className="flex w-full border-collapse flex-row items-center justify-start gap-2 border-b border-y-outerSpace-100 py-3"
