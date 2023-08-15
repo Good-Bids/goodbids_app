@@ -26,6 +26,7 @@ const updateFreeBids = async (args: {
   userId: string;
   type?: FreeBidType;
   action: "redeem" | "earn";
+  value?: number;
 }) => {
   try {
     const {
@@ -34,6 +35,7 @@ const updateFreeBids = async (args: {
       type: free_bid_type,
       freeBidId: free_bid_id,
       action,
+      value,
     } = args;
     switch (action) {
       case "earn":
@@ -57,6 +59,7 @@ const updateFreeBids = async (args: {
               bidder_id,
               free_bid_type,
               free_bid_id,
+              redeemed_value: value,
             })
             .eq("free_bid_id", free_bid_id);
           return result;
@@ -86,6 +89,7 @@ export const useFreeBidsMutation = (args: {
   auctionId: string;
   action: "redeem" | "earn";
   type: FreeBidType;
+  value?: number;
 }) => {
   const mutation = useMutation({
     mutationKey: ["updateFreeBids", args.freeBidId],

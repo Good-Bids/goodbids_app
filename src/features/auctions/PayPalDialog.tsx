@@ -118,7 +118,10 @@ export const PayPalDialog = ({
     bidsData && bidsData.length <= 10 && !hasFreeEarlyBid;
   const canEarnFreeOftenBid =
     bidsData &&
-    bidsData.filter((item) => item.bidder_id === userData?.id).length > 2 &&
+    bidsData.filter(
+      (item) =>
+        item.bidder_id === userData?.id && item.bid_status === "COMPLETE"
+    ).length > 2 &&
     !hasFreeOftenBid;
 
   const handleEarnFreeBid = async () => {

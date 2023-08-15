@@ -198,6 +198,61 @@ export interface Database {
           }
         ]
       }
+      bid_complete: {
+        Row: {
+          auction_id: string | null
+          auction_title: string | null
+          bid_id: string
+          bid_used_free_bid: boolean | null
+          bid_value: number | null
+          created_at: string
+          id: number
+          user_email: string | null
+          user_id: string
+        }
+        Insert: {
+          auction_id?: string | null
+          auction_title?: string | null
+          bid_id: string
+          bid_used_free_bid?: boolean | null
+          bid_value?: number | null
+          created_at?: string
+          id?: number
+          user_email?: string | null
+          user_id: string
+        }
+        Update: {
+          auction_id?: string | null
+          auction_title?: string | null
+          bid_id?: string
+          bid_used_free_bid?: boolean | null
+          bid_value?: number | null
+          created_at?: string
+          id?: number
+          user_email?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bid_complete_auction_id_fkey"
+            columns: ["auction_id"]
+            referencedRelation: "auction"
+            referencedColumns: ["auction_id"]
+          },
+          {
+            foreignKeyName: "bid_complete_bid_id_fkey"
+            columns: ["bid_id"]
+            referencedRelation: "bid"
+            referencedColumns: ["bid_id"]
+          },
+          {
+            foreignKeyName: "bid_complete_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       charity: {
         Row: {
           charity_id: string
@@ -275,6 +330,7 @@ export interface Database {
           created_at: string | null
           free_bid_id: string
           free_bid_type: string | null
+          redeemed_value: number | null
           status: string
         }
         Insert: {
@@ -283,6 +339,7 @@ export interface Database {
           created_at?: string | null
           free_bid_id?: string
           free_bid_type?: string | null
+          redeemed_value?: number | null
           status?: string
         }
         Update: {
@@ -291,6 +348,7 @@ export interface Database {
           created_at?: string | null
           free_bid_id?: string
           free_bid_type?: string | null
+          redeemed_value?: number | null
           status?: string
         }
         Relationships: [
