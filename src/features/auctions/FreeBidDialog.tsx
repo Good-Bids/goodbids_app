@@ -103,6 +103,7 @@ export const FreeBidDialog = ({
     action: "redeem",
     freeBidId: freeBidsData?.[0]?.free_bid_id,
     type: freeBidsData?.[0]?.free_bid_type as FreeBidType,
+    value: bidValue,
   });
 
   const handleFreeBidRedemption = async () => {
@@ -185,7 +186,7 @@ export const FreeBidDialog = ({
         <DialogHeader>
           <DialogTitle>
             <p className="p-2 pb-0 text-center text-2xl text-bo-red">
-              Use ${bidValue - auction.increment} Free Bid
+              Use Free Bid
             </p>
           </DialogTitle>
           <DialogDescription>
