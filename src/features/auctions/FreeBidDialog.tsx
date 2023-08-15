@@ -82,6 +82,7 @@ export const FreeBidDialog = ({
     bidAmount: bidValue,
     bidState: "COMPLETE",
     bidId,
+    freeBidFlag: true,
   });
   const bidCancellation = useBidMutation({
     auctionId: auction.auction_id,
