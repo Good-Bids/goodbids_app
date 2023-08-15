@@ -120,11 +120,7 @@ export const AuctionData = ({
             fill="rgb(220 38 38)"
           />
         </svg>
-        {timeLeftValues &&
-        timeLeftValues.hoursLeft +
-          timeLeftValues.minutesLeft +
-          timeLeftValues.secondsLeft <=
-          0 ? (
+        {timeLeftValues && timeLeftValues.hoursLeft < 0 ? (
           <p className="text-base font-bold text-bo-red sm:text-lg">
             Auction Complete - Thanks for Playing!
           </p>
