@@ -89,7 +89,7 @@ export const useFreeBidsMutation = (args: {
   auctionId: string;
   action: "redeem" | "earn";
   type: FreeBidType;
-  value: number;
+  value?: number;
 }) => {
   const mutation = useMutation({
     mutationKey: ["updateFreeBids", args.freeBidId],
