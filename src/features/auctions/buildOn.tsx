@@ -68,7 +68,7 @@ export const BuildOn = (props: { prize: "trek" | "watch" }) => {
   }, [userData]);
 
   const isWithinTimeRange =
-    new Date(displayAuction?.start_date ?? "") <= new Date();
+    new Date(displayAuction?.start_date ?? "") <= new Date() && auctionIsActive;
 
   return displayAuction ? (
     <div className="flex h-fit w-full flex-col items-end overflow-y-auto pb-4 sm:h-full sm:w-full sm:flex-row sm:overflow-y-clip sm:pb-0">
