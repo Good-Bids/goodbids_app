@@ -12,6 +12,9 @@ const Home = () => {
       <a href="https://bit.ly/goodbidsquestion" target="_blank">
         <p className="mt-4 text-xl font-bold">Contact Us</p>
       </a>
+      <a href="/privacy">
+        <p className="mt-4 text-xl font-bold">Privacy Policy</p>
+      </a>
     </div>
   );
 };
