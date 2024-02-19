@@ -23,6 +23,10 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           content="Every bid is a donation, every donation is a bid."
           key="desc"
         />
+        <meta
+          name="facebook-domain-verification"
+          content="fyp3n1kepkxgs80hrgwfktmrzi9csv"
+        />
         <meta property="og:title" content="GoodBids | Auctions for a cause " />
         <meta
           property="og:description"
