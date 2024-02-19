@@ -33,11 +33,22 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
       </main>
       <div
         id="appLayoutWrapperFooter"
-        className="fixed bottom-0 flex h-[72px] w-full flex-row items-center border-t-[1px] border-outerSpace-100 bg-white px-2 py-2 sm:ml-[-16px] sm:h-fit sm:px-6 sm:py-2"
+        className="fixed bottom-0 flex h-[72px] w-full flex-row items-center space-x-4 border-t-[1px] border-outerSpace-100 bg-white px-2 py-2 sm:ml-[-16px] sm:h-fit sm:px-6 sm:py-2"
       >
         <p className="sm:inlinem w-fit text-xs text-outerSpace-600">
           © Do You Zoom, Inc.
         </p>
+        <a href="/terms">
+          <p className="sm:inlinem w-fit text-xs text-outerSpace-600">
+            Terms of Service
+          </p>
+        </a>
+
+        <a href="/privacy">
+          <p className="sm:inlinem w-fit text-xs text-outerSpace-600">
+            Privacy Policy
+          </p>
+        </a>
       </div>
     </div>
   );
