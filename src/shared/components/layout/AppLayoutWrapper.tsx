@@ -49,6 +49,11 @@ export const AppLayoutWrapper = ({ children }: WrapperProps) => {
             Privacy Policy
           </p>
         </a>
+        <a href="/deleteDataRequest">
+          <p className="sm:inlinem w-fit text-xs text-outerSpace-600">
+            Data Deletion
+          </p>
+        </a>
       </div>
     </div>
   );
