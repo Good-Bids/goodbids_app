@@ -1,6 +1,6 @@
 const PrivacyPage = () => {
   return (
-    <div className="flex h-full w-full flex-col items-start justify-center gap-2">
+    <div className="top-[72px] flex h-fit w-full flex-col items-start justify-center gap-2 overflow-scroll">
       <h1 className=" text-4xl font-black text-bottleGreen">
         Privacy Policy for GOODBIDS
       </h1>

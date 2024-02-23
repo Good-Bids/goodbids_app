@@ -1,6 +1,6 @@
 const TermsOfServicePage = () => {
   return (
-    <div className="flex h-fit w-full flex-col items-start justify-center gap-2 px-4 py-2 text-bottleGreen">
+    <div className="top-[72px] flex h-fit w-full flex-col items-start justify-center gap-2 px-4 py-2 text-bottleGreen">
       <h1 className=" text-4xl font-black text-bottleGreen">
         Terms of Service for GOODBIDS
       </h1>
