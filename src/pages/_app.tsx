@@ -32,6 +32,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           property="og:description"
           content="Every Bid is a donation, every donation is a bid."
         />
+        <meta property="og:image" content="/opengraph-image.jpg" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <GoogleAnalyticsScript />
