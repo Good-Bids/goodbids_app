@@ -34,6 +34,10 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         />
         <meta property="og:image" content="/opengraph-image.jpg" />
         <link rel="icon" href="/favicon.ico" />
+        <script
+          src="//code.tidio.co/jriiol70hzu4hmkhyj068znnil9bptma.js"
+          async
+        ></script>
       </Head>
       <GoogleAnalyticsScript />
       <AppLayoutWrapper>
