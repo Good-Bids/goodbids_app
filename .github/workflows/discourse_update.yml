@@ -29,6 +29,6 @@ jobs:
           ISSUE_AUTHOR="${{ env.author }}"
           ISSUE_STATUS="${{ env.status }}"
           
-          JSON_DATA="{\"title\": \"$ISSUE_TITLE\", \"body\": \"$ISSUE_BODY\", \"author\": \"$ISSUE_AUTHOR\", \"status\": \"$ISSUE_STATUS\"}"
+          JSON_DATA="{\"title\": \"$ISSUE_TITLE\", \"body\": \"$ISSUE_BODY\", \"author\": \"$ISSUE_AUTHOR\", \"status\": \"$ISSUE_STATUS\", \"category\": 22}"
           
           curl -X POST -H "Authorization: Bearer ${{ secrets.DISCOURSE_API_TOKEN }}" -H "Content-Type: application/json" -d "$JSON_DATA" "$DISCOURSE_URL/api/update_category"
