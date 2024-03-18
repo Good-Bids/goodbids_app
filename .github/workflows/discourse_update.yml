@@ -22,8 +22,8 @@ jobs:
       
       - name: Post Update to Discourse
         run: |
-          DISCOURSE_API_TOKEN=$DISCOURSE_API_TOKEN
-          DISCOURSE_URL=$DISCOURSE_URL
+          DISCOURSE_API_TOKEN=$DISCOURSE_UPDATE_SECRET
+          DISCOURSE_URL=https://goodbids.discourse.group
           ISSUE_TITLE="${{ env.title }}"
           ISSUE_BODY="${{ env.body }}"
           ISSUE_AUTHOR="${{ env.author }}"
