@@ -2,7 +2,7 @@ name: Discourse Update
 
 on:
   issues:
-    types: [edited]
+    types: [opened, edited]
 
 jobs:
   update_discourse:
