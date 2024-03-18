@@ -15,10 +15,10 @@ jobs:
       - name: Get Issue Details
         id: issue_details
         run: |
-          echo "::set-output name=title::${{ github.event.issue.title }}"
-          echo "::set-output name=body::${{ github.event.issue.body }}"
-          echo "::set-output name=author::${{ github.event.issue.user.login }}"
-          echo "::set-output name=status::${{ github.event.issue.state }}"
+          echo "title=${{ github.event.issue.title }}" >> $GITHUB_ENV
+          echo "body=${{ github.event.issue.body }}" >> $GITHUB_ENV
+          echo "author=${{ github.event.issue.user.login }}" >> $GITHUB_ENV
+          echo "status=${{ github.event.issue.state }}" >> $GITHUB_ENV
       
       - name: Post Update to Discourse
         run: |
