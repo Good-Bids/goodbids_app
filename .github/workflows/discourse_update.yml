@@ -1,0 +1,34 @@
+name: Discourse Update
+
+on:
+  issues:
+    types: [edited]
+
+jobs:
+  update_discourse:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      
+      - name: Get Issue Details
+        id: issue_details
+        run: |
+          echo "::set-output name=title::${{ github.event.issue.title }}"
+          echo "::set-output name=body::${{ github.event.issue.body }}"
+          echo "::set-output name=author::${{ github.event.issue.user.login }}"
+          echo "::set-output name=status::${{ github.event.issue.state }}"
+      
+      - name: Post Update to Discourse
+        run: |
+          DISCOURSE_API_TOKEN=$DISCOURSE_API_TOKEN
+          DISCOURSE_URL=$DISCOURSE_URL
+          ISSUE_TITLE="${{ steps.issue_details.outputs.title }}"
+          ISSUE_BODY="${{ steps.issue_details.outputs.body }}"
+          ISSUE_AUTHOR="${{ steps.issue_details.outputs.author }}"
+          ISSUE_STATUS="${{ steps.issue_details.outputs.status }}"
+          
+          JSON_DATA="{\"title\": \"$ISSUE_TITLE\", \"body\": \"$ISSUE_BODY\", \"author\": \"$ISSUE_AUTHOR\", \"status\": \"$ISSUE_STATUS\"}"
+          
+          curl -X POST -H "Authorization: Bearer ${{ secrets.DISCOURSE_API_TOKEN }}" -H "Content-Type: application/json" -d "$JSON_DATA" "$DISCOURSE_URL/api/update_category"
