@@ -22,8 +22,8 @@ jobs:
       
       - name: Post Update to Discourse
         run: |
-          DISCOURSE_API_TOKEN=$DISCOURSE_API_TOKEN
-          DISCOURSE_URL=$DISCOURSE_URL
+          DISCOURSE_API_TOKEN=$DISCOURSE_UPDATE_SECRET
+          DISCOURSE_URL=https://goodbids.discourse.group/c/tiny/the-backlog
           ISSUE_TITLE="${{ steps.issue_details.outputs.title }}"
           ISSUE_BODY="${{ steps.issue_details.outputs.body }}"
           ISSUE_AUTHOR="${{ steps.issue_details.outputs.author }}"
