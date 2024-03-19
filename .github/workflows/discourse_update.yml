@@ -26,26 +26,21 @@ jobs:
           CSRF_TOKEN=$(curl -s https://goodbids.discourse.group/session/csrf.json | jq -r .csrf)
           echo "CSRF_TOKEN=${CSRF_TOKEN}" >> $GITHUB_ENV
 
-      - name: Encode Emojis
-        id: encode_emojis
+      - name: Encode JSON Payload
+        id: encode_json
         run: |
+          ISSUE_TITLE="${{ env.title }}"
           ISSUE_BODY="${{ env.body }}"
+          ISSUE_AUTHOR="${{ env.author }}"
+          ISSUE_STATUS="${{ env.status }}"
           
-          # Function to encode emojis as Unicode escape sequences
-          function encode_emojis() {
-              python3 -c 'import json; print(json.dumps("'${ISSUE_BODY}'", ensure_ascii=False))'
-          }
-          
-          # Call the function and store the result in an environment variable
-          ENCODED_BODY=$(encode_emojis)
-          echo "ENCODED_BODY=${ENCODED_BODY}" >> $GITHUB_ENV
+          # Encode emojis in the JSON payload using jq
+          ENCODED_JSON=$(jq -n --arg title "$ISSUE_TITLE" --arg body "$ISSUE_BODY" --arg author "$ISSUE_AUTHOR" --arg status "$ISSUE_STATUS" '{title: $title, body: $body, author: $author, status: $status | tonumber}')
+          echo "ENCODED_JSON=${ENCODED_JSON}" >> $GITHUB_ENV
       
       - name: Post Update to Discourse
         run: |
-          ISSUE_TITLE="${{ env.title }}"
-          ISSUE_BODY="${{ env.ENCODED_BODY }}"
-          ISSUE_AUTHOR="${{ env.author }}"
-          ISSUE_STATUS="${{ env.status }}"
+          ENCODED_JSON="${{ env.ENCODED_JSON }}"
           CSRF_TOKEN="${{ env.CSRF_TOKEN }}"
           
           JSON_DATA="{\"title\": \"$ISSUE_TITLE\", \"raw\": \"$ISSUE_BODY\", \"category\": 22}"
@@ -55,4 +50,4 @@ jobs:
                -H "Api-Key: ${{ secrets.DISCOURSE_UPDATE_SECRET }}" \
                -H "Api-Username: jaspercroome" \
                -H "X-CSRF-Token: $CSRF_TOKEN" \
-               -d "$JSON_DATA"
+               -d "${ENCODED_JSON}"
