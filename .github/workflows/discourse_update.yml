@@ -20,14 +20,25 @@ jobs:
           echo "author=${{ github.event.issue.user.login }}" >> $GITHUB_ENV
           echo "status=${{ github.event.issue.state }}" >> $GITHUB_ENV
       
+      - name: Fetch CSRF Token
+        id: csrf_token
+        run: |
+          CSRF_TOKEN=$(curl -s https://goodbids.discourse.group/session/csrf.json | jq -r .csrf)
+          echo "CSRF_TOKEN=${CSRF_TOKEN}" >> $GITHUB_ENV
+      
       - name: Post Update to Discourse
         run: |
-          DISCOURSE_API_TOKEN=$DISCOURSE_UPDATE_SECRET
           ISSUE_TITLE="${{ env.title }}"
           ISSUE_BODY="${{ env.body }}"
           ISSUE_AUTHOR="${{ env.author }}"
           ISSUE_STATUS="${{ env.status }}"
+          CSRF_TOKEN="${{ env.CSRF_TOKEN }}"
           
-          JSON_DATA="{\"title\": \"$ISSUE_TITLE\", \"body\": \"$ISSUE_BODY\", \"author\": \"$ISSUE_AUTHOR\", \"status\": \"$ISSUE_STATUS\", \"category\": 22}"
+          JSON_DATA="{\"title\": \"$ISSUE_TITLE\", \"raw\": \"$ISSUE_BODY\", \"category\": 22}"
           
-          curl -X POST "https://goodbids.discourse.group/posts.json" -H "Content-Type: application/json" -H "Api-Key: $DISCOURSE_API_TOKEN" -H "Api-Username: jaspercroome" -d "{\"title\": \"Test topic creation with the API\", \"raw\": \"And here's the topic's content\", \"category\": 22 }"
+          curl -X POST "https://goodbids.discourse.group/posts.json" \
+               -H "Content-Type: application/json" \
+               -H "Api-Key: ${{ secrets.DISCOURSE_UPDATE_SECRET }}" \
+               -H "Api-Username: jaspercroome" \
+               -H "X-CSRF-Token: $CSRF_TOKEN" \
+               -d "$JSON_DATA"
