@@ -35,7 +35,7 @@ jobs:
           ISSUE_STATUS="${{ env.status }}"
           
           # Encode emojis in the JSON payload using jq and write to file
-          jq -n --arg title "$ISSUE_TITLE" --arg body "$ISSUE_BODY" --arg author "$ISSUE_AUTHOR" --arg status "$ISSUE_STATUS" '{title: $title, body: $body, author: $author, status: $status | tonumber}' > encoded.json
+           jq -n --arg title "$ISSUE_TITLE" --arg body "$ISSUE_BODY" --arg author "$ISSUE_AUTHOR" '{title: $title, body: $body, author: $author, status: $ISSUE_STATUS | tonumber}' > encoded.json
       
       - name: Read Encoded JSON Payload
         id: read_encoded_json
