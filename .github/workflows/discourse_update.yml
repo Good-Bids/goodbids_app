@@ -30,4 +30,4 @@ jobs:
           
           JSON_DATA="{\"title\": \"$ISSUE_TITLE\", \"body\": \"$ISSUE_BODY\", \"author\": \"$ISSUE_AUTHOR\", \"status\": \"$ISSUE_STATUS\", \"category\": 22}"
           
-          curl -X POST "https://goodbids.discourse.group/posts.json" -H "Content-Type: application/json" -H "Api-Key: ${{ secrets.DISCOURSE_API_TOKEN }}" -H "Api-Username: jaspercroome@protonmail.com" -d "{\"title\": \"Test topic creation with the API\", \"raw\": \"And here's the topic's content\", \"category\": 22 }"
+          curl -X POST "https://goodbids.discourse.group/posts.json" -H "Content-Type: application/json" -H "Api-Key: ${{ secrets.DISCOURSE_API_TOKEN }}" -H "Api-Username: jaspercroome" -d "{\"title\": \"Test topic creation with the API\", \"raw\": \"And here's the topic's content\", \"category\": 22 }"
