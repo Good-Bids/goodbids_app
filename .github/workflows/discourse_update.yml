@@ -25,11 +25,25 @@ jobs:
         run: |
           CSRF_TOKEN=$(curl -s https://goodbids.discourse.group/session/csrf.json | jq -r .csrf)
           echo "CSRF_TOKEN=${CSRF_TOKEN}" >> $GITHUB_ENV
+
+      - name: Encode Emojis
+        id: encode_emojis
+        run: |
+          ISSUE_BODY="${{ env.body }}"
+          
+          # Function to encode emojis as Unicode escape sequences
+          function encode_emojis() {
+              python3 -c 'import json; print(json.dumps("'${ISSUE_BODY}'", ensure_ascii=False))'
+          }
+          
+          # Call the function and store the result in an environment variable
+          ENCODED_BODY=$(encode_emojis)
+          echo "ENCODED_BODY=${ENCODED_BODY}" >> $GITHUB_ENV
       
       - name: Post Update to Discourse
         run: |
           ISSUE_TITLE="${{ env.title }}"
-          ISSUE_BODY="${{ env.body }}"
+          ISSUE_BODY="${{ env.ENCODED_BODY }}"
           ISSUE_AUTHOR="${{ env.author }}"
           ISSUE_STATUS="${{ env.status }}"
           CSRF_TOKEN="${{ env.CSRF_TOKEN }}"
