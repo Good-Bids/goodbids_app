@@ -34,16 +34,19 @@ jobs:
           ISSUE_AUTHOR="${{ env.author }}"
           ISSUE_STATUS="${{ env.status }}"
           
-          # Encode emojis in the JSON payload using jq
-          ENCODED_JSON=$(jq -n --arg title "$ISSUE_TITLE" --arg body "$ISSUE_BODY" --arg author "$ISSUE_AUTHOR" --arg status "$ISSUE_STATUS" '{title: $title, body: $body, author: $author, status: $status | tonumber}')
+          # Encode emojis in the JSON payload using jq and write to file
+          jq -n --arg title "$ISSUE_TITLE" --arg body "$ISSUE_BODY" --arg author "$ISSUE_AUTHOR" --arg status "$ISSUE_STATUS" '{title: $title, body: $body, author: $author, status: $status | tonumber}' > encoded.json
+      
+      - name: Read Encoded JSON Payload
+        id: read_encoded_json
+        run: |
+          ENCODED_JSON=$(cat encoded.json)
           echo "ENCODED_JSON=${ENCODED_JSON}" >> $GITHUB_ENV
       
       - name: Post Update to Discourse
         run: |
           ENCODED_JSON="${{ env.ENCODED_JSON }}"
           CSRF_TOKEN="${{ env.CSRF_TOKEN }}"
-          
-          JSON_DATA="{\"title\": \"$ISSUE_TITLE\", \"raw\": \"$ISSUE_BODY\", \"category\": 22}"
           
           curl -X POST "https://goodbids.discourse.group/posts.json" \
                -H "Content-Type: application/json" \
