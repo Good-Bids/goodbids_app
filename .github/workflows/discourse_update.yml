@@ -28,7 +28,7 @@ jobs:
       - name: Create JSON Payload
         id: create_json_payload
         run: |
-          JSON_DATA="{\"title\": \"test\", \"raw\": \"here is some test content\", \"category\": 22, \"author\": \"jaspercroome\"}"
+          JSON_DATA="{\"title\": \"test\", \"raw\": \"here\", \"category\": 22, \"author\": \"jaspercroome\"}"
           echo "JSON_DATA=${JSON_DATA}" >> $GITHUB_ENV
       
       - name: Post Update to Discourse
