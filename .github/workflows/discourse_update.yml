@@ -25,11 +25,6 @@ jobs:
         run: |
           CSRF_TOKEN=$(curl -s https://goodbids.discourse.group/session/csrf.json | jq -r .csrf)
       
-      - name: Create JSON Payload
-        id: create_json_payload
-        run: |
-          JSON_DATA="{\"title\": \"test\", \"raw\": \"here\", \"category\": 22, \"author\": \"jaspercroome\"}"
-          echo "JSON_DATA=${JSON_DATA}" >> $GITHUB_ENV
       
       - name: Post Update to Discourse
         run: |
@@ -41,4 +36,8 @@ jobs:
                -H "Api-Key: ${{ secrets.DISCOURSE_UPDATE_SECRET }}" \
                -H "Api-Username: jaspercroome" \
                -H "X-CSRF-Token: $CSRF_TOKEN" \
-               -d "${JSON_DATA}"
+               -d '{
+                  "title": "$ISSUE_TITLE",
+                   "raw": "$ISSUE_BODY",
+                   "category": "tech-backlog"
+                   }'
