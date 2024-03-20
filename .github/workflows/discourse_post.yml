@@ -38,12 +38,15 @@ jobs:
       run: |
         # Find the topic ID from the issue body or comments
         TOPIC_ID="Github issue #${{github.event.issue.number}} - ${{ github.event.issue.title }}"
+        echo "TOPIC_ID: $TOPIC_ID"
         
         # Get the post ID from the Discourse API
         POST_ID=$(curl -s "https://goodbids.discourse.group/t/$TOPIC_ID.json" \
           -H "Api-Key: ${{ secrets.DISCOURSE_UPDATE_SECRET }}" \
           -H "Api-Username: jaspercroome" \
           | jq '.post_stream.posts[0].id')
+
+        echo "POST_ID: $POST_ID"
           
         curl -X PUT "https://goodbids.discourse.group/posts/$POST_ID.json" \
           -H "Content-Type: application/json" \
