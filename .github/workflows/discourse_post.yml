@@ -1,35 +1,55 @@
-name: Discourse Post
+name: Discourse Update
 
 on:
   issues:
-    types: [opened]
+    types: [opened, edited]
 
 jobs:
+
   update_discourse:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+    - name: Checkout Repository
+      uses: actions/checkout@v2
       
-      - name: Fetch CSRF Token
-        id: csrf_token
-        run: |
-          CSRF_TOKEN=$(curl -s https://goodbids.discourse.group/session/csrf.json | jq -r .csrf)
-      
-      
-      - name: Post New Issue to Discourse
-        run: |
-          JSON_DATA="${{ env.JSON_DATA }}"
-          CSRF_TOKEN="${{ env.CSRF_TOKEN }}"
+    - name: Fetch CSRF Token
+      id: csrf_token
+      run: |
+        CSRF_TOKEN=$(curl -s https://goodbids.discourse.group/session/csrf.json | jq -r .csrf)
+        echo "CSRF_TOKEN=$CSRF_TOKEN" >> $GITHUB_OUTPUT
+        
+    - name: Post New Issue to Discourse
+      if: ${{ github.event.action == 'opened' }}
+      run: |
+        curl -X POST "https://goodbids.discourse.group/posts.json" \
+          -H "Content-Type: application/json" \
+          -H "Api-Key: ${{ secrets.DISCOURSE_UPDATE_SECRET }}" \
+          -H "Api-Username: jaspercroome" \
+          -H "X-CSRF-Token: ${{ steps.csrf_token.outputs.CSRF_TOKEN }}" \
+          -d '{
+            "title": "Github issue #${{github.event.issue.number}} - ${{ github.event.issue.title }}",
+            "raw": "${{ github.event.issue.html_url }}",
+            "category": 22
+          }'
           
-          curl -X POST "https://goodbids.discourse.group/posts.json" \
-               -H "Content-Type: application/json" \
-               -H "Api-Key: ${{ secrets.DISCOURSE_UPDATE_SECRET }}" \
-               -H "Api-Username: jaspercroome" \
-               -H "X-CSRF-Token: $CSRF_TOKEN" \
-               -d '{
-                  "title": "Github issue #${{github.event.issue.number}} - ${{ github.event.issue.title }}",
-                   "raw": "${{ github.event.issue.html_url }}",
-                   "category": 22
-                    }'
+    - name: Update Discourse Post
+      if: ${{ github.event.action == 'edited' }}
+      run: |
+        # Find the topic ID from the issue body or comments
+        TOPIC_ID="Github issue #${{github.event.issue.number}} - ${{ github.event.issue.title }}"
+        
+        # Get the post ID from the Discourse API
+        POST_ID=$(curl -s "https://goodbids.discourse.group/t/$TOPIC_ID.json" \
+          -H "Api-Key: ${{ secrets.DISCOURSE_UPDATE_SECRET }}" \
+          -H "Api-Username: jaspercroome" \
+          | jq '.post_stream.posts[0].id')
+          
+        curl -X PUT "https://goodbids.discourse.group/posts/$POST_ID.json" \
+          -H "Content-Type: application/json" \
+          -H "Api-Key: ${{ secrets.DISCOURSE_UPDATE_SECRET }}" \
+          -H "Api-Username: jaspercroome" \
+          -H "X-CSRF-Token: ${{ steps.csrf_token.outputs.CSRF_TOKEN }}" \
+          -d '{
+            "raw": "${{ github.event.issue.html_url }}"
+          }'
