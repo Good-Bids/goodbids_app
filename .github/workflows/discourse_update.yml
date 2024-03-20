@@ -29,7 +29,7 @@ jobs:
                -H "Api-Username: jaspercroome" \
                -H "X-CSRF-Token: $CSRF_TOKEN" \
                -d '{
-                  "title": "Github issue#${{github.event.issue.number}} - ${{ github.event.issue.title }}",
-                   "raw": "${{ github.event.issue }}",
+                  "title": "Github issue #${{github.event.issue.number}} - ${{ github.event.issue.title }}",
+                   "raw": "${{ github.event.issue.html_url }}",
                    "category": 22
                     }'
