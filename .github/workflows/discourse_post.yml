@@ -37,7 +37,8 @@ jobs:
       if: ${{ github.event.action == 'edited' }}
       run: |
         # Find the topic ID from the issue body or comments
-        TOPIC_ID="Github issue #${{github.event.issue.number}} - ${{ github.event.issue.title }}"
+        SLUGIFIED_TITLE=$(echo "$original_string" | tr ' ' '-')
+        TOPIC_ID="github-issue-${{github.event.issue.number}}-$SLUGIFIED_TITLE"
         echo "TOPIC_ID: $TOPIC_ID"
         
         # Get the post ID from the Discourse API
