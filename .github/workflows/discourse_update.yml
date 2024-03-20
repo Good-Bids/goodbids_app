@@ -39,5 +39,5 @@ jobs:
                -d '{
                   "title": "$ISSUE_TITLE",
                    "raw": "$ISSUE_BODY",
-                   "category": "tech-backlog"
+                   "category": 22
                    }'
